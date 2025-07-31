@@ -1,0 +1,88 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+ font-family: "Inter", sans-serif;
+  width: 100%;
+  padding: 1em 2em;
+  /* background-color: #b25151; */
+  
+  /* position: sticky; */
+  top: 0;
+  z-index: 100;
+  font-family: 'Inter', sans-serif;
+}
+
+.navbar-left .logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #222;
+    font-family: "Inter", sans-serif;
+}
+
+.navbar-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: color 0.3s;
+    font-family: "Inter", sans-serif;
+}
+
+.nav-links a:hover {
+  color: #0077cc;
+}
+
+.navbar-right {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.icon {
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: #333;
+  transition: color 0.3s;
+}
+
+.icon:hover {
+  color: #0077cc;
+}
+
+.cart-icon {
+  position: relative;
+  display: inline-block;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background-color: red;
+  color: white;
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 50%;
+  font-weight: bold;
+  line-height: 1;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .navbar-center {
+    display: none; /* Hide nav links on mobile for now */
+  }
+}
