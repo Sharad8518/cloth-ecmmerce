@@ -26,7 +26,7 @@ const people = [
     {
     name: 'Mia',
     age: 24,
-    image: 'https://images.cbazaar.com/images/pink-net-embroidered-stones-with-moti-umbrella-lehenga-ghscc47559002a-u.jpg',
+    image: 'https://cdn.shopify.com/s/files/1/0825/9253/0718/files/DSC01964_copy_600x600.jpg?v=1695708576',
   },
    
    {
