@@ -2,6 +2,8 @@ import React from 'react'
 import TinderCards from '../TinderCard/TinderCards';
 import styles from "../Home/Home.module.css"
 import Navbar from '../Navbar/Navbar';
+import AllProduct from '../AllProduct/AllProduct';
+import Footer from '../Footer/Footer';
 const people = [
   {
     name: 'Lily',
@@ -50,6 +52,9 @@ export default function Home() {
           <p style={{textAlign:"center",fontFamily:"Inter"}}>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.  </p>
           <button className={styles.btnExplore}>Explore More</button>
           </div>
+           <br></br>
+          <AllProduct/>
+          <Footer/>
         </div>
   )
 }
