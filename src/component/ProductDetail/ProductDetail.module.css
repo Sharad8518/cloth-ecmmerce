@@ -1,0 +1,70 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+.ProductDetailContainer{
+   padding: 40px; 
+   height: 100vh;
+
+}
+
+.productDetailImg{
+     width: 100%;
+  height: 100%;
+  object-fit: contain;       /* Ensures image fills box without distortion */
+  border-radius: 8px;
+  cursor: pointer;
+
+
+  display: block;
+}
+
+.detailProductTitle{
+    font-size: 30px;
+    font-weight: 650;
+     font-family: "Inter", sans-serif;
+}
+.detailProductDiscreaption{
+    font-size: 13px;
+     font-family: "Inter", sans-serif;
+}
+.detailPrize{
+   font-family: "Inter", sans-serif;  
+   font-size: 15px;
+   font-weight: 700;
+}
+.detailMRP{
+    font-size: 12px;
+    margin-top: 5px;
+    color: #bdbdbd;
+}
+
+.container{
+      display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 12px 0;
+}
+.size-selector {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap; /* wraps on small screens */
+}
+
+.sizeButton {
+  background-color: transparent;
+  border: 1px solid #000;
+  color: #000;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.size-button:hover,
+.size-button.active {
+  background-color: #000;
+  color: #fff;
+}

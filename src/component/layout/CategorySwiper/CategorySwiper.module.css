@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+.swiperContainer {
+  width: 100%;
+  padding: 20px 0;
+    position: relative;
+}
+
+.categorySlide {
+  text-align: center;
+}
+
+.categoryImg {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 8px;
+  border: 2px solid #ddd;
+}
+
+.categoryTitle {
+  font-size: 14px;
+  color: #333;
+   font-family: "Inter", sans-serif;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: #333;
+}
+
+.customNav {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.customPrev,
+.customNext {
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: all;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.customPrev:hover,
+.customNext:hover {
+  background-color: #eee;
+}
+
+
+.ViewAllBtn{
+    padding: 7px 20px;
+    margin-top: 20px;
+    border:1px solid #333;
+    border-radius: 5px;
+     font-family: "Inter", sans-serif;
+     background-color: transparent;
+     color: #333;
+}
+
+.shopbycategory{
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 700;
+}

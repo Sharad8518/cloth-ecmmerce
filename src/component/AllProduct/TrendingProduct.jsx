@@ -52,15 +52,15 @@ const tshirtItems = [
     price: "21.99"
   }
 ];
-export default function AllProduct() {
+export default function TrendingProduct() {
   return (
-    <div style={{ display: "flex", justifyContent: "center", padding: "40px", backgroundColor: "#f7f7f7" }}>
+    <div style={{ display: "flex", justifyContent: "center",backgroundColor: "#f7f7f7" }}>
          <div style={{
       display: "flex",
       flexWrap: "wrap",
       gap: "20px",
       justifyContent: "center",
-      padding: "40px",
+   
       backgroundColor: "#f7f7f7"
     }}>
       {tshirtItems.map((item, index) => (

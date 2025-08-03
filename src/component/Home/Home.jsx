@@ -2,8 +2,10 @@ import React from 'react'
 import TinderCards from '../TinderCard/TinderCards';
 import styles from "../Home/Home.module.css"
 import Navbar from '../Navbar/Navbar';
-import AllProduct from '../AllProduct/AllProduct';
+import AllProduct from '../AllProduct/TrendingProduct';
 import Footer from '../Footer/Footer';
+import CategorySwiper from '../layout/CategorySwiper/CategorySwiper';
+import Product from '../AllProduct/Product/Product';
 const people = [
   {
     name: 'Lily',
@@ -54,6 +56,10 @@ export default function Home() {
           </div>
            <br></br>
           <AllProduct/>
+          <CategorySwiper/>
+          <br/>
+          <Product/>
+          <br/>
           <Footer/>
         </div>
   )

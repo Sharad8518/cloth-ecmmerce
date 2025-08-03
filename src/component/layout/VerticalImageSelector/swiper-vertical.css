@@ -1,0 +1,29 @@
+.vertical-swiper-container {
+  width: 120px;
+  height: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.vertical-swiper {
+  height: 100%;
+}
+.swipe-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;       /* Ensures image fills box without distortion */
+  border-radius: 8px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border 0.2s ease;
+  display: block;
+}
+
+.swipe-image.selected {
+  border: 2px solid #007bff;
+}
+
+.slide-wrapper {
+  display: flex;
+  justify-content: center;
+}
