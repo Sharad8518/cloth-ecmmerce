@@ -54,7 +54,7 @@ const tshirtItems = [
 ];
 export default function TrendingProduct() {
   return (
-    <div style={{ display: "flex", justifyContent: "center",backgroundColor: "#f7f7f7" }}>
+    <div style={{ display: "flex", justifyContent: "center",backgroundColor: "#f7f7f7" ,padding:40}}>
          <div style={{
       display: "flex",
       flexWrap: "wrap",

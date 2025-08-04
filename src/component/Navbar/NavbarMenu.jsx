@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FaShoppingCart, FaUser } from "react-icons/fa";
 import { HiOutlineShoppingBag } from "react-icons/hi2";
 import { FaRegUser } from "react-icons/fa";
-import "./Navbar.css";
+import "./NavbarMenu.css";
 import { RiMenu2Fill } from "react-icons/ri";
 import { Container, Row, Col } from "react-bootstrap";
 
@@ -71,7 +71,7 @@ const collectionMenu = [
   },
 ];
 
-export default function Navbar() {
+export default function NavbarMenu() {
   const cartItemCount = 3; // Replace with dynamic value from state/store
   const [showModal, setShowModal] = useState(false);
 
