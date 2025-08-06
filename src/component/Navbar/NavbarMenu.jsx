@@ -5,7 +5,7 @@ import { FaRegUser } from "react-icons/fa";
 import "./NavbarMenu.css";
 import { RiMenu2Fill } from "react-icons/ri";
 import { Container, Row, Col } from "react-bootstrap";
-
+import logo from "../../assets/logo.jpeg"
 const collectionMenu = [
   {
     title: "CO-ORDS SET",
@@ -77,9 +77,10 @@ export default function NavbarMenu() {
 
   return (
     <>
-      <nav className="navbar">
+      <nav className="navbar" >
         <div className="navbar-left">
-          <h2 className="logo">ShopMate</h2>
+          {/* <h2 className="logo">ShopMate</h2> */}
+          <img src={logo} style={{width:60}} />
         </div>
 
         <div className="navbar-center">
