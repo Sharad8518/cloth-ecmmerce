@@ -4,7 +4,7 @@ import styles from './CustomerReviews.module.css';
 const CustomerReviews = ({ reviews }) => {
   return (
     <section className={styles.container}>
-      <h2 className={styles.heading}>Customer Reviews</h2>
+      {/* <h2 className={styles.heading}>Customer Reviews</h2> */}
     <div className={styles.scrollContainer}>
   {reviews.map((review) => (
     <div key={review.id} className={styles.card}>

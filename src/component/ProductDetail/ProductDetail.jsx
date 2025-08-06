@@ -15,6 +15,7 @@ import Frequently from "../Frequently&Similar/Frequently/Frequently";
 import Footer from "../Footer/Footer";
 import SimilarProducts from "../AllProduct/SimilarProduct/SimilarProducts";
 import CustomerReviews from "../CustomerReview/CustomerReviews";
+import { FaRegStarHalfStroke } from "react-icons/fa6";
 const images = [
   "https://img.theloom.in/pwa/catalog/product/cache/e442fb943037550e0d70cca304324ade/v/j/vj304fs25-01kpfuchsiavj30_7_.jpg?tr=c-at_max,w-800,h-1066",
   "https://img.theloom.in/pwa/catalog/product/cache/e442fb943037550e0d70cca304324ade/v/j/vj304fs25-01kpfuchsiavj30_2_.jpg?tr=c-at_max,w-800,h-1066",
@@ -282,8 +283,20 @@ export default function ProductDetail() {
           culpa qui officia deserunt mollit anim id est laborum.
         </Accordion.Body>
       </Accordion.Item>
+
+        <Accordion.Item eventKey="4"style={{border:"none"}} onClick={() => toggleKey("4")}>
+        <Accordion.Header>
+          <div className={styles.productDetailHeading}>
+              <FaRegStarHalfStroke   size={20} style={{fontWeight:"bold",marginTop:-3,marginRight:10}} />
+          Customer Review
+          </div>
+          </Accordion.Header>
+        <Accordion.Body>
+        <CustomerReviews reviews={reviews} />
+        </Accordion.Body>
+      </Accordion.Item>
     </Accordion>
-      <CustomerReviews reviews={reviews} />
+    
         </Col>
       
       </Row>
