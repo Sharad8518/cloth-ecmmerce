@@ -1,5 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
+.nav-and-submenu-wrapper{
+  background-color: #333;
+  height: 55px;
+  position: sticky;
+  width: 100%;
+  z-index: 8;
+}
+
 .navbar {
   display: flex;
   align-items: center;
@@ -9,7 +17,7 @@
   padding: 1em 2em;
   background-color: #fff;
   
-  position: sticky;
+ 
   top: 0;
   z-index: 100;
   font-family: 'Inter', sans-serif;
@@ -127,9 +135,10 @@
 .submenu-model{
   display: flex;
   align-items: center;
-  top: 70px;
+  top: 55px;
   width: 100%;
   position: absolute;
+  
 }
 .submenu-container-modal {
   /* position: absolute; */

@@ -6,6 +6,7 @@ import "./NavbarMenu.css";
 import { RiMenu2Fill } from "react-icons/ri";
 import { Container, Row, Col } from "react-bootstrap";
 import logo from "../../assets/logo.jpeg"
+import { Link } from "react-router-dom";
 const collectionMenu = [
   {
     title: "CO-ORDS SET",
@@ -76,7 +77,11 @@ export default function NavbarMenu() {
   const [showModal, setShowModal] = useState(false);
 
   return (
-    <>
+    <div 
+  className="nav-and-submenu-wrapper"
+  onMouseEnter={() => setShowModal(true)}
+  onMouseLeave={() => setShowModal(false)}
+>
       <nav className="navbar" >
         <div className="navbar-left">
           {/* <h2 className="logo">ShopMate</h2> */}
@@ -89,34 +94,42 @@ export default function NavbarMenu() {
               <a href="/">Home</a>
             </li>
             <li
-              onMouseEnter={() => setShowModal(true)}
-              onMouseLeave={() => setShowModal(false)}
+             
             >
-              <a href="/collections">Clothing</a>
+              <Link to="/categoryProduct"
+               onMouseEnter={() => setShowModal(true)}
+            
+              >Clothing</Link>
             </li>
             <li
              onMouseEnter={() => setShowModal(true)}
-              onMouseLeave={() => setShowModal(false)}
+              // onMouseLeave={() => setShowModal(false)}
             >
-              <a href="/collections">Womenswear</a>
+              <Link to="/categoryProduct"
+                  onMouseEnter={() => setShowModal(true)}
+         
+              >Womenswear</Link>
             </li>
             <li
-             onMouseEnter={() => setShowModal(true)}
-              onMouseLeave={() => setShowModal(false)}
+          
             >
-              <a href="/collections">Menswear</a>
+              <Link to="/categoryProduct"
+                 onMouseEnter={() => setShowModal(true)}
+              >Menswear</Link>
             </li>
             <li
-             onMouseEnter={() => setShowModal(true)}
-              onMouseLeave={() => setShowModal(false)}
+         
             >
-              <a href="/collections">Bestsellers</a>
+              <Link o="/categoryProduct"
+                 onMouseEnter={() => setShowModal(true)}
+              >Bestsellers</Link>
             </li>
             <li
-             onMouseEnter={() => setShowModal(true)}
-              onMouseLeave={() => setShowModal(false)}
+            
             >
-              <a href="/collections">Saree</a>
+              <Link o="/categoryProduct"
+               onMouseEnter={() => setShowModal(true)}
+              >Saree</Link>
             </li>
             <li>
               <a href="/about">About Us</a>
@@ -156,7 +169,9 @@ export default function NavbarMenu() {
       </nav>
 
       {showModal && (
-        <div className="submenu-model">
+        <div className="submenu-model"
+          onMouseEnter={() => setShowModal(true)}
+        >
           <div
             className="submenu-container-modal mx-auto d-block"
             onMouseEnter={() => setShowModal(true)}
@@ -187,6 +202,6 @@ export default function NavbarMenu() {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
