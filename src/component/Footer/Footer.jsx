@@ -1,13 +1,15 @@
 import React from "react";
 import "./Footer.css";
+import logo from "../../assets/logo.jpeg"
 
 const Footer = () => {
   return (
     <footer className="footer">
       <div className="footer-main">
         <div className="footer-brand">
-          <h2>ShopMate</h2>
+          <h2>House of Ziba</h2>
           <p>Your trusted destination for fashion, lifestyle, and more. Quality, style, and service you can count on.</p>
+          <img src={logo} style={{width:150,height:150}}/>
         </div>
 
         <div className="footer-links">
@@ -46,7 +48,7 @@ const Footer = () => {
       </div>
 
       <div className="footer-bottom">
-        &copy; {new Date().getFullYear()} ShopMate. All rights reserved.
+        &copy; {new Date().getFullYear()} Houseofziba. All rights reserved.
       </div>
     </footer>
   );

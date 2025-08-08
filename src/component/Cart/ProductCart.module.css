@@ -1,0 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+
+.shopingCartItem{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.ordersummary{
+   font-family: "Inter", sans-serif;
+   font-weight: 600;
+   margin-top: 20px;
+   margin-left: 20px;
+}

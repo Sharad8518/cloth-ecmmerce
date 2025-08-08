@@ -160,9 +160,9 @@ export default function CategoryProduct() {
       <NavbarMenu />
       <br />
       <br />
-      <div style={{ width: "100%", height: 300, boxSizing: "border-box" }}>
+      <div style={{ width: "100%", boxSizing: "border-box" }}>
         <img
-          src="https://static.vecteezy.com/system/resources/thumbnails/002/392/141/small/raksha-bandhan-invitation-banner-or-header-with-crystal-rakhi-free-vector.jpg"
+          src="https://png.pngtree.com/png-vector/20221018/ourmid/pngtree-social-media-banner-for-happy-raksha-bandhan-banner-holiday-marketing-vector-png-image_28481088.jpg"
           style={{ width: "100%", height: "100%" }}
         />
       </div>

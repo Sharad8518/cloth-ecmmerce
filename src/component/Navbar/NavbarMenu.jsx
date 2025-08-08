@@ -91,7 +91,7 @@ export default function NavbarMenu() {
         <div className="navbar-center">
           <ul className="nav-links">
             <li>
-              <a href="/">Home</a>
+              <Link to="/">Home</Link>
             </li>
             <li
              
@@ -142,12 +142,12 @@ export default function NavbarMenu() {
 
         <div className="navbar-right">
           {/* ✅ Cart Icon with Badge */}
-          <div className="cart-icon">
+          <Link className="cart-icon" to={"/cart"}>
             <HiOutlineShoppingBag className="icon" />
             {cartItemCount > 0 && (
               <span className="cart-badge">{cartItemCount}</span>
             )}
-          </div>
+          </Link>
           <FaRegUser className="icon" />
         </div>
       </nav>
