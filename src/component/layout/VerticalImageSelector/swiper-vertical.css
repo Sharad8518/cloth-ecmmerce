@@ -1,5 +1,5 @@
 .vertical-swiper-container {
-  width: 120px;
+  width:100%;
   height: 100%;
   border-radius: 8px;
   overflow: hidden;
@@ -7,10 +7,12 @@
 
 .vertical-swiper {
   height: 100%;
+  justify-content: start;
+
 }
 .swipe-image {
   width: 100%;
-  height: 100%;
+  height: 70%;
   object-fit: cover;       /* Ensures image fills box without distortion */
   border-radius: 8px;
   cursor: pointer;

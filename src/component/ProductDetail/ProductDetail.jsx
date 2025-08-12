@@ -185,7 +185,8 @@ export default function ProductDetail() {
         <Row style={{ height: "100%" }}>
           <Col
             md={1}
-            style={{ display: "flex", alignItems: "center", height: "100%" }}
+           
+            className={styles.vericalImage}
           >
             <VerticalImageSelector
               images={images}
@@ -352,32 +353,16 @@ export default function ProductDetail() {
                 </Accordion.Body>
               </Accordion.Item>
 
-              <Accordion.Item
-                eventKey="4"
-                style={{ border: "none" }}
-                onClick={() => toggleKey("4")}
-              >
-                <Accordion.Header>
-                  <div className={styles.productDetailHeading}>
-                    <FaRegStarHalfStroke
-                      size={20}
-                      style={{
-                        fontWeight: "bold",
-                        marginTop: -3,
-                        marginRight: 10,
-                      }}
-                    />
-                    Customer Review
-                  </div>
-                </Accordion.Header>
-                <Accordion.Body>
-                  <CustomerReviews reviews={reviews} />
-                </Accordion.Body>
-              </Accordion.Item>
+             
             </Accordion>
           </Col>
         </Row>
       </Container>
+        <div className={styles.customerHeading}>
+                   
+                    Customer Review
+                  </div>
+       <CustomerReviews reviews={reviews} />
       <Frequently items={frequentlyBought} />
       <br />
       <div style={{ padding: "2rem", backgroundColor: "#f9f9f9" }}>

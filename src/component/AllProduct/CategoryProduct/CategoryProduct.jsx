@@ -12,7 +12,7 @@ import NavbarMenu from "../../Navbar/NavbarMenu";
 import ProductList from "../../ProductList/ProductList";
 import BreadcrumbSinglePage from "../../layout/BreadcrumbSinglePage";
 import Footer from "../../Footer/Footer";
-
+import styles from "./CategoryProduct.module.css"
 // products.js
 const products = [
   {
@@ -171,7 +171,7 @@ export default function CategoryProduct() {
         <BreadcrumbSinglePage />
         <Row>
           {/* Left Filter Section */}
-          <Col md={3} style={{ background: "#f8f9fa", padding: "20px" }}>
+          <Col md={2} style={{ background: "#f8f9fa", padding: "20px" }} className={styles.filterBox}>
             <h5>Filters</h5>
             <Accordion defaultActiveKey="0" alwaysOpen>
               {/* Shop by Price */}
@@ -310,7 +310,7 @@ export default function CategoryProduct() {
           </Col>
 
           {/* Right Product Section */}
-          <Col md={9} style={{ padding: "20px" }}>
+          <Col md={10} style={{  }}>
             {/* Selected Filters */}
             {selectedFilters.length > 0 && (
               <div style={{ marginBottom: 20 }}>
@@ -370,9 +370,9 @@ export default function CategoryProduct() {
             {/* Product List Placeholder */}
             <div
               style={{
-                background: "#e9ecef",
+              
                 minHeight: "500px",
-                padding: "20px",
+                
               }}
             >
               {/* <h4>Product Listings</h4> */}
@@ -429,7 +429,15 @@ export default function CategoryProduct() {
           </Col>
         </Row>
       </Container>
+      <br/>
       <Footer/>
+        <div className={styles.mobileBottomfilter}>
+          <div style={{width:"50%",display:"flex",alignItems:"center",justifyContent:"center",color:"#000",fontWeight:"600"}}>FILTER</div>
+          <div style={{width:"50%",display:"flex",alignItems:"center",justifyContent:"center",color:"#000",fontWeight:"600"}}>SORT</div>
+      
     </div>
+    </div>
+
+  
   );
 }

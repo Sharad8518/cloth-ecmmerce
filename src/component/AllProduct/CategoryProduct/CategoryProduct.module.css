@@ -1,0 +1,24 @@
+.filterBox{
+    display: block;
+}
+
+.mobileBottomfilter{
+display: none;
+}
+
+
+@media (max-width: 768px) {
+.filterBox{
+    display: none;
+}
+.mobileBottomfilter{
+display: flex;
+justify-content: space-between;
+align-items: center;
+width: 100%;
+height: 50px;
+background-color: #fff;
+position: fixed;
+bottom: 0px;
+}
+}

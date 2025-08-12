@@ -75,3 +75,12 @@
   font-weight: 600;
   color: #111;
 }
+@media (max-width: 768px) {
+  .grid {
+    justify-content: space-between; /* prevent big gaps */
+  }
+
+  .card {
+    width: calc(50% - 0.75rem); /* 2 cards per row with gap */
+  }
+}

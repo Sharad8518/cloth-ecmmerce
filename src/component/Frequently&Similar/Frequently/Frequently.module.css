@@ -75,3 +75,30 @@
   margin-top: 8px;
   font-size: 0.9rem;
 }
+
+/* 📱 Mobile view - 2 cards per row */
+@media (max-width: 768px) {
+  .productList {
+    justify-content: flex-start; /* avoid large gaps */
+  }
+
+  .productCard {
+    flex: 0 0 calc(50% - 10px); /* two cards in a row with small gap */
+    max-width: calc(50% - 10px);
+  }
+}
+
+
+/* @media (min-width: 769px) and (max-width: 1024px) {
+  .productCard {
+    flex: 0 0 calc(33.33% - 12px);
+    max-width: calc(33.33% - 12px);
+  }
+}
+
+@media (min-width: 1025px) {
+  .productCard {
+    flex: 0 0 calc(25% - 12px);
+    max-width: calc(25% - 12px);
+  }
+} */

@@ -16,8 +16,8 @@ export default function VerticalImageSelector({ images, onSelect }) {
     <div className="vertical-swiper-container">
       <Swiper
         direction="vertical"
-        slidesPerView={4}
-        spaceBetween={1}
+         slidesPerView={4}
+  spaceBetween={0}
         freeMode={true}
         modules={[FreeMode]}
         className="vertical-swiper"
