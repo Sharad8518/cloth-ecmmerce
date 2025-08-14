@@ -47,6 +47,7 @@ export default function Home() {
   return (
      <div style={{display:"flex",alignItems:"center",width:"100%",flexDirection:"column"}}>
         <Navbar/>
+        <br/> <br/><br/>
         <h1 className={styles.headingUtimate}>The Utimate</h1>
         <h1 className={styles.headingCollcetion}>COLLECTIONS</h1>
         <TinderCards people={people} />

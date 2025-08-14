@@ -167,11 +167,11 @@ export default function CategoryProduct() {
         />
       </div>
       <br />
-      <Container fluid>
+      <Container >
         <BreadcrumbSinglePage />
         <Row>
           {/* Left Filter Section */}
-          <Col md={2} style={{ background: "#f8f9fa", padding: "20px" }} className={styles.filterBox}>
+          <Col md={3} style={{ background: "#f8f9fa", padding: "20px" }} className={styles.filterBox}>
             <h5>Filters</h5>
             <Accordion defaultActiveKey="0" alwaysOpen>
               {/* Shop by Price */}
@@ -310,7 +310,7 @@ export default function CategoryProduct() {
           </Col>
 
           {/* Right Product Section */}
-          <Col md={10} style={{  }}>
+          <Col md={9} style={{  }}>
             {/* Selected Filters */}
             {selectedFilters.length > 0 && (
               <div style={{ marginBottom: 20 }}>

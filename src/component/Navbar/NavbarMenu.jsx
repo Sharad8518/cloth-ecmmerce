@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useRef,useEffect } from "react";
 import { FaShoppingCart, FaUser } from "react-icons/fa";
 import { HiOutlineShoppingBag } from "react-icons/hi2";
 import { FaRegUser } from "react-icons/fa";
@@ -6,7 +6,8 @@ import "./NavbarMenu.css";
 import { RiMenu2Fill } from "react-icons/ri";
 import { Container, Row, Col } from "react-bootstrap";
 import logo from "../../assets/logo.jpeg"
-import { Link } from "react-router-dom";
+import LoadingBar from "react-top-loading-bar";
+import { Link, useLocation, useNavigation } from "react-router-dom";
 const collectionMenu = [
   {
     title: "CO-ORDS SET",
@@ -75,6 +76,22 @@ const collectionMenu = [
 export default function NavbarMenu() {
   const cartItemCount = 3; // Replace with dynamic value from state/store
   const [showModal, setShowModal] = useState(false);
+
+  const loadingRef = useRef(null);
+  const location = useLocation();
+
+  useEffect(() => {
+    // Start loading when route changes
+    loadingRef.current.continuousStart();
+
+    // Simulate a short load time before completing
+    const timer = setTimeout(() => {
+      loadingRef.current.complete();
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [location]);
+
 
   return (
     <div 
@@ -150,7 +167,15 @@ export default function NavbarMenu() {
           </Link>
           <FaRegUser className="icon" />
         </div>
+         <LoadingBar
+          color="#ff4b2b"
+          height={3}
+          ref={loadingRef}
+          shadow={false}
+          style={{ position: "absolute", top:89}}
+        />
       </nav>
+       
 
       <nav className="navbar-mobile">
         <RiMenu2Fill size={25} style={{ marginLeft: "10px" }} />
