@@ -4,7 +4,7 @@ import { HiOutlineShoppingBag } from "react-icons/hi2";
 import { FaRegUser } from "react-icons/fa";
 import "./NavbarMenu.css";
 import { RiMenu2Fill } from "react-icons/ri";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col,Offcanvas,Accordion  } from "react-bootstrap";
 import logo from "../../assets/logo.jpeg"
 import LoadingBar from "react-top-loading-bar";
 import { Link, useLocation, useNavigation } from "react-router-dom";
@@ -76,6 +76,11 @@ const collectionMenu = [
 export default function NavbarMenu() {
   const cartItemCount = 3; // Replace with dynamic value from state/store
   const [showModal, setShowModal] = useState(false);
+    const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
 
   const loadingRef = useRef(null);
   const location = useLocation();
@@ -94,9 +99,10 @@ export default function NavbarMenu() {
 
 
   return (
+    <>
     <div 
   className="nav-and-submenu-wrapper"
-  onMouseEnter={() => setShowModal(true)}
+
   onMouseLeave={() => setShowModal(false)}
 >
       <nav className="navbar" >
@@ -177,21 +183,7 @@ export default function NavbarMenu() {
       </nav>
        
 
-      <nav className="navbar-mobile">
-        <RiMenu2Fill size={25} style={{ marginLeft: "10px" }} />
-
-        <h2 className="logo-mobile">ShopMate</h2>
-        <div style={{ marginRight: 10, display: "flex" }}>
-          {/* ✅ Cart Icon with Badge */}
-          <div className="cart-icon" style={{ marginRight: 12 }}>
-            <HiOutlineShoppingBag className="icon" />
-            {cartItemCount > 0 && (
-              <span className="cart-badge">{cartItemCount}</span>
-            )}
-          </div>
-          {/* <FaRegUser className="icon"  style={{left:10}} /> */}
-        </div>
-      </nav>
+     
 
       {showModal && (
         <div className="submenu-model"
@@ -227,6 +219,53 @@ export default function NavbarMenu() {
           </div>
         </div>
       )}
+ <nav className="navbar-mobile">
+        <RiMenu2Fill size={25} style={{ marginLeft: "10px" }} 
+         onClick={handleShow}
+        />
+
+        <h2 className="logo-mobile">ShopMate</h2>
+        <div style={{ marginRight: 10, display: "flex" }}>
+          {/* ✅ Cart Icon with Badge */}
+          <div className="cart-icon" style={{ marginRight: 12 }}>
+            <HiOutlineShoppingBag className="icon" />
+            {cartItemCount > 0 && (
+              <span className="cart-badge">{cartItemCount}</span>
+            )}
+          </div>
+          {/* <FaRegUser className="icon"  style={{left:10}} /> */}
+        </div>
+      </nav>
+
+       <Offcanvas
+        show={show}
+        onHide={handleClose}
+        placement="start"
+        className="custom-offcanvas"
+      >
+        <Offcanvas.Header closeButton>
+          <Offcanvas.Title>Collections</Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body>
+          <Accordion flush>
+            {collectionMenu.map((category, index) => (
+              <Accordion.Item eventKey={index.toString()} key={index}>
+                <Accordion.Header>{category.title}</Accordion.Header>
+                <Accordion.Body>
+                  <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                    {category.subcategories.map((sub, subIndex) => (
+                      <li key={subIndex} style={{ padding: "5px 0" }}>
+                        {sub}
+                      </li>
+                    ))}
+                  </ul>
+                </Accordion.Body>
+              </Accordion.Item>
+            ))}
+          </Accordion>
+        </Offcanvas.Body>
+      </Offcanvas>
     </div>
+    </>
   );
 }

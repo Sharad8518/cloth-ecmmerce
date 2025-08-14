@@ -220,6 +220,16 @@ font-size: 14px;
   color: #ed8929;
 }
 
+.custom-offcanvas {
+  width: 200px !important; /* change to your desired width */
+}
+
+/* Optional: also apply to responsive behavior */
+@media (max-width: 500px) {
+  .custom-offcanvas {
+    width: 70% !important;
+  }
+}
 @media (max-width: 768px) {
 
 .navbar-mobile{
@@ -228,6 +238,8 @@ font-size: 14px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: fixed;
+  background-color: #fff;
 }
 .navbar{
   display: none;
