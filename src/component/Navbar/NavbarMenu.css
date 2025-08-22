@@ -1,24 +1,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
 .nav-and-submenu-wrapper{
-
   height: 55px;
   position: fixed ;
   width: 100%;
   z-index: 8;
+  display: block;
 }
 
 .navbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
- font-family: "Inter", sans-serif;
+  font-family: "Inter", sans-serif;
   width: 100%;
-  padding: 1em 2em;
-  background-color: #fff;
+  padding: 1em 3em;
+  background-color: #fcfcfc;
   border-bottom: 2px solid #f0eeee;
   position:fixed;
- 
   top: 0;
   z-index: 100;
   font-family: 'Inter', sans-serif;
@@ -232,6 +231,16 @@ font-size: 14px;
 }
 @media (max-width: 768px) {
 
+  
+
+.nav-and-submenu-wrapper{
+  height: 55px;
+  position: fixed ;
+  width: 100%;
+  z-index: 8;
+  display: none;
+}
+
 .navbar-mobile{
    width: 100%;
     height: 50px;
@@ -241,8 +250,20 @@ font-size: 14px;
   position: fixed;
   background-color: #fff;
 }
-.navbar{
+.navbar {
   display: none;
+  align-items: center;
+  justify-content: space-between;
+  font-family: "Inter", sans-serif;
+  width: 100%;
+  padding: 1em 3em;
+  background-color: #fcfcfc;
+  border-bottom: 2px solid #f0eeee;
+  position:fixed;
+ 
+  top: 0;
+  z-index: 100;
+  font-family: 'Inter', sans-serif;
 }
 .logo-mobile{
    font-family: "Inter", sans-serif;

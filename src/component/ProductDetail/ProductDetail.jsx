@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Accordion, Navbar } from "react-bootstrap";
 import styles from "./ProductDetail.module.css";
 import VerticalImageSelector from "../layout/VerticalImageSelector/VerticalImageSelector";
 import { BiCloset } from "react-icons/bi";
 import { BsClipboard } from "react-icons/bs";
 import { FaRegClipboard } from "react-icons/fa";
+import { useNavigate, useParams } from "react-router-dom";
 import { FaExclamation } from "react-icons/fa";
 import { BsPatchExclamation } from "react-icons/bs";
 import { BiDetail } from "react-icons/bi";
@@ -16,6 +17,9 @@ import Footer from "../Footer/Footer";
 import SimilarProducts from "../AllProduct/SimilarProduct/SimilarProducts";
 import CustomerReviews from "../CustomerReview/CustomerReviews";
 import { FaRegStarHalfStroke } from "react-icons/fa6";
+import { getProductById } from "../api/user/Productapi";
+import { useCart } from "../Context/CartProvider";
+
 const images = [
   "https://img.theloom.in/pwa/catalog/product/cache/e442fb943037550e0d70cca304324ade/v/j/vj304fs25-01kpfuchsiavj30_7_.jpg?tr=c-at_max,w-800,h-1066",
   "https://img.theloom.in/pwa/catalog/product/cache/e442fb943037550e0d70cca304324ade/v/j/vj304fs25-01kpfuchsiavj30_2_.jpg?tr=c-at_max,w-800,h-1066",
@@ -25,9 +29,9 @@ const images = [
 ];
 
 export default function ProductDetail() {
-  const [selectedImage, setSelectedImage] = useState(
-    "https://img.theloom.in/pwa/catalog/product/cache/e442fb943037550e0d70cca304324ade/v/j/vj304fs25-01kpfuchsiavj30_7_.jpg?tr=c-at_max,w-800,h-1066"
-  );
+  const [selectedImage, setSelectedImage] = useState("");
+  const { cart, handleAddToCart, buyNow } = useCart();
+  const navigate = useNavigate();
   console.log("selectedImage", selectedImage);
   const sizes = [
     "XS",
@@ -168,7 +172,30 @@ export default function ProductDetail() {
   ];
 
   const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedColor, setSelectedColor] = useState(null);
   const [activeKeys, setActiveKeys] = useState([]);
+
+  const { id } = useParams(); // ✅ get product id from URL
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await getProductById(id); // ✅ API call
+        console.log(response);
+        setProduct(response?.product); // depends on API structure
+        setSelectedImage(response?.product?.media[0].url); // set first image
+      } catch (error) {
+        console.error("Error fetching product:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProduct();
+  }, [id]);
+
+  console.log("product", product?.inventoryBySize);
 
   const toggleKey = (key) => {
     setActiveKeys(
@@ -178,31 +205,35 @@ export default function ProductDetail() {
           : [...prev, key] // open
     );
   };
+  const token = localStorage.getItem("token");
+  console.log("selectedSize", selectedImage);
+  if (loading) {
+    return <div>Loading...</div>; // or a spinner component
+  }
   return (
     <>
       <NavbarMenu />
+      <br /> <br />
+      <br />
       <Container className={styles.ProductDetailContainer}>
         <Row style={{ height: "100%" }}>
-          <Col
-            md={1}
-           
-            className={styles.vericalImage}
-          >
-            <VerticalImageSelector
-              images={images}
-              onSelect={setSelectedImage}
-            />
+          <Col md={1} className={styles.vericalImage}>
+            {product?.media?.length > 0 && ( // ✅ check if media exists
+              <VerticalImageSelector
+                images={product?.media?.map((m) => m?.url)} // ✅ use product media URLs
+                onSelect={setSelectedImage}
+              />
+            )}
           </Col>
           <Col md={5} style={{ height: "100%" }}>
             <img src={selectedImage} className={styles.productDetailImg} />
           </Col>
           <Col md={6} className={styles.productContentBox}>
-            <h3 className={styles.detailProductTitle}> Animaka Khana</h3>
+            <h3 className={styles.detailProductTitle}>{product?.title} </h3>
             <div className={styles.detailProductDiscreaption}>
-              It is a long established fact that a reader will be distracted by
-              the readable content of a page when looking at its layout
+              {product?.description}
             </div>
-            <div className={styles.detailPrize}>Rs. 785.45</div>
+            <div className={styles.detailPrize}>Rs. {product?.salePrice}</div>
             <div className={styles.detailMRP}>MRP Inclusive of all size</div>
             <hr />
             <div className={styles.detailSizeText}>
@@ -214,7 +245,7 @@ export default function ProductDetail() {
             </div>
             <div className={styles.detailShip}>Ship by 11th November 2025</div>
             <div className={styles.container}>
-              {sizes.map((size) => (
+              {product?.inventoryBySize?.map((size) => (
                 <button
                   key={size}
                   className={`${styles.sizeButton} ${
@@ -236,10 +267,120 @@ export default function ProductDetail() {
                 flexWrap: "wrap",
               }}
             >
-              <button className={styles.detailAddCartButton}>
-                Add To Cart
+              {(cart?.items || []).some((item) => {
+                const attrs = item.variant?.attributes || [];
+                return (
+                  item.product?._id === product?._id &&
+                  attrs.every((attr) => {
+                    if (attr.name === "Color" && selectedColor)
+                      return attr.value === selectedColor;
+                    if (attr.name === "Size" && selectedSize)
+                      return attr.value === selectedSize;
+                    return true;
+                  })
+                );
+              }) ? (
+                <button
+                  className={styles.detailAddCartButton}
+                  onClick={() => navigate("/cart")}
+                >
+                  Process to Checkout
+                </button>
+              ) : (
+                <button
+                  className={styles.detailAddCartButton}
+                  onClick={() => {
+                    if (!token) {
+                      alert("Please login to add items to cart");
+                      navigate("/login"); // redirect to login page
+                      return;
+                    }
+
+                    if (!selectedSize) {
+                      alert("Please select a size");
+                      return;
+                    }
+
+                    const variant = product.variants.find((v) =>
+                      v.attributes.some(
+                        (attr) =>
+                          attr.name.toLowerCase() === "size" &&
+                          attr.value === selectedSize
+                        // (attr.name.toLowerCase() === "color" &&
+                        //   attr.value === selectedColor
+                        // )
+                      )
+                    );
+
+                    handleAddToCart({
+                      productId: product._id,
+                      sku: product.variants?.[0]?.sku || product._id, // fallback to product ID
+                      size: selectedSize || "N/A",
+                      color: selectedColor || "N/A",
+                      quantity: 1,
+                    });
+                  }}
+                >
+                  Add To Cart
+                </button>
+              )}
+
+              <button
+                className={styles.detailBuyButton}
+                onClick={() => {
+                  if (!token) {
+                    alert("Please login to buy this product");
+                    navigate("/login");
+                    return;
+                  }
+
+                  if (!selectedSize) {
+                    alert("Please select a size");
+                    return;
+                  }
+
+                  // Make sure variants exist
+                 
+
+                  // Find the selected variant safely
+                
+                  // Generate SKU safely
+                  const slugify = (text) =>
+                    text
+                      ?.toString()
+                      .toLowerCase()
+                      .replace(/\s+/g, "-")
+                      .replace(/[^\w\-]+/g, "")
+                      .replace(/\-\-+/g, "-")
+                      .replace(/^-+/, "")
+                      .replace(/-+$/, "") || "unknown";
+
+                  const sku = `${slugify(product.title)}-${selectedSize}`;
+
+                  const buyNowItem = {
+                    productId: product._id,
+                    title: product.title,
+                    media: product.media,
+                    quantity: 1,
+                    variant: {
+                      sku,
+                      attributes: [
+                        { name: "Size", value: selectedSize },],
+                      price: product.salePrice ,
+                    },
+                  };
+
+                  // Save to localStorage for checkout
+                  // localStorage.setItem(
+                  //   "buyNowItem",
+                  //   JSON.stringify(buyNowItem)
+                  // );
+
+                  navigate("/checkout",{ state: { buyNowItem } });
+                }}
+              >
+                Buy Now
               </button>
-              <button className={styles.detailBuyButton}>Buy Now</button>
             </div>
             <div className={styles.detailProductInfo}>Product Information</div>
             <Accordion
@@ -262,14 +403,15 @@ export default function ProductDetail() {
                   </div>
                 </Accordion.Header>
                 <Accordion.Body>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                  irure dolor in reprehenderit in voluptate velit esse cillum
-                  dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                  cupidatat non proident, sunt in culpa qui officia deserunt
-                  mollit anim id est laborum.
+                  <p>
+                    <strong>Item Number:</strong> {product?.itemNumber}
+                  </p>
+                  <p>
+                    <strong>Colour:</strong> {product?.colour}
+                  </p>
+                  <p>
+                    <strong>Description:</strong> {product?.description}
+                  </p>
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="1" style={{ border: "none" }}>
@@ -297,7 +439,7 @@ export default function ProductDetail() {
                   mollit anim id est laborum.
                 </Accordion.Body>
               </Accordion.Item>
-              <Accordion.Item eventKey="2" style={{ border: "none" }}>
+              {/* <Accordion.Item eventKey="2" style={{ border: "none" }}>
                 <Accordion.Header onClick={() => toggleKey("2")}>
                   <div className={styles.productDetailHeading}>
                     <FaRegUser
@@ -321,7 +463,7 @@ export default function ProductDetail() {
                   cupidatat non proident, sunt in culpa qui officia deserunt
                   mollit anim id est laborum.
                 </Accordion.Body>
-              </Accordion.Item>
+              </Accordion.Item> */}
 
               <Accordion.Item
                 eventKey="3"
@@ -341,28 +483,14 @@ export default function ProductDetail() {
                     Return and exchanges policy
                   </div>
                 </Accordion.Header>
-                <Accordion.Body>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                  irure dolor in reprehenderit in voluptate velit esse cillum
-                  dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                  cupidatat non proident, sunt in culpa qui officia deserunt
-                  mollit anim id est laborum.
-                </Accordion.Body>
+                <Accordion.Body>{product?.shippingAndReturns}</Accordion.Body>
               </Accordion.Item>
-
-             
             </Accordion>
           </Col>
         </Row>
       </Container>
-        <div className={styles.customerHeading}>
-                   
-                    Customer Review
-                  </div>
-       <CustomerReviews reviews={reviews} />
+      <div className={styles.customerHeading}>Customer Review</div>
+      <CustomerReviews reviews={reviews} />
       <Frequently items={frequentlyBought} />
       <br />
       <div style={{ padding: "2rem", backgroundColor: "#f9f9f9" }}>

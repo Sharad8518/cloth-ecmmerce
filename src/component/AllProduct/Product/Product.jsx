@@ -1,67 +1,111 @@
-import React from 'react'
+import React ,{useEffect,useState}from 'react'
 import ProductGrid from '../../layout/ProductGrid/ProductGrid';
-
-const products = [
-  {
-    image: "https://img.theloom.in/blog/wp-content/uploads/2024/03/thumb3.png",
-    title: "Product 1",
-    description: "Description of product 1.",
-    price: "$29.99"
-  },
-  {
-    image: "https://hooraindesignerwear.com/cdn/shop/articles/elevate-your-wardrobe-with-elegance-style-and-luxury-of-cross-stitch-pakistan-793587.webp?v=1721215446",
-    title: "Product 2",
-    description: "Description of product 2.",
-    price: "$19.99"
-  },
-  {
-    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvlyBlKveQdYhEL2atlEipLYpzk56ntS7gDo36kxkgd2vCIsJvdOrMeg9FJe1AP7LnN7M&usqp=CAU",
-    title: "Product 3",
-    description: "Description of product 3.",
-    price: "$39.99"
-  },
-  {
-    image: "https://i.pinimg.com/736x/0a/1e/a4/0a1ea42e2719f4fccccdad3aae60216a.jpg",
-    title: "Product 4",
-    description: "Description of product 4.",
-    price: "$49.99"
-  },
-   {
-    image: "https://i.pinimg.com/736x/0a/1e/a4/0a1ea42e2719f4fccccdad3aae60216a.jpg",
-    title: "Product 4",
-    description: "Description of product 4.",
-    price: "$49.99"
-  },
-    {
-    image: "https://i.pinimg.com/736x/0a/1e/a4/0a1ea42e2719f4fccccdad3aae60216a.jpg",
-    title: "Product 4",
-    description: "Description of product 4.",
-    price: "$49.99"
-  },
-   {
-    image: "https://i.pinimg.com/736x/b0/4f/bf/b04fbff3976d176d88e0831d0d112a01.jpg",
-    title: "Product 4",
-    description: "Description of product 4.",
-    price: "$49.99"
-  },
-    {
-    image: "https://i.pinimg.com/736x/0a/1e/a4/0a1ea42e2719f4fccccdad3aae60216a.jpg",
-    title: "Product 4",
-    description: "Description of product 4.",
-    price: "$49.99"
-  },
-   {
-    image: "https://i.pinimg.com/736x/0a/1e/a4/0a1ea42e2719f4fccccdad3aae60216a.jpg",
-    title: "Product 4",
-    description: "Description of product 4.",
-    price: "$49.99"
-  },
-];
+import {getProducts } from '../../api/user/Productapi'
+import { Pagination, Spinner, Container } from "react-bootstrap";
+// const products = [
+//   {
+//     image: "https://img.theloom.in/blog/wp-content/uploads/2024/03/thumb3.png",
+//     title: "Product 1",
+//     description: "Description of product 1.",
+//     price: "$29.99"
+//   },
+//   {
+//     image: "https://hooraindesignerwear.com/cdn/shop/articles/elevate-your-wardrobe-with-elegance-style-and-luxury-of-cross-stitch-pakistan-793587.webp?v=1721215446",
+//     title: "Product 2",
+//     description: "Description of product 2.",
+//     price: "$19.99"
+//   },
+//   {
+//     image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvlyBlKveQdYhEL2atlEipLYpzk56ntS7gDo36kxkgd2vCIsJvdOrMeg9FJe1AP7LnN7M&usqp=CAU",
+//     title: "Product 3",
+//     description: "Description of product 3.",
+//     price: "$39.99"
+//   },
+//   {
+//     image: "https://i.pinimg.com/736x/0a/1e/a4/0a1ea42e2719f4fccccdad3aae60216a.jpg",
+//     title: "Product 4",
+//     description: "Description of product 4.",
+//     price: "$49.99"
+//   },
+//    {
+//     image: "https://i.pinimg.com/736x/0a/1e/a4/0a1ea42e2719f4fccccdad3aae60216a.jpg",
+//     title: "Product 4",
+//     description: "Description of product 4.",
+//     price: "$49.99"
+//   },
+//     {
+//     image: "https://i.pinimg.com/736x/0a/1e/a4/0a1ea42e2719f4fccccdad3aae60216a.jpg",
+//     title: "Product 4",
+//     description: "Description of product 4.",
+//     price: "$49.99"
+//   },
+//    {
+//     image: "https://i.pinimg.com/736x/b0/4f/bf/b04fbff3976d176d88e0831d0d112a01.jpg",
+//     title: "Product 4",
+//     description: "Description of product 4.",
+//     price: "$49.99"
+//   },
+//     {
+//     image: "https://i.pinimg.com/736x/0a/1e/a4/0a1ea42e2719f4fccccdad3aae60216a.jpg",
+//     title: "Product 4",
+//     description: "Description of product 4.",
+//     price: "$49.99"
+//   },
+//    {
+//     image: "https://i.pinimg.com/736x/0a/1e/a4/0a1ea42e2719f4fccccdad3aae60216a.jpg",
+//     title: "Product 4",
+//     description: "Description of product 4.",
+//     price: "$49.99"
+//   },
+// ];
 
 export default function Product() {
+
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [pages, setPages] = useState(1);
+  const limit = 12; // products per page
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const data = await getProducts({ page, limit });
+        setProducts(data.products || []);
+        setPages(data.pages || 1);
+      } catch (err) {
+        console.error("Failed to fetch products:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, [page]);
+
+  if (loading)
+    return (
+      <div className="d-flex justify-content-center my-5">
+        <Spinner animation="border" />
+      </div>
+    );
   return (
-    <div>
-         <ProductGrid products={products} />
-    </div>
+   <Container className="my-4">
+      <ProductGrid products={products} />
+
+      <div className="d-flex justify-content-center mt-4">
+        <Pagination>
+          {[...Array(pages).keys()].map((x) => (
+            <Pagination.Item
+              key={x + 1}
+              active={x + 1 === page}
+              onClick={() => setPage(x + 1)}
+            >
+              {x + 1}
+            </Pagination.Item>
+          ))}
+        </Pagination>
+      </div>
+    </Container>
   )
 }

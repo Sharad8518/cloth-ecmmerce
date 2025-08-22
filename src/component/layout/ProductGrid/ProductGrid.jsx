@@ -18,13 +18,13 @@ const ProductGrid = ({ products }) => {
     <Container className="my-2">
       <Row>
         {products.map((product, index) => (
-          <Col key={index} xs={6} sm={6} md={4} lg={3} className="mb-4" onClick={()=>navigate('/detail')}>
+          <Col key={index} xs={6} sm={6} md={4} lg={3} className="mb-4" onClick={()=>navigate(`/detail/${product._id}`)}>
             <div className="custom-card">
-              <img src={product.image} alt={product.title} className="custom-card-img" />
+              <img src={product.media[0].url} alt={product.title} className="custom-card-img" />
               <div className="custom-card-body">
                 <h5 className="custom-card-title">{product.title}</h5>
                 <p className="custom-card-desc">{product.description}</p>
-                <p className="custom-card-price">{product.price}</p>
+                <p className="custom-card-price">₹ {product.salePrice} /-</p>
                 {/* <div className="custom-card-actions">
                   <Button variant="outline-primary" size="sm" style={{border:"1px solid #000"}} onClick={() => handleAddToCart(product)}>
                     <HiOutlineShoppingBag size={25} style={{color:"#000"}}/>

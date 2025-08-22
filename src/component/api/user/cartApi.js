@@ -1,0 +1,78 @@
+import axios from "../axios"; // your axios instance
+
+// Attach token automatically
+const token = localStorage.getItem("token");
+if (token) {
+  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+}
+
+// ✅ Get all cart items
+export const getCart = async () => {
+  try {
+    const res = await axios.get("/user/cart");
+    return res.data; // { cart: [...] }
+   
+  } catch (err) {
+    throw new Error(err.response?.data?.message || "Error fetching cart");
+  }
+};
+
+// ✅ Add product to cart
+export const addToCart = async ({ productId, sku, color, size, quantity = 1 }) => {
+  try {
+    // Build attributes array if color or size is provided
+    const attributes = [];
+    if (color) attributes.push({ name: "Color", value: color });
+    if (size) attributes.push({ name: "Size", value: size });
+
+    console.log("addToCart called with:", { productId, sku, attributes, quantity });
+
+    const res = await axios.post("/user/cart/add", { productId, sku, attributes, quantity });
+    return res.data; // { success: true, cart }
+  } catch (err) {
+    throw new Error(err.response?.data?.message || "Error adding to cart");
+  }
+};
+
+// ✅ Increase quantity
+export const increaseQty = async ({ productId, sku, attributes = [] }) => {
+  console.log("increaseQty called with:", { productId, sku, attributes });
+  try {
+    const res = await axios.post("/user/cart/increase", { productId, sku, attributes });
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response?.data?.message || "Error increasing quantity");
+  }
+};
+
+// ✅ Decrease quantity
+export const decreaseQty = async ({ productId, sku, attributes = [] }) => {
+  try {
+    const res = await axios.post("/user/cart/decrease", { productId, sku, attributes });
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response?.data?.message || "Error decreasing quantity");
+  }
+};
+
+// ✅ Remove item
+export const removeFromCart = async ({ productId, sku, attributes = [] }) => {
+  try {
+    const res = await axios.post("/user/cart/remove", { productId, sku, attributes });
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response?.data?.message || "Error removing from cart");
+  }
+};
+
+// ✅ Clear cart
+export const clearCart = async () => {
+  try {
+    const res = await axios.post("/user/cart/clear");
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response?.data?.message || "Error clearing cart");
+  }
+};
+
+
