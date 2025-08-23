@@ -41,7 +41,7 @@ export const updateProfile = async ({ userId, name, email, addresses }) => {
       addresses
     }, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("hfz-token-2510")}` // if using token auth
+        Authorization: `Bearer ${localStorage.getItem("token")}` // if using token auth
       }
     });
     return res.data;
