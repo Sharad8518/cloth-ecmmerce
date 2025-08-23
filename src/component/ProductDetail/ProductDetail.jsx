@@ -491,10 +491,10 @@ export default function ProductDetail() {
       </Container>
       <div className={styles.customerHeading}>Customer Review</div>
       <CustomerReviews reviews={reviews} />
-      <Frequently items={frequentlyBought} />
+      <Frequently items={product?.frequentlyBoughtTogether} />
       <br />
       <div style={{ padding: "2rem", backgroundColor: "#f9f9f9" }}>
-        <SimilarProducts products={similarProduct} />
+        <SimilarProducts products={product?.similarProducts} />
       </div>
       <Footer />
     </>

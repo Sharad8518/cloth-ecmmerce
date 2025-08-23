@@ -18,6 +18,9 @@ import SimilarProduct from "../Admin/Product/SimilarProduct/SimilarProduct";
 import FrequentlyBought from "../Admin/Product/FrequentlyBought/FrequentlyBought";
 import Checkout from "../Checkout/Checkout";
 import Profile from "../User/Profile/Profile";
+import Orders from "../User/Orders/Orders";
+import Favourites from "../User/Favourites/Favourites";
+import AdminOrders from "../Admin/Sales&Biiling/AdminOrders/AdminOrders";
 
 export default function RouteManager() {
   return (
@@ -27,9 +30,11 @@ export default function RouteManager() {
       <Route path="/detail/:id" element={<ProductDetail />} />
       <Route path="/categoryProduct" element={<CategoryProduct />} />
       <Route path="/cart" element={<ProductCart />} />
-       <Route path="/checkout" element={<Checkout />} />
+      <Route path="/checkout" element={<Checkout />} />
       <Route path="/AdminLogin" element={<AdminLogin />} />
-       <Route path="/profile" element={<Profile />} />
+      <Route path="/profile" element={<Profile />} />
+      <Route path="/orders" element={<Orders />} />
+      <Route path="/favourites" element={<Favourites />} />
 
       {/* Protected Admin Routes */}
       <Route element={<ProtectedRoute />}>
@@ -42,6 +47,7 @@ export default function RouteManager() {
           <Route path="AllProduct" element={<AllProduct />} />
           <Route path="FrequentlyBought" element={<FrequentlyBought />} />
           <Route path="SimilarProduct" element={<SimilarProduct />} />
+          <Route path="Orders" element={<AdminOrders />} />
         </Route>
       </Route>
     </Routes>

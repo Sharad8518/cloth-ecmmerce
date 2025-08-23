@@ -72,10 +72,10 @@ const Profile = () => {
             </Card.Body>
 
             <ListGroup variant="flush">
-              <ListGroup.Item action onClick={() => navigate("/profile/orders")}>
+              <ListGroup.Item action onClick={() => navigate("/orders")}>
                 <FaBox className="me-2" /> Orders
               </ListGroup.Item>
-              <ListGroup.Item action onClick={() => navigate("/profile/favorites")}>
+              <ListGroup.Item action onClick={() => navigate("/favourites")}>
                 <FaHeart className="me-2" /> Favorites
               </ListGroup.Item>
               <ListGroup.Item action onClick={() => navigate("/profile/settings")}>

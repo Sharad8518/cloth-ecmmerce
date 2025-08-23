@@ -1,5 +1,10 @@
 import axios from "../axios";
 
+const token = localStorage.getItem("hfz-a_tkn_238x");
+if (token) {
+  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+}
+
 /* ===================== HEADERS ===================== */
 
 /* Get All Headers */

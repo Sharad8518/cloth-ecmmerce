@@ -1,0 +1,19 @@
+.orderCard {
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.orderCard:hover {
+  transform: translateY(-3px);
+}
+
+.orderCard img {
+  border-radius: 5px;
+}
+
+@media (max-width: 576px) {
+  .orderCard {
+    font-size: 0.9rem;
+  }
+}

@@ -1,6 +1,6 @@
 import axios from "../axios";
 
-const token = localStorage.getItem("token");
+const token = localStorage.getItem("hfz-a_tkn_238x");
 if (token) {
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 }
@@ -60,5 +60,14 @@ export const updateProduct = async (productId, updateData) => {
 /* ---------------- Delete Product ---------------- */
 export const deleteProduct = async (productId) => {
   const response = await axios.delete(`/admin/products/${productId}`);
+  return response.data;
+};
+
+/* ---------------- Add Similar Product ---------------- */
+export const addSimilarToProduct = async (productId, similarProductIds) => {
+  const response = await axios.post("/admin/add-similar", {
+    productId,
+    similarProductIds,
+  });
   return response.data;
 };

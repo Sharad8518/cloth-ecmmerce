@@ -11,7 +11,7 @@ export default function Frequently({ items }) {
     {items.map((item) => (
       <div key={item.id} className={styles.productCard}>
         <div className={styles.imageWrapper}>
-          <img src={item.image} alt={item.title} className={styles.productImage} />
+          <img src={item.images[0].url} alt={item.title} className={styles.productImage} />
           <input
             type="radio"
             name="frequentlyBought"

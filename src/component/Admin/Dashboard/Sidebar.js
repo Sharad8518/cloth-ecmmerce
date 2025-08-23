@@ -83,9 +83,9 @@ const Sidebar = () => {
 
         <Nav.Link
           as={Link}
-          to="/dashboard/billing"
+          to="/dashboard/Orders"
           className={`${styles.link} ${
-            location.pathname === "/dashboard/billing" ? styles.active : ""
+            location.pathname === "/dashboard/Orders" ? styles.active : ""
           }`}
         >
           <FaCashRegister />{" "}

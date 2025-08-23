@@ -3,7 +3,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import {jwtDecode} from "jwt-decode";
 
 export default function ProtectedRoute() {
-  const token = localStorage.getItem("a_tkn_238x");
+  const token = localStorage.getItem("hfz-a_tkn_238x");
 
   const isTokenValid = () => {
     if (!token) return false;
@@ -22,5 +22,5 @@ export default function ProtectedRoute() {
     }
   };
 
-  return isTokenValid() ? <Outlet /> : <Navigate to="/admin" replace />;
+  return isTokenValid() ? <Outlet /> : <Navigate to="/AdminLogin" replace />;
 }
