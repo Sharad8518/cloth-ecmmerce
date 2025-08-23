@@ -292,7 +292,7 @@ export default function ProductDetail() {
                   onClick={() => {
                     if (!token) {
                       alert("Please login to add items to cart");
-                      navigate("/login"); // redirect to login page
+                      // navigate("/login"); // redirect to login page
                       return;
                     }
 
@@ -330,7 +330,7 @@ export default function ProductDetail() {
                 onClick={() => {
                   if (!token) {
                     alert("Please login to buy this product");
-                    navigate("/login");
+                    // navigate("/login");
                     return;
                   }
 
