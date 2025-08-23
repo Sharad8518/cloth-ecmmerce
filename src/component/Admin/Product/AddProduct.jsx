@@ -16,7 +16,7 @@ import {
 } from "../../api/admin/hierarchyManagerApi";
 
 import { addProduct } from "../../api/admin/productApi";
-import "quill/dist/quill.snow.css";
+
 import SEOForm from "./SEOForm/SEOForm";
 import ColourDropdown from "./ColourDropdown/ColourDropdown";
 import FAQForm from "./FAQForm/FAQForm";
