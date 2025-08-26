@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Accordion, Navbar } from "react-bootstrap";
 import styles from "./ProductDetail.module.css";
-import VerticalImageSelector from "../layout/VerticalImageSelector/VerticalImageSelector";
+import VerticalImageSelector from "../../layout/VerticalImageSelector/VerticalImageSelector";
 import { BiCloset } from "react-icons/bi";
 import { BsClipboard } from "react-icons/bs";
 import { FaRegClipboard } from "react-icons/fa";
@@ -11,14 +11,14 @@ import { BsPatchExclamation } from "react-icons/bs";
 import { BiDetail } from "react-icons/bi";
 import { FaRegUser } from "react-icons/fa";
 import { LuArrowRightLeft } from "react-icons/lu";
-import NavbarMenu from "../Navbar/NavbarMenu";
-import Frequently from "../Frequently&Similar/Frequently/Frequently";
-import Footer from "../Footer/Footer";
-import SimilarProducts from "../AllProduct/SimilarProduct/SimilarProducts";
-import CustomerReviews from "../CustomerReview/CustomerReviews";
+import NavbarMenu from "../NavbarMenu";
+import Frequently from "../../Frequently&Similar/Frequently/Frequently";
+import Footer from "../../Footer/Footer";
+import SimilarProducts from "../../AllProduct/SimilarProduct/SimilarProducts";
+import CustomerReviews from "../../CustomerReview/CustomerReviews";
 import { FaRegStarHalfStroke } from "react-icons/fa6";
-import { getProductById } from "../api/user/Productapi";
-import { useCart } from "../Context/CartProvider";
+import { getProductById } from "../../api/user/Productapi";
+import { useCart } from "../../Context/CartProvider";
 
 const images = [
   "https://img.theloom.in/pwa/catalog/product/cache/e442fb943037550e0d70cca304324ade/v/j/vj304fs25-01kpfuchsiavj30_7_.jpg?tr=c-at_max,w-800,h-1066",

@@ -123,6 +123,16 @@ const Sidebar = () => {
           <PiFlagBannerFold /> <span className={styles.label}>Banner</span>
         </Nav.Link>
 
+  <Nav.Link
+          as={Link}
+          to="/dashboard/Promotions"
+          className={`${styles.link} ${
+            location.pathname === "/dashboard/Promotions" ? styles.active : ""
+          }`}
+        >
+          <PiFlagBannerFold /> <span className={styles.label}>Promotional</span>
+        </Nav.Link>
+
 
         <Nav.Link
           as={Link}

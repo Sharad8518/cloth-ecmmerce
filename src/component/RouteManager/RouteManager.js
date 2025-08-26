@@ -22,6 +22,7 @@ import Orders from "../User/Orders/Orders";
 import Favourites from "../User/Favourites/Favourites";
 import AdminOrders from "../Admin/Sales&Biiling/AdminOrders/AdminOrders";
 import BannerManager from "../Admin/Banner/BannerManager";
+import PromotionsPage from "../Promotion/PromotionsPage";
 
 export default function RouteManager() {
   return (
@@ -50,6 +51,7 @@ export default function RouteManager() {
           <Route path="SimilarProduct" element={<SimilarProduct />} />
           <Route path="Orders" element={<AdminOrders />} />
           <Route path="BannerManager" element={<BannerManager />} />
+          <Route path="Promotions" element={<PromotionsPage />} />
         </Route>
       </Route>
     </Routes>

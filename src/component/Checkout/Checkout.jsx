@@ -5,6 +5,7 @@ import NavbarMenu from "../Navbar/NavbarMenu";
 import { getProfile, updateProfile } from "../api/user/authApi";
 import {placeOrder} from "../api/user/orderApi";
 import { useRazorpay, RazorpayOrderOptions } from "react-razorpay";
+
 export default function Checkout() {
   const { cart } = useCart();
   const location = useLocation();

@@ -17,6 +17,7 @@ import { useCart } from "../Context/CartProvider";
 import CartOffcanvas from "../Cart/CartOffcanvas/CartOffcanvas";
 import MobileLoginOTP from "../User/Auth/MobileLoginOTP";
 import CompleteProfile from "../User/CompleteProfile";
+import {getPromotion} from "../api/user/PromotionApi"
 import axios from "axios";
 
 const collectionMenu = [
@@ -97,6 +98,7 @@ export default function NavbarMenu() {
   const [activeHeader, setActiveHeader] = useState(null);
   const handleCloseCart = () => setCartOpen(false);
   const [collectionMenu, setCollectionMenu] = useState([]);
+  const [promotions,setPromotions] =useState([])
 
   const loadingRef = useRef(null);
   const location = useLocation();
@@ -151,7 +153,20 @@ export default function NavbarMenu() {
     }
   };
 
-  console.log("activeHeader", activeHeader);
+  useEffect(()=>{
+    const fetch = async()=>{
+      try{
+        const res = await getPromotion();
+        console.log(res)
+       setPromotions(res.dat)
+      }catch(error){
+        console.log(error)
+      }
+    }
+  fetch()
+  },[])
+
+
 
   return (
     <>
@@ -159,24 +174,33 @@ export default function NavbarMenu() {
         className="nav-and-submenu-wrapper"
         onMouseLeave={() => setShowModal(false)}
       >
-        <div
-          style={{
-            background: "linear-gradient(90deg, #ffd700, #ff8c00)", // golden gradient
-            color: "#1a1a1a",
-            textAlign: "center",
-            padding: "8px 18px",
-            fontWeight: "600",
-            fontSize: "13px",
-            letterSpacing: "0.5px",
-            boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-            position: "sticky",
-            top: 0,
-            zIndex: 999,
-          }}
-        >
-          Buy 3, Get Rs.3000 Cashback <span style={{ margin: "0 8px" }}>|</span>{" "}
-          Buy 5, Get Rs.5000 Cashback
-        </div>
+        {promotions?.map((promo) => (
+    <div
+      key={promo._id}
+      style={{
+        background: "linear-gradient(90deg, #ffd700, #ff8c00)",
+        color: "#1a1a1a",
+        textAlign: "center",
+        padding: "8px 18px",
+        fontWeight: 600,
+        fontSize: "13px",
+        letterSpacing: "0.5px",
+        boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+        position: "sticky",
+        top: 0,
+        zIndex: 999,
+        marginBottom: "4px",
+      }}
+    >
+      {promo.topBannerText}{" "}
+      {promo.promoOffers?.map((offer, index) => (
+        <span key={index}>
+          <span style={{ margin: "0 8px" }}>|</span>
+          {offer.condition} → {offer.reward}
+        </span>
+      ))}
+    </div>
+  ))}
         <nav
           className="navbar"
           style={{
@@ -267,7 +291,7 @@ export default function NavbarMenu() {
             height={2}
             ref={loadingRef}
             shadow={false}
-            style={{ position: "absolute", top: 113 }}
+            style={{ position: "absolute", top: 80 }}
           />
         </nav>
 
