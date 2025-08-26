@@ -7,16 +7,38 @@ if (token) {
 }
 
 export const addFavorite = async (productId) => {
-  const response = await axios.post("/user/favorites", { productId });
+  const token = localStorage.getItem("token");
+
+  const response = await axios.post(
+    "/user/favorites",
+    { productId },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
   return response.data;
 };
 
 export const removeFavorite = async (productId) => {
-  const response = await axios.delete(`/user/favorites/${productId}`);
+  const token = localStorage.getItem("token");
+
+  const response = await axios.delete(`/user/favorites/${productId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   return response.data;
 };
 
 export const getFavorites = async () => {
-  const response = await axios.get("/user/favorites");
+  const token = localStorage.getItem("token");
+
+  const response = await axios.get("/user/favorites", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   return response.data;
 };

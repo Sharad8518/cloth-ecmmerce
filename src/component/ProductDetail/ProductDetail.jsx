@@ -245,143 +245,121 @@ export default function ProductDetail() {
             </div>
             <div className={styles.detailShip}>Ship by 11th November 2025</div>
             <div className={styles.container}>
-              {product?.inventoryBySize?.map((size) => (
+              {product?.variants?.map((variant) => (
                 <button
-                  key={size}
+                  key={variant?.size}
                   className={`${styles.sizeButton} ${
-                    selectedSize === size ? styles.active : ""
+                    selectedSize === variant?.size ? styles.active : ""
                   }`}
-                  onClick={() => setSelectedSize(size)}
+                  onClick={() => setSelectedSize(variant.size)}
                 >
-                  {size}
+                  {variant.size}
                 </button>
               ))}
             </div>
 
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                width: "100%",
-                marginTop: 20,
-                flexWrap: "wrap",
-              }}
-            >
-              {(cart?.items || []).some((item) => {
-                const attrs = item.variant?.attributes || [];
-                return (
-                  item.product?._id === product?._id &&
-                  attrs.every((attr) => {
-                    if (attr.name === "Color" && selectedColor)
-                      return attr.value === selectedColor;
-                    if (attr.name === "Size" && selectedSize)
-                      return attr.value === selectedSize;
-                    return true;
-                  })
-                );
-              }) ? (
-                <button
-                  className={styles.detailAddCartButton}
-                  onClick={() => navigate("/cart")}
-                >
-                  Process to Checkout
-                </button>
-              ) : (
-                <button
-                  className={styles.detailAddCartButton}
-                  onClick={() => {
-                    if (!token) {
-                      alert("Please login to add items to cart");
-                      // navigate("/login"); // redirect to login page
-                      return;
-                    }
+           <div
+  style={{
+    display: "flex",
+    justifyContent: "space-between",
+    width: "100%",
+    marginTop: 20,
+    flexWrap: "wrap",
+  }}
+>
+  {(cart?.items || []).some((item) => {
+    // now we only compare productId + size + color
+    return (
+      item.product?._id === product?._id &&
+      item.size === selectedSize &&
+      item.color === selectedColor
+    );
+  }) ? (
+    <button
+      className={styles.detailAddCartButton}
+      onClick={() => navigate("/cart")}
+    >
+      Proceed to Checkout
+    </button>
+  ) : (
+    <button
+      className={styles.detailAddCartButton}
+      onClick={() => {
+        if (!token) {
+          alert("Please login to add items to cart");
+          return;
+        }
 
-                    if (!selectedSize) {
-                      alert("Please select a size");
-                      return;
-                    }
+        if (!selectedSize) {
+          alert("Please select a size");
+          return;
+        }
 
-                    const variant = product.variants.find((v) =>
-                      v.attributes.some(
-                        (attr) =>
-                          attr.name.toLowerCase() === "size" &&
-                          attr.value === selectedSize
-                        // (attr.name.toLowerCase() === "color" &&
-                        //   attr.value === selectedColor
-                        // )
-                      )
-                    );
+        // Find the variant by size
+        const variant = product.variants.find(
+          (v) => v.size === selectedSize
+        );
 
-                    handleAddToCart({
-                      productId: product._id,
-                      sku: product.variants?.[0]?.sku || product._id, // fallback to product ID
-                      size: selectedSize || "N/A",
-                      color: selectedColor || "N/A",
-                      quantity: 1,
-                    });
-                  }}
-                >
-                  Add To Cart
-                </button>
-              )}
+        if (!variant) {
+          alert("This size is not available");
+          return;
+        }
 
-              <button
-                className={styles.detailBuyButton}
-                onClick={() => {
-                  if (!token) {
-                    alert("Please login to buy this product");
-                    // navigate("/login");
-                    return;
-                  }
+        handleAddToCart({
+          productId: product._id,
+          sku: variant.sku,
+          size: selectedSize,
+          color: selectedColor || "N/A",
+          quantity: 1,
+        });
+      }}
+    >
+      Add To Cart
+    </button>
+  )}
 
-                  if (!selectedSize) {
-                    alert("Please select a size");
-                    return;
-                  }
+  <button
+    className={styles.detailBuyButton}
+    onClick={() => {
+      if (!token) {
+        alert("Please login to buy this product");
+        return;
+      }
 
-                  // Make sure variants exist
-                 
+      if (!selectedSize) {
+        alert("Please select a size");
+        return;
+      }
 
-                  // Find the selected variant safely
-                
-                  // Generate SKU safely
-                  const slugify = (text) =>
-                    text
-                      ?.toString()
-                      .toLowerCase()
-                      .replace(/\s+/g, "-")
-                      .replace(/[^\w\-]+/g, "")
-                      .replace(/\-\-+/g, "-")
-                      .replace(/^-+/, "")
-                      .replace(/-+$/, "") || "unknown";
+      const variant = product.variants.find(
+        (v) => v.size === selectedSize
+      );
 
-                  const sku = `${slugify(product.title)}-${selectedSize}`;
+      if (!variant) {
+        alert("This size is not available");
+        return;
+      }
 
-                  const buyNowItem = {
-                    productId: product._id,
-                    title: product.title,
-                    media: product.media,
-                    quantity: 1,
-                    variant: {
-                      sku,
-                      attributes: [
-                        { name: "Size", value: selectedSize },],
-                      price: product.salePrice ,
-                    },
-                  };
+      const buyNowItem = {
+        productId: product._id,
+        title: product.title,
+        media: product.media,
+        quantity: 1,
+        variant: {
+          sku: variant.sku,
+          size: selectedSize,
+          color: selectedColor || "N/A",
+          price: product.salePrice || product.mrp,
+        },
+      };
 
-                  // Save to localStorage for checkout
-                  // localStorage.setItem(
-                  //   "buyNowItem",
-                  //   JSON.stringify(buyNowItem)
-                  // );
+      navigate("/checkout", { state: { buyNowItem } });
+    }}
+  >
+    Buy Now
+  </button>
+</div>
 
-                  navigate("/checkout",{ state: { buyNowItem } });
-                }}
-              >
-                Buy Now
-              </button>
-            </div>
             <div className={styles.detailProductInfo}>Product Information</div>
             <Accordion
               activeKey={activeKeys}

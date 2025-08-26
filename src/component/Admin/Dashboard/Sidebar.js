@@ -14,6 +14,7 @@ import {
   FaSignOutAlt,
   FaChevronRight,
 } from "react-icons/fa";
+import { PiFlagBannerFold } from "react-icons/pi";
 import styles from "./css/Sidebar.module.css";
 
 const Sidebar = () => {
@@ -111,6 +112,17 @@ const Sidebar = () => {
         >
           <FaUsers /> <span className={styles.label}>Customers</span>
         </Nav.Link>
+
+        <Nav.Link
+          as={Link}
+          to="/dashboard/BannerManager"
+          className={`${styles.link} ${
+            location.pathname === "/dashboard/BannerManager" ? styles.active : ""
+          }`}
+        >
+          <PiFlagBannerFold /> <span className={styles.label}>Banner</span>
+        </Nav.Link>
+
 
         <Nav.Link
           as={Link}

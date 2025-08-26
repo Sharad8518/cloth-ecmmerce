@@ -9,9 +9,14 @@ if (token) {
 // ✅ Get all cart items
 export const getCart = async () => {
   try {
-    const res = await axios.get("/user/cart");
+    const token = localStorage.getItem("token");
+
+    const res = await axios.get("/user/cart", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return res.data; // { cart: [...] }
-   
   } catch (err) {
     throw new Error(err.response?.data?.message || "Error fetching cart");
   }
@@ -20,14 +25,21 @@ export const getCart = async () => {
 // ✅ Add product to cart
 export const addToCart = async ({ productId, sku, color, size, quantity = 1 }) => {
   try {
-    // Build attributes array if color or size is provided
+    const token = localStorage.getItem("token");
+
     const attributes = [];
     if (color) attributes.push({ name: "Color", value: color });
     if (size) attributes.push({ name: "Size", value: size });
 
-    console.log("addToCart called with:", { productId, sku, attributes, quantity });
-
-    const res = await axios.post("/user/cart/add", { productId, sku, attributes, quantity });
+    const res = await axios.post(
+      "/user/cart/add",
+      { productId, sku, attributes, quantity },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return res.data; // { success: true, cart }
   } catch (err) {
     throw new Error(err.response?.data?.message || "Error adding to cart");
@@ -36,9 +48,18 @@ export const addToCart = async ({ productId, sku, color, size, quantity = 1 }) =
 
 // ✅ Increase quantity
 export const increaseQty = async ({ productId, sku, attributes = [] }) => {
-  console.log("increaseQty called with:", { productId, sku, attributes });
   try {
-    const res = await axios.post("/user/cart/increase", { productId, sku, attributes });
+    const token = localStorage.getItem("token");
+
+    const res = await axios.post(
+      "/user/cart/increase",
+      { productId, sku, attributes },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return res.data;
   } catch (err) {
     throw new Error(err.response?.data?.message || "Error increasing quantity");
@@ -48,7 +69,17 @@ export const increaseQty = async ({ productId, sku, attributes = [] }) => {
 // ✅ Decrease quantity
 export const decreaseQty = async ({ productId, sku, attributes = [] }) => {
   try {
-    const res = await axios.post("/user/cart/decrease", { productId, sku, attributes });
+    const token = localStorage.getItem("token");
+
+    const res = await axios.post(
+      "/user/cart/decrease",
+      { productId, sku, attributes },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return res.data;
   } catch (err) {
     throw new Error(err.response?.data?.message || "Error decreasing quantity");
@@ -58,7 +89,17 @@ export const decreaseQty = async ({ productId, sku, attributes = [] }) => {
 // ✅ Remove item
 export const removeFromCart = async ({ productId, sku, attributes = [] }) => {
   try {
-    const res = await axios.post("/user/cart/remove", { productId, sku, attributes });
+    const token = localStorage.getItem("token");
+
+    const res = await axios.post(
+      "/user/cart/remove",
+      { productId, sku, attributes },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return res.data;
   } catch (err) {
     throw new Error(err.response?.data?.message || "Error removing from cart");
@@ -68,11 +109,19 @@ export const removeFromCart = async ({ productId, sku, attributes = [] }) => {
 // ✅ Clear cart
 export const clearCart = async () => {
   try {
-    const res = await axios.post("/user/cart/clear");
+    const token = localStorage.getItem("token");
+
+    const res = await axios.post(
+      "/user/cart/clear",
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return res.data;
   } catch (err) {
     throw new Error(err.response?.data?.message || "Error clearing cart");
   }
 };
-
-

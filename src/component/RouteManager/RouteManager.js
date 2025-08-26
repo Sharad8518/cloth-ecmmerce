@@ -21,6 +21,7 @@ import Profile from "../User/Profile/Profile";
 import Orders from "../User/Orders/Orders";
 import Favourites from "../User/Favourites/Favourites";
 import AdminOrders from "../Admin/Sales&Biiling/AdminOrders/AdminOrders";
+import BannerManager from "../Admin/Banner/BannerManager";
 
 export default function RouteManager() {
   return (
@@ -48,6 +49,7 @@ export default function RouteManager() {
           <Route path="FrequentlyBought" element={<FrequentlyBought />} />
           <Route path="SimilarProduct" element={<SimilarProduct />} />
           <Route path="Orders" element={<AdminOrders />} />
+          <Route path="BannerManager" element={<BannerManager />} />
         </Route>
       </Route>
     </Routes>

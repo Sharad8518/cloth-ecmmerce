@@ -155,78 +155,78 @@ export default function HierarchyManager() {
 
   return (
     <Container fluid className="p-4">
+      
+   <Card>
+  <Card.Header className="d-flex justify-content-between align-items-center">
+    <strong>Headers</strong>
+    <Button
+      className={styles.addButton}
+      onClick={() => openModal("headers")}
+    >
+      + Add
+    </Button>
+  </Card.Header>
+
+  {/* Horizontal scrollable list */}
+  <div
+    style={{
+      display: "flex",
+      overflowX: "auto",
+      whiteSpace: "nowrap",
+      padding: "10px",
+      gap: "10px",
+    }}
+  >
+    {headers.map((h) => (
+      <div
+        key={h._id}
+        onClick={() => loadCategories(h._id)}
+        style={{
+          cursor: "pointer",
+          minWidth: "200px",
+          flex: "0 0 auto",
+        }}
+        className={`p-2 rounded border d-flex justify-content-between align-items-center 
+          ${styles.textHeading} 
+          ${selectedHeader === h._id ? styles.listGroupItemActiveCustom : ""}`}
+      >
+        <span>{h.title}</span>
+        <div className="d-flex gap-2">
+          <Button
+            size="sm"
+            className={`${styles.actionButton} ${styles.editButton}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              openModal("headers", h);
+            }}
+          >
+            <FiEdit3 />
+          </Button>
+          <Button
+            size="sm"
+            className={`${styles.actionButton} ${styles.deleteButton}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              deleteEntity("headers", h._id);
+            }}
+          >
+            <AiOutlineDelete />
+          </Button>
+        </div>
+      </div>
+    ))}
+  </div>
+</Card>
       <Row>
         {/* Headers */}
-        <Col md={3}>
-          <Card>
-            <Card.Header className="d-flex justify-content-between align-items-center">
-              <strong>Headers</strong>
-              <Button
-                className={styles.addButton}
-                onClick={() => openModal("headers")}
-              >
-                + Add
-              </Button>
-            </Card.Header>
-            <ListGroup variant="flush">
-              {headers.map((h) => (
-                <ListGroup.Item
-                  key={h._id}
-                  active={selectedHeader === h._id}
-                  onClick={() => loadCategories(h._id)}
-                  style={{ cursor: "pointer" }}
-                  className={`d-flex justify-content-between align-items-center ${
-                    styles.textHeading
-                  } ${
-                    selectedHeader === h._id
-                      ? styles.listGroupItemActiveCustom
-                      : ""
-                  }`}
-                >
-                  {h.title}
-                  <div className="d-flex gap-2">
-                    <Button
-                      size="sm"
-                     className={`${styles.actionButton} ${styles.editButton}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        openModal("headers", h);
-                      }}
-                    >
-                      <FiEdit3 />
-                    </Button>
-                    <Button
-                      size="sm"
-                    className={`${styles.actionButton} ${styles.deleteButton}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        deleteEntity("headers", h._id);
-                      }}
-                    >
-                      <AiOutlineDelete />
-                    </Button>
-                  </div>
-                </ListGroup.Item>
-              ))}
-            </ListGroup>
-          </Card>
-        </Col>
+     
 
         {/* Categories */}
-        <Col md={3}>
+        <Col md={4}>
           <Card>
             <Card.Header className="d-flex justify-content-between align-items-center">
               <strong>Categories</strong>
-              {selectedHeader && (
-                <Button
-                  className={styles.addButton}
-                  onClick={() =>
-                    openModal("categorys", { header: selectedHeader })
-                  }
-                >
-                  + Add
-                </Button>
-              )}
+             
             </Card.Header>
             <ListGroup variant="flush">
               {categories.map((c) => (
@@ -269,24 +269,25 @@ export default function HierarchyManager() {
                 </ListGroup.Item>
               ))}
             </ListGroup>
-          </Card>
-        </Col>
-
-        {/* SubCategories */}
-        <Col md={3}>
-          <Card>
-            <Card.Header className="d-flex justify-content-between align-items-center">
-              <strong>SubCategories</strong>
-              {selectedCategory && (
+             {selectedHeader && (
                 <Button
                   className={styles.addButton}
                   onClick={() =>
-                    openModal("subcategorys", { category: selectedCategory })
+                    openModal("categorys", { header: selectedHeader })
                   }
                 >
                   + Add
                 </Button>
               )}
+          </Card>
+        </Col>
+
+        {/* SubCategories */}
+        <Col md={4}>
+          <Card>
+            <Card.Header className="d-flex justify-content-between align-items-center">
+              <strong>SubCategories</strong>
+             
             </Card.Header>
             <ListGroup variant="flush">
               {subCategories.map((s) => (
@@ -329,26 +330,25 @@ export default function HierarchyManager() {
                 </ListGroup.Item>
               ))}
             </ListGroup>
-          </Card>
-        </Col>
-
-        {/* Collections */}
-        <Col md={3}>
-          <Card>
-            <Card.Header className="d-flex justify-content-between align-items-center">
-              <strong>Collections</strong>
-              {selectedSubCategory && (
+             {selectedCategory && (
                 <Button
                   className={styles.addButton}
                   onClick={() =>
-                    openModal("collections", {
-                      subcategory: selectedSubCategory,
-                    })
+                    openModal("subcategorys", { category: selectedCategory })
                   }
                 >
                   + Add
                 </Button>
               )}
+          </Card>
+        </Col>
+
+        {/* Collections */}
+        <Col md={4}>
+          <Card>
+            <Card.Header className="d-flex justify-content-between align-items-center">
+              <strong>Collections</strong>
+             
             </Card.Header>
             <ListGroup variant="flush">
               {collections.map((col) => (
@@ -376,6 +376,18 @@ export default function HierarchyManager() {
                 </ListGroup.Item>
               ))}
             </ListGroup>
+             {selectedSubCategory && (
+                <Button
+                  className={styles.addButton}
+                  onClick={() =>
+                    openModal("collections", {
+                      subcategory: selectedSubCategory,
+                    })
+                  }
+                >
+                  + Add
+                </Button>
+              )}
           </Card>
         </Col>
       </Row>

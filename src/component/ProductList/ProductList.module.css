@@ -17,32 +17,52 @@
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
 }
 
+
+
 .imageWrapper {
   height: 300px;
   overflow: hidden;
   background: #f4f4f4;
 }
 
-.imageWrapper img {
+/* .imageWrapper img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
+} */
 
 .cardContent {
   padding: 15px;
 }
 
+
+.productImage {
+  width: 100%;              /* take full width of card */                  /* fixed height */
+  object-fit: contain;        /* crop & keep aspect ratio */
+  border-radius: 8px;       /* optional rounded corners */
+}
 .cardTitle {
   font-size: 1rem;
   font-weight: 600;
   margin-bottom: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;  /* limit to 3 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
 }
 
 .cardDesc {
   font-size: 0.9rem;
   color: #555;
   min-height: 50px;
+   display: -webkit-box;
+  -webkit-line-clamp: 3;  /* limit to 3 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
 }
 
 .cardPrice {

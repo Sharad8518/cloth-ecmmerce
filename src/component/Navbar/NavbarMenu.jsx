@@ -7,11 +7,17 @@ import { RiMenu2Fill } from "react-icons/ri";
 import { Container, Row, Col, Offcanvas, Accordion } from "react-bootstrap";
 import logo from "../../assets/logo.jpeg";
 import LoadingBar from "react-top-loading-bar";
-import { Link, useLocation, useNavigate, useNavigation } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useNavigation,
+} from "react-router-dom";
 import { useCart } from "../Context/CartProvider";
 import CartOffcanvas from "../Cart/CartOffcanvas/CartOffcanvas";
 import MobileLoginOTP from "../User/Auth/MobileLoginOTP";
 import CompleteProfile from "../User/CompleteProfile";
+import axios from "axios";
 
 const collectionMenu = [
   {
@@ -88,10 +94,31 @@ export default function NavbarMenu() {
   const handleShow = () => setShow(true);
   const [cartOpen, setCartOpen] = useState(false);
   const handleOpenCart = () => setCartOpen(true);
+  const [activeHeader, setActiveHeader] = useState(null);
   const handleCloseCart = () => setCartOpen(false);
+  const [collectionMenu, setCollectionMenu] = useState([]);
 
   const loadingRef = useRef(null);
   const location = useLocation();
+
+  useEffect(() => {
+    const fetchNavbar = async () => {
+      try {
+        const res = await axios.get("http://localhost:4000/api/user/navbar");
+        const menu = res.data.map((header) => ({
+          ...header,
+          categories: header?.categories?.map((cat) => ({
+            ...cat,
+            subCategories: cat?.subCategories?.map((sub) => ({ ...sub })),
+          })),
+        }));
+        setCollectionMenu(menu);
+      } catch (err) {
+        console.error("Failed to fetch navbar data:", err);
+      }
+    };
+    fetchNavbar();
+  }, []);
 
   useEffect(() => {
     // Start loading when route changes
@@ -106,14 +133,15 @@ export default function NavbarMenu() {
 
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
-   const navigate = useNavigate();
+  const navigate = useNavigate();
 
-  const{ cart ,addToCart, handleIncrease,handleDecrease,handleRemove} = useCart();
-    const token = localStorage.getItem("token"); 
-  
+  const { cart, addToCart, handleIncrease, handleDecrease, handleRemove } =
+    useCart();
+  const token = localStorage.getItem("token");
+
   console.log("Cart items:", cart.items || []);
 
-   const handleUserClick = () => {
+  const handleUserClick = () => {
     if (!token) {
       // 🚪 No token → open login modal
       openModal();
@@ -123,12 +151,32 @@ export default function NavbarMenu() {
     }
   };
 
+  console.log("activeHeader", activeHeader);
+
   return (
     <>
       <div
         className="nav-and-submenu-wrapper"
         onMouseLeave={() => setShowModal(false)}
       >
+        <div
+          style={{
+            background: "linear-gradient(90deg, #ffd700, #ff8c00)", // golden gradient
+            color: "#1a1a1a",
+            textAlign: "center",
+            padding: "8px 18px",
+            fontWeight: "600",
+            fontSize: "13px",
+            letterSpacing: "0.5px",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+            position: "sticky",
+            top: 0,
+            zIndex: 999,
+          }}
+        >
+          Buy 3, Get Rs.3000 Cashback <span style={{ margin: "0 8px" }}>|</span>{" "}
+          Buy 5, Get Rs.5000 Cashback
+        </div>
         <nav
           className="navbar"
           style={{
@@ -145,52 +193,53 @@ export default function NavbarMenu() {
 
           <div className="navbar-center">
             <ul className="nav-links" style={{ marginTop: 10 }}>
-              <li>
-                <Link to="/">Home</Link>
-              </li>
-              <li>
-                <Link
-                  to="/categoryProduct"
-                  onMouseEnter={() => setShowModal(true)}
+              {collectionMenu.map((header) => (
+                <li
+                  key={header._id}
+                  onMouseEnter={() => {
+                    setActiveHeader(header);
+                    setShowModal(header.categories.length > 0); // show submenu only if categories exist
+                  }}
+                  onMouseLeave={() => {
+                    setActiveHeader(null);
+                    setShowModal(false);
+                  }}
+                  style={{ position: "relative" }}
                 >
-                  Clothing
-                </Link>
-              </li>
-              <li
-                onMouseEnter={() => setShowModal(true)}
-                // onMouseLeave={() => setShowModal(false)}
-              >
-                <Link
-                  to="/categoryProduct"
-                  onMouseEnter={() => setShowModal(true)}
-                >
-                  Womenswear
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/categoryProduct"
-                  onMouseEnter={() => setShowModal(true)}
-                >
-                  Menswear
-                </Link>
-              </li>
-              <li>
-                <Link
-                  o="/categoryProduct"
-                  onMouseEnter={() => setShowModal(true)}
-                >
-                  Bestsellers
-                </Link>
-              </li>
-              <li>
-                <Link
-                  o="/categoryProduct"
-                  onMouseEnter={() => setShowModal(true)}
-                >
-                  Saree
-                </Link>
-              </li>
+                  <Link to={`/categoryProduct`}>{header.title}</Link>
+
+                  {/* Submenu for categories & subcategories */}
+                  {/* {activeHeader === header && header.categories.length > 0 && (
+                  <div className="submenu" style={{
+                    position: "absolute",
+                    top: "100%",
+                    left: 0,
+                    background: "#fff",
+                    padding: "10px",
+                    boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+                    zIndex: 1000,
+                  }}>
+                    <Row>
+                      {header.categories.map((cat) => (
+                        <Col key={cat._id} style={{ minWidth: "200px", marginRight: "20px" }}>
+                          <strong>{cat.name}</strong>
+                          {cat.subCategories.length > 0 && (
+                            <ul style={{ paddingLeft: 0, listStyle: "none" }}>
+                              {cat.subCategories.map((sub) => (
+                                <li key={sub._id}>
+                                  <Link to={`/${sub.slug}`}>{sub.name} f</Link>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </Col>
+                      ))}
+                    </Row>
+                  </div>
+                )} */}
+                </li>
+              ))}
+
               <li>
                 <a href="/about">About Us</a>
               </li>
@@ -208,21 +257,21 @@ export default function NavbarMenu() {
                 onClick={() => handleOpenCart()}
               />
               {cart?.items?.length > 0 && (
-                <span className="cart-badge">{cart?.items?.length||0}</span>
+                <span className="cart-badge">{cart?.items?.length || 0}</span>
               )}
             </div>
-            <FaRegUser className="icon" onClick={()=>handleUserClick()}/>
+            <FaRegUser className="icon" onClick={() => handleUserClick()} />
           </div>
           <LoadingBar
             color="#460201"
-            height={3}
+            height={2}
             ref={loadingRef}
             shadow={false}
-            style={{ position: "absolute", top: 80 }}
+            style={{ position: "absolute", top: 113 }}
           />
         </nav>
 
-        {showModal && (
+        {/* {showModal && (
           <div
             className="submenu-model"
             onMouseEnter={() => setShowModal(true)}
@@ -234,24 +283,69 @@ export default function NavbarMenu() {
             >
               <Container>
                 <Row>
-                  {collectionMenu.map((category, idx) => (
+                  {showModal && activeHeader && (
+                    <div className="submenu-model">
+                      <div className="submenu-container-modal">
+                        <Container>
+                          <Row>
+                            <Col>
+                              <h6>{activeHeader.title}</h6>
+                              <ul>
+                                {activeHeader.subcategories.map((sub, idx) => (
+                                  <li key={idx}>
+                                    <Link to={`/categoryProduct/${sub}`}>
+                                      {sub}
+                                    </Link>
+                                  </li>
+                                ))}
+                              </ul>
+                            </Col>
+                          </Row>
+                        </Container>
+                      </div>
+                    </div>
+                  )}
+                </Row>
+              </Container>
+            </div>
+          </div>
+        )} */}
+
+        {showModal && activeHeader && (
+          <div
+            className="submenu-model"
+            onMouseEnter={() => setShowModal(true)}
+            onMouseLeave={() => setShowModal(false)}
+          >
+            <div
+              className="submenu-container-modal mx-auto d-block"
+              onMouseEnter={() => setShowModal(true)}
+              onMouseLeave={() => setShowModal(false)}
+            >
+              <Container style={{ width: "70%" }}>
+                <Row style={{ flexWrap: "nowrap", overflowX: "auto" }}>
+                  {activeHeader.categories.map((category, idx) => (
                     <Col
-                      key={idx}
+                      key={category._id}
                       style={{
-                        background: idx % 2 === 0 ? "#fff" : "#f5f6fa", // white for even (0,2,4...), gray for odd (1,3,5...)
-                        marginLeft: 10,
+                        minWidth: "200px",
+                        marginRight: "20px",
+                        background: idx % 2 === 0 ? "#fff" : "#f5f6fa",
+                        padding: "10px",
+                        borderRadius: "4px",
                       }}
                     >
-                      <h6
-                        className="submenu-item-header"
-                        style={{ marginTop: 20 }}
+                      <h6 className="submenu-item-header">{category.name}</h6>
+                      <ul
+                        style={{
+                          listStyle: "none",
+                          paddingLeft: 0,
+                          marginTop: "10px",
+                        }}
                       >
-                        {category.title}
-                      </h6>
-                      <ul>
-                        {category.subcategories.map((item, subIdx) => (
-                          <li key={subIdx}>
-                            <a href="">{item}</a>
+                        {category.subCategories.map((sub) => (
+                          <li key={sub._id}>
+                            <Link to={`/${sub.slug}`}>{sub.name}</Link>
                           </li>
                         ))}
                       </ul>
@@ -277,55 +371,81 @@ export default function NavbarMenu() {
         <h2 className="logo-mobile">ShopMate</h2>
         <div style={{ marginRight: 10, display: "flex" }}>
           {/* ✅ Cart Icon with Badge */}
-          <div className="cart-icon" style={{ marginRight: 12 }}>
-            <HiOutlineShoppingBag className="icon" />
-            {cartItemCount > 0 && (
-              <span className="cart-badge">{cartItemCount}</span>
+          <div className="cart-icon">
+            <HiOutlineShoppingBag
+              className="icon"
+              onClick={() => handleOpenCart()}
+            />
+            {cart?.items?.length > 0 && (
+              <span className="cart-badge">{cart?.items?.length || 0}</span>
             )}
           </div>
-          {/* <FaRegUser className="icon"  style={{left:10}} /> */}
+          <FaRegUser
+            className="icon"
+            onClick={() => handleUserClick()}
+            style={{ marginLeft: 10 }}
+          />
         </div>
       </nav>
 
-      <Offcanvas
-        show={show}
-        onHide={handleClose}
-        placement="start"
-        className="custom-offcanvas"
-      >
-        <Offcanvas.Header closeButton>
-          <Offcanvas.Title>Collections</Offcanvas.Title>
-        </Offcanvas.Header>
-        <Offcanvas.Body>
-          <Accordion flush>
-            {collectionMenu.map((category, index) => (
-              <Accordion.Item eventKey={index.toString()} key={index}>
-                <Accordion.Header>{category.title}</Accordion.Header>
-                <Accordion.Body>
-                  <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                    {category.subcategories.map((sub, subIndex) => (
-                      <li key={subIndex} style={{ padding: "5px 0" }}>
-                        {sub}
-                      </li>
-                    ))}
-                  </ul>
-                </Accordion.Body>
-              </Accordion.Item>
-            ))}
-          </Accordion>
-        </Offcanvas.Body>
-      </Offcanvas>
-      <CartOffcanvas 
-      show={cartOpen} 
-      cart={cart} 
-      handleClose={handleCloseCart} 
-      addToCart={addToCart} 
-      increaseQty={handleIncrease} 
-      decreaseQty={handleDecrease}
-      removeFromCart={handleRemove}  
+     <Offcanvas
+      show={show}
+      onHide={handleClose}
+      placement="start"
+      className="custom-offcanvas shadow-lg"
+    >
+      <Offcanvas.Header closeButton>
+        <Offcanvas.Title className="text-lg font-semibold text-gray-800">
+          Collections
+        </Offcanvas.Title>
+      </Offcanvas.Header>
+
+      <Offcanvas.Body className="p-0">
+        <Accordion flush alwaysOpen>
+          {collectionMenu.map((header) => (
+            <Accordion.Item eventKey={header._id} key={header._id}>
+              <Accordion.Header>
+                <span className="font-medium text-gray-700">{header.title}</span>
+              </Accordion.Header>
+              <Accordion.Body className="bg-gray-50">
+                {header.categories.map((cat) => (
+                  <div key={cat._id} className="mb-4" style={{color:""}}>
+                    <p className="text-sm font-semibold text-orange-500 mb-2">
+                      {cat.name}
+                    </p>
+                    {cat.subCategories.length > 0 && (
+                      <ul className="space-y-1" style={{listStyle:"none"}}>
+                        {cat.subCategories.map((sub) => (
+                          <li key={sub._id}>
+                            <Link
+                              to={`/categoryProduct`}
+                              className="block text-gray-700 hover:text-orange-500 text-sm transition-colors duration-200"
+                              style={{textDecoration:"none",color:"#000"}}
+                            >
+                              {sub.name}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                ))}
+              </Accordion.Body>
+            </Accordion.Item>
+          ))}
+        </Accordion>
+      </Offcanvas.Body>
+    </Offcanvas>
+      <CartOffcanvas
+        show={cartOpen}
+        cart={cart}
+        handleClose={handleCloseCart}
+        addToCart={addToCart}
+        increaseQty={handleIncrease}
+        decreaseQty={handleDecrease}
+        removeFromCart={handleRemove}
       />
       <MobileLoginOTP isOpen={isOpen} closeModal={closeModal} />
-      
     </>
   );
 }

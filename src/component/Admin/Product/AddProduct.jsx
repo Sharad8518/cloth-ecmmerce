@@ -33,7 +33,6 @@ export default function AddProduct() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSubCategory, setSelectedSubCategory] = useState(null);
   const [specialityInput, setSpecialityInput] = useState("");
-
   const [product, setProduct] = useState({
     title: "",
     itemNumber: "",
@@ -43,16 +42,27 @@ export default function AddProduct() {
     salePrice: "",
     colour: "",
     fulfillmentType: "",
-    keywords: [], // old one, you can remove if not used
+    keywords: [],
     media: [],
-    variants: [],
-    estimatedShippingDate: "",
-    shippingAndReturns: "",
-    productSpeciality: [],
-    faq: [],
-    inventoryBySize: [],
 
-    // ✅ initialize seo correctly
+    // ✅ These were missing
+    variants: [], // product variants (size/stock info)
+    categories: [], // selected categories
+    subCategories: [], // selected subcategories
+    collections: [], // selected collections
+
+    estimatedShippingDays: "",
+    shippingAndReturns: "",
+    productSpeciality: "",
+    faq: [],
+    styleNo: "",
+    fabric: "",
+    work: "",
+    packContains: "",
+    care: "",
+    note: "",
+
+    // ✅ SEO
     seo: {
       title: "",
       description: "",
@@ -60,7 +70,6 @@ export default function AddProduct() {
       keywords: [],
     },
   });
-
   // Pure updater function
   const updateNestedField = (obj, path, value) => {
     const keys = path.split(".");
@@ -191,23 +200,21 @@ export default function AddProduct() {
   };
 
   const addVariant = () => {
-    setProduct((prev) => {
-      const updated = {
-        ...prev,
-        variants: [
-          ...(prev.variants || []),
-          {
-            attributes: [{ name: "Size", value: "" }],
-            sku: "",
-            additionalPrice: 0,
-            stock: 0,
-            reservedStock: 0,
-          },
-        ],
-      };
-      console.log("✅ Updated product:", updated); // check if variant added
-      return updated;
-    });
+    setProduct((prev) => ({
+      ...prev,
+      variants: [
+        ...(prev.variants || []),
+        {
+          size: "", // single string
+          paddingRequired: "No",
+          waist: "",
+          length: "",
+          height: "",
+          stock: 0,
+          lowStockAlertQty: 5,
+        },
+      ],
+    }));
   };
   // Update Variant field (sku, stock, etc.)
   const updateVariant = (index, field, value) => {
@@ -220,30 +227,11 @@ export default function AddProduct() {
   };
 
   // Update Attribute inside a Variant
-  const updateVariantAttribute = (vIndex, aIndex, field, value) => {
+  const updateVariantSize = (index, sizeValue) => {
     setProduct((prev) => ({
       ...prev,
       variants: prev.variants.map((v, i) =>
-        i === vIndex
-          ? {
-              ...v,
-              attributes: v.attributes.map((a, j) =>
-                j === aIndex ? { ...a, [field]: value } : a
-              ),
-            }
-          : v
-      ),
-    }));
-  };
-
-  // Add Attribute to a Variant
-  const addVariantAttribute = (index) => {
-    setProduct((prev) => ({
-      ...prev,
-      variants: prev.variants.map((v, i) =>
-        i === index
-          ? { ...v, attributes: [...v.attributes, { name: "", value: "" }] }
-          : v
+        i === index ? { ...v, size: sizeValue } : v
       ),
     }));
   };
@@ -296,56 +284,65 @@ export default function AddProduct() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true); // start loading
-    console.log("product",product)
+    console.log("product", product);
     try {
-     
       const result = await addProduct(product);
       console.log("✅ Product created:", result);
 
       Swal.fire({
-      icon: "success",
-      title: "Product Created",
-      text: `Product "${product.title}" has been created successfully!`,
-      timer: 2000,
-      showConfirmButton: false,
-    });
+        icon: "success",
+        title: "Product Created",
+        text: `Product "${product.title}" has been created successfully!`,
+        timer: 2000,
+        showConfirmButton: false,
+      });
 
       setProduct({
-      title: "",
-      itemNumber: "",
-      mrp: "",
-      costPrice: "",
-      marginPercent: "",
-      salePrice: "",
-      colour: "",
-      fulfillmentType: "",
-      category: "",
-      subCategory: "",
-      header: "",
-      keywords: [],
-      media: [],
-      variants: [],
-      estimatedShippingDate: "",
-      shippingAndReturns: "",
-      productSpeciality: [],
-      faq: [],
-      inventoryBySize: {},
-      seo: {
         title: "",
-        description: "",
-        slug: "",
+        itemNumber: "",
+        mrp: "",
+        costPrice: "",
+        marginPercent: "",
+        salePrice: "",
+        colour: "",
+        fulfillmentType: "",
         keywords: [],
-      },
-    });
+        media: [],
+
+        // ✅ These were missing
+        variants: [], // product variants (size/stock info)
+        categories: [], // selected categories
+        subCategories: [], // selected subcategories
+        collections: [], // selected collections
+
+        estimatedShippingDays: "",
+        shippingAndReturns: "",
+        productSpeciality: "",
+        faq: [],
+        styleNo: "",
+        fabric: "",
+        work: "",
+        packContains: "",
+        care: "",
+        note: "",
+
+        // ✅ SEO
+        seo: {
+          title: "",
+          description: "",
+          slug: "",
+          keywords: [],
+        },
+      });
 
       // optionally reset form here
     } catch (error) {
       console.error("❌ Failed to create product", error);
-       Swal.fire({
-      icon: "error",
-      title: "Failed to create product",
-      text: error.response?.data?.message || error.message,
-    });
+      Swal.fire({
+        icon: "error",
+        title: "Failed to create product",
+        text: error.response?.data?.message || error.message,
+      });
     } finally {
       setLoading(false); // stop loading
     }
@@ -367,130 +364,325 @@ export default function AddProduct() {
               <Card.Body>
                 {/* Header */}
                 <Form.Group className="mb-3">
-                  <Form.Label style={{fontWeight:"600",fontSize:15}}>Header  <span style={{color:"red"}}>*</span></Form.Label>
+                  <Form.Label style={{ fontWeight: "600", fontSize: 15 }}>
+                    Header <span style={{ color: "red" }}>*</span>
+                  </Form.Label>
+
                   <Form.Select
-                    name="header"
                     value={product.header || ""}
                     onChange={async (e) => {
-                      const headerId = e.target.value;
-                      setProduct((p) => ({ ...p, header: headerId }));
-                      await loadCategories(headerId);
+                      const headerTitle = e.target.value;
+
+                      // Store only the title
+                      setProduct((p) => ({
+                        ...p,
+                        header: headerTitle || "",
+                      }));
+
+                      // Load categories using _id of selected header
+                      const selectedHeader = headers.find(
+                        (h) => h.title === headerTitle
+                      );
+                      if (selectedHeader) {
+                        await loadCategories(selectedHeader._id);
+                      }
                     }}
-                    style={{fontSize:14}}
                   >
                     <option value="">Select Header</option>
                     {headers.map((h) => (
-                      <option key={h._id} value={h._id}>
+                      <option key={h._id} value={h.title}>
                         {h.title}
                       </option>
                     ))}
                   </Form.Select>
                 </Form.Group>
-                {/* Category */}
+
                 <Form.Group className="mb-3">
-                  <Form.Label style={{fontWeight:"600",fontSize:15}}>Category <span style={{color:"red"}}>*</span></Form.Label>
-                  <Form.Select
-                    name="category"
-                    style={{fontSize:14}}
-                    value={product.category || ""}
-                    onChange={async (e) => {
-                      const categoryId = e.target.value;
-                      setProduct((p) => ({ ...p, category: categoryId }));
-                      await loadSubCategories(categoryId);
+                  <Form.Label style={{ fontWeight: "600", fontSize: 15 }}>
+                    Categories <span style={{ color: "red" }}>*</span>
+                  </Form.Label>
+                  <div
+                    style={{
+                      maxHeight: "150px",
+                      overflowY: "auto",
+                      border: "1px solid #ddd",
+                      borderRadius: "6px",
+                      padding: "8px",
                     }}
                   >
-                    <option value="">Select Category</option>
                     {categories.map((c) => (
-                      <option key={c._id} value={c._id}>
-                        {c.name}
-                      </option>
+                      <Form.Check
+                        key={c._id}
+                        type="checkbox"
+                        label={c.name}
+                        style={{ fontSize: 14 }}
+                        checked={product.categories?.includes(c.name) || false}
+                        onChange={async (e) => {
+                          let newCategories;
+                          if (e.target.checked) {
+                            newCategories = [
+                              ...(product.categories || []),
+                              c.name,
+                            ];
+                            setProduct((p) => ({
+                              ...p,
+                              categories: newCategories,
+                            }));
+                            await loadSubCategories(c._id);
+                          } else {
+                            newCategories = (product.categories || []).filter(
+                              (name) => name !== c.name
+                            );
+                            setProduct((p) => ({
+                              ...p,
+                              categories: newCategories,
+                            }));
+                          }
+                        }}
+                      />
                     ))}
-                  </Form.Select>
+                  </div>
+
+                  <div style={{ marginTop: "8px" }}>
+                    {product.categories?.map((cat) => (
+                      <span
+                        key={cat}
+                        style={{
+                          display: "inline-block",
+                          backgroundColor: "#f0f0f0",
+                          padding: "4px 8px",
+                          borderRadius: "12px",
+                          marginRight: "6px",
+                          marginBottom: "6px",
+                          fontSize: "14px",
+                        }}
+                      >
+                        {cat}{" "}
+                        <span
+                          style={{
+                            marginLeft: "6px",
+                            cursor: "pointer",
+                            color: "#ff4d4f",
+                            fontWeight: "bold",
+                          }}
+                          onClick={() =>
+                            setProduct((p) => ({
+                              ...p,
+                              categories: p.categories.filter(
+                                (name) => name !== cat
+                              ),
+                            }))
+                          }
+                        >
+                          ✕
+                        </span>
+                      </span>
+                    ))}
+                  </div>
                 </Form.Group>
-                {/* SubCategory */}
+
+                {/* SubCategories */}
                 <Form.Group className="mb-3">
-                  <Form.Label style={{fontWeight:"600",fontSize:15}}>Sub Category <span style={{color:"red"}}>*</span></Form.Label>
-                  <Form.Select
-                    name="subCategory"
-                    style={{fontSize:14}}
-                    value={product.subCategory || ""}
-                    onChange={async (e) => {
-                      const subCategoryId = e.target.value;
-
-                      // Find the subcategory name
-                      const subCategoryObj = subCategories.find(
-                        (sc) => sc._id === subCategoryId
-                      );
-                      const subCategoryName = subCategoryObj
-                        ? subCategoryObj.name
-                        : "GEN";
-
-                      // Generate random item number
-                      const randomNum = Math.floor(1000 + Math.random() * 9000);
-                      const itemNumber = `${subCategoryName
-                        .replace(/\s+/g, "")
-                        .toUpperCase()}-${randomNum}`;
-
-                      // Update product state
-                      setProduct((p) => ({
-                        ...p,
-                        subCategory: subCategoryId,
-                        itemNumber: itemNumber, // set the random item number
-                      }));
-
-                      await loadCollections(subCategoryId);
+                  <Form.Label style={{ fontWeight: "600", fontSize: 15 }}>
+                    Sub Categories <span style={{ color: "red" }}>*</span>
+                  </Form.Label>
+                  <div
+                    style={{
+                      maxHeight: "150px",
+                      overflowY: "auto",
+                      border: "1px solid #ddd",
+                      borderRadius: "6px",
+                      padding: "8px",
                     }}
                   >
-                    <option value="">Select SubCategory</option>
                     {subCategories.map((sc) => (
-                      <option key={sc._id} value={sc._id}>
-                        {sc.name}
-                      </option>
+                      <Form.Check
+                        key={sc._id}
+                        type="checkbox"
+                        label={sc.name}
+                        style={{ fontSize: 14 }}
+                        checked={
+                          product.subCategories?.includes(sc.name) || false
+                        }
+                        onChange={async (e) => {
+                          let newSubCategories;
+                          if (e.target.checked) {
+                            newSubCategories = [
+                              ...(product.subCategories || []),
+                              sc.name,
+                            ];
+
+                            // Generate item number
+                            const randomNum = Math.floor(
+                              1000 + Math.random() * 9000
+                            );
+                            const itemNumber = `${sc.name
+                              .replace(/\s+/g, "")
+                              .toUpperCase()}-${randomNum}`;
+
+                            setProduct((p) => ({
+                              ...p,
+                              subCategories: newSubCategories,
+                              itemNumber,
+                            }));
+
+                            await loadCollections(sc._id);
+                          } else {
+                            newSubCategories = (
+                              product.subCategories || []
+                            ).filter((name) => name !== sc.name);
+                            setProduct((p) => ({
+                              ...p,
+                              subCategories: newSubCategories,
+                            }));
+                          }
+                        }}
+                      />
                     ))}
-                  </Form.Select>
+                  </div>
+
+                  <div style={{ marginTop: "8px" }}>
+                    {product.subCategories?.map((sub) => (
+                      <span
+                        key={sub}
+                        style={{
+                          display: "inline-block",
+                          backgroundColor: "#f0f0f0",
+                          padding: "4px 8px",
+                          borderRadius: "12px",
+                          marginRight: "6px",
+                          marginBottom: "6px",
+                          fontSize: "14px",
+                        }}
+                      >
+                        {sub}{" "}
+                        <span
+                          style={{
+                            marginLeft: "6px",
+                            cursor: "pointer",
+                            color: "#ff4d4f",
+                            fontWeight: "bold",
+                          }}
+                          onClick={() =>
+                            setProduct((p) => ({
+                              ...p,
+                              subCategories: p.subCategories.filter(
+                                (name) => name !== sub
+                              ),
+                            }))
+                          }
+                        >
+                          ✕
+                        </span>
+                      </span>
+                    ))}
+                  </div>
                 </Form.Group>
-                {/* Collection */}
-                <Form.Group>
-                  <Form.Label style={{fontWeight:"600",fontSize:15}}>Collection</Form.Label>
-                  <Form.Select
-                    name="collection"
-                    style={{fontSize:14}}
-                    value={product.collection || ""}
-                    onChange={handleChange}
+
+                {/* Collections */}
+                <Form.Group className="mb-3">
+                  <Form.Label style={{ fontWeight: "600", fontSize: 15 }}>
+                    Collections
+                  </Form.Label>
+                  <div
+                    style={{
+                      maxHeight: "150px",
+                      overflowY: "auto",
+                      border: "1px solid #ddd",
+                      borderRadius: "6px",
+                      padding: "8px",
+                    }}
                   >
-                    <option value="">Select Collection</option>
                     {collections.map((col) => (
-                      <option key={col._id} value={col._id}>
-                        {col.name}
-                      </option>
+                      <Form.Check
+                        key={col._id}
+                        type="checkbox"
+                        label={col.name}
+                        style={{ fontSize: 14 }}
+                        checked={
+                          product.collections?.includes(col.name) || false
+                        }
+                        onChange={(e) => {
+                          const newCollections = e.target.checked
+                            ? [...(product.collections || []), col.name]
+                            : (product.collections || []).filter(
+                                (name) => name !== col.name
+                              );
+
+                          setProduct((p) => ({
+                            ...p,
+                            collections: newCollections,
+                          }));
+                        }}
+                      />
                     ))}
-                  </Form.Select>
+                  </div>
+
+                  <div style={{ marginTop: "8px" }}>
+                    {product.collections?.map((col) => (
+                      <span
+                        key={col}
+                        style={{
+                          display: "inline-block",
+                          backgroundColor: "#f0f0f0",
+                          padding: "4px 8px",
+                          borderRadius: "12px",
+                          marginRight: "6px",
+                          marginBottom: "6px",
+                          fontSize: "14px",
+                        }}
+                      >
+                        {col}{" "}
+                        <span
+                          style={{
+                            marginLeft: "6px",
+                            cursor: "pointer",
+                            color: "#ff4d4f",
+                            fontWeight: "bold",
+                          }}
+                          onClick={() =>
+                            setProduct((p) => ({
+                              ...p,
+                              collections: p.collections.filter(
+                                (name) => name !== col
+                              ),
+                            }))
+                          }
+                        >
+                          ✕
+                        </span>
+                      </span>
+                    ))}
+                  </div>
                 </Form.Group>
               </Card.Body>
             </Card>
-
             {/* Product Details */}
             <Card className="mt-3">
               <Card.Header>Product Details</Card.Header>
               <Card.Body>
                 <Form.Group className="mb-3">
-                  <Form.Label style={{fontWeight:"600",fontSize:15}}>Title <span style={{color:"red"}}>*</span></Form.Label>
+                  <Form.Label style={{ fontWeight: "600", fontSize: 15 }}>
+                    Title <span style={{ color: "red" }}>*</span>
+                  </Form.Label>
                   <Form.Control
                     type="text"
                     name="title"
                     value={product?.title || ""}
-                    style={{fontSize:14}}
+                    style={{ fontSize: 14 }}
                     onChange={(e) => handleChange("title", e.target.value)}
                     required
                   />
                 </Form.Group>
                 <Form.Group className="mb-3">
-                  <Form.Label style={{fontWeight:"600",fontSize:15}}>Description <span style={{color:"red"}}>*</span></Form.Label>
+                  <Form.Label style={{ fontWeight: "600", fontSize: 15 }}>
+                    Description <span style={{ color: "red" }}>*</span>
+                  </Form.Label>
                   <Form.Control
                     as="textarea"
                     rows={4}
                     name="description"
-                    style={{fontSize:14}}
+                    style={{ fontSize: 14 }}
                     value={product?.description || ""}
                     onChange={(e) =>
                       handleChange("description", e.target.value)
@@ -501,7 +693,9 @@ export default function AddProduct() {
 
                 {/* Media Upload */}
                 <div>
-                  <Form.Label style={{fontWeight:"600",fontSize:15}}>Media <span style={{color:"red"}}>*</span></Form.Label>
+                  <Form.Label style={{ fontWeight: "600", fontSize: 15 }}>
+                    Media <span style={{ color: "red" }}>*</span>
+                  </Form.Label>
                   <div
                     onDrop={handleDrop}
                     onDragOver={handleDragOver}
@@ -703,85 +897,108 @@ export default function AddProduct() {
                         </Button>
                       </div>
 
-                      {variant.attributes.map((attr, aIndex) => (
-                        <Row className="mb-2" key={aIndex}>
-                          <Col>
-                            <Form.Control
-                              type="text"
-                               style={{fontSize:14}}
-                              placeholder="Attribute Name (e.g. Size)"
-                              value={attr.name}
-                              onChange={(e) =>
-                                updateVariantAttribute(
-                                  vIndex,
-                                  aIndex,
-                                  "name",
-                                  e.target.value
-                                )
-                              }
-                            />
-                          </Col>
-                          <Col>
-                            <Form.Control
-                              type="text"
-                              placeholder="Value (e.g. Large)"
-                               style={{fontSize:14}}
-                              value={attr.value}
-                              onChange={(e) =>
-                                updateVariantAttribute(
-                                  vIndex,
-                                  aIndex,
-                                  "value",
-                                  e.target.value
-                                )
-                              }
-                            />
-                          </Col>
-                        </Row>
-                      ))}
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                       
-                        onClick={() => addVariantAttribute(vIndex)}
-                        style={{borderRadius:100,backgroundColor:"#282e36ff",border:"none",fontSize:12,}}
-                      >
-                        <IoAddCircleOutline size={15}/> Add Attribute
-                      </Button>
-
-                      <Row className="mt-3">
-                        <Col md={6}>
-                          <Form.Label>SKU</Form.Label>
-                          <Form.Control
-                           style={{fontSize:14}}
-                            value={variant.sku}
+                      {/* Sizes (Multi Input or Comma-separated) */}
+                      <Row className="mb-2">
+                        <Col>
+                          <Form.Label>Size</Form.Label>
+                          <Form.Select
+                            style={{ fontSize: 14 }}
+                            value={variant.size || ""}
                             onChange={(e) =>
-                              updateVariant(vIndex, "sku", e.target.value)
+                              updateVariant(vIndex, "size", e.target.value)
                             }
-                          />
-                        </Col>
-                        <Col md={6}>
-                          <Form.Label>Additional Price</Form.Label>
-                          <Form.Control
-                            type="number"
-                            value={variant.additionalPrice}
-                            onChange={(e) =>
-                              updateVariant(
-                                vIndex,
-                                "additionalPrice",
-                                Number(e.target.value)
-                              )
-                            }
-                          />
+                          >
+                            <option value="">Select Size</option>
+                            <option value="XS">XS</option>
+                            <option value="S">S</option>
+                            <option value="M">M</option>
+                            <option value="L">L</option>
+                            <option value="XL">XL</option>
+                            <option value="XXL">XXL</option>
+                          </Form.Select>
                         </Col>
                       </Row>
 
+                      {/* Padding Required */}
+                      <Row className="mb-2">
+                        <Col>
+                          <Form.Label>Padding Required</Form.Label>
+                          <Form.Select
+                            value={variant.paddingRequired}
+                            style={{ fontSize: 14 }}
+                            onChange={(e) =>
+                              updateVariant(
+                                vIndex,
+                                "paddingRequired",
+                                e.target.value
+                              )
+                            }
+                          >
+                            <option value="No">No</option>
+                            <option value="Yes">Yes</option>
+                          </Form.Select>
+                        </Col>
+                      </Row>
+
+                      {variant.paddingRequired === "Yes" && (
+                        <>
+                          {/* Waist / Length / Height */}
+                          <Row className="mb-2">
+                            <Col md={4}>
+                              <Form.Label>Waist</Form.Label>
+                              <Form.Control
+                                type="text"
+                                style={{ fontSize: 14 }}
+                                value={variant.waist}
+                                placeholder="e.g. 25 Inch"
+                                onChange={(e) =>
+                                  updateVariant(vIndex, "waist", e.target.value)
+                                }
+                              />
+                            </Col>
+                            <Col md={4}>
+                              <Form.Label>Length</Form.Label>
+                              <Form.Control
+                                type="text"
+                                style={{ fontSize: 14 }}
+                                value={variant.length}
+                                placeholder="e.g. 38 Inch"
+                                onChange={(e) =>
+                                  updateVariant(
+                                    vIndex,
+                                    "length",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </Col>
+                            <Col md={4}>
+                              <Form.Label>Height</Form.Label>
+                              <Form.Control
+                                type="text"
+                                style={{ fontSize: 14 }}
+                                value={variant.height}
+                                placeholder="e.g. 5 feet 4 Inch"
+                                onChange={(e) =>
+                                  updateVariant(
+                                    vIndex,
+                                    "height",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </Col>
+                          </Row>
+                        </>
+                      )}
+
+                      {/* Stock & Low Stock Alert */}
                       <Row className="mt-2">
                         <Col md={6}>
                           <Form.Label>Stock</Form.Label>
                           <Form.Control
                             type="number"
-                             style={{fontSize:14}}
+                            style={{ fontSize: 14 }}
                             value={variant.stock}
                             onChange={(e) =>
                               updateVariant(
@@ -793,15 +1010,15 @@ export default function AddProduct() {
                           />
                         </Col>
                         <Col md={6}>
-                          <Form.Label>Reserved Stock</Form.Label>
+                          <Form.Label>Low Stock Alert Qty</Form.Label>
                           <Form.Control
                             type="number"
-                             style={{fontSize:14}}
-                            value={variant.reservedStock}
+                            style={{ fontSize: 14 }}
+                            value={variant.lowStockAlertQty}
                             onChange={(e) =>
                               updateVariant(
                                 vIndex,
-                                "reservedStock",
+                                "lowStockAlertQty",
                                 Number(e.target.value)
                               )
                             }
@@ -812,8 +1029,23 @@ export default function AddProduct() {
                   </Card>
                 ))}
 
-                <Button onClick={addVariant} variant="primary" size="sm" style={{width:150,borderRadius:100,backgroundColor:"#282e36ff",border:"none"}}>
-                  <IoAddCircleOutline color="#fff"size={17} style={{marginTop:-2}}/> Add Variant
+                <Button
+                  onClick={addVariant}
+                  variant="primary"
+                  size="sm"
+                  style={{
+                    width: 150,
+                    borderRadius: 100,
+                    backgroundColor: "#282e36ff",
+                    border: "none",
+                  }}
+                >
+                  <IoAddCircleOutline
+                    color="#fff"
+                    size={17}
+                    style={{ marginTop: -2 }}
+                  />{" "}
+                  Add Variant
                 </Button>
               </div>
             </Card>
@@ -833,7 +1065,7 @@ export default function AddProduct() {
                       <Form.Control
                         type="number"
                         name="costPrice"
-                         style={{fontSize:14}}
+                        style={{ fontSize: 14 }}
                         value={product?.costPrice || ""}
                         onChange={(e) =>
                           handleChange("costPrice", e.target.value)
@@ -852,7 +1084,7 @@ export default function AddProduct() {
                       <Form.Control
                         type="number"
                         name="marginPercent"
-                        style={{fontSize:14}}
+                        style={{ fontSize: 14 }}
                         value={product.marginPercent || ""}
                         onChange={(e) =>
                           handleChange("marginPercent", e.target.value)
@@ -874,7 +1106,7 @@ export default function AddProduct() {
                       <Form.Control
                         type="number"
                         name="mrp"
-                        style={{fontSize:14}}
+                        style={{ fontSize: 14 }}
                         value={product.mrp || ""}
                         onChange={(e) => handleChange("mrp", e.target.value)}
                         placeholder="Enter MRP"
@@ -891,7 +1123,7 @@ export default function AddProduct() {
                       <Form.Control
                         type="number"
                         name="salePrice"
-                        style={{fontSize:14}}
+                        style={{ fontSize: 14 }}
                         value={product.salePrice || ""}
                         onChange={(e) =>
                           handleChange("salePrice", e.target.value)
@@ -921,39 +1153,19 @@ export default function AddProduct() {
                     Product Speciality
                   </Form.Label>
                   <Row>
-                    <Col md={8}>
+                    <Col md={12}>
                       <Form.Control
-                        type="text"
-                        style={{fontSize:14}}
-                        value={specialityInput}
-                        onChange={(e) => setSpecialityInput(e.target.value)}
+                        as="textarea"
+                        rows={3} // you can adjust number of visible lines
+                        style={{ fontSize: 14 }}
+                        value={product.productSpeciality || ""}
+                        onChange={(e) =>
+                          handleChange("productSpeciality", e.target.value)
+                        }
                         placeholder="Enter speciality (e.g. Handcrafted)"
                       />
                     </Col>
-                    <Col md={4}>
-                      <Button
-                        variant="primary"
-                        onClick={addSpeciality}
-                        style={{ width: "100%",backgroundColor: "#282e36ff", border: "none" ,fontSize:14}}
-                      >
-                        Add
-                      </Button>
-                    </Col>
                   </Row>
-
-                  <div className="mt-2">
-                    {(product.productSpeciality || []).map((item, index) => (
-                      <Badge
-                        key={index}
-                        bg="secondary"
-                        className="me-2 mb-2 p-2"
-                        style={{ fontSize: "13px", cursor: "pointer" }}
-                        onClick={() => removeSpeciality(index)}
-                      >
-                        {item} ✕
-                      </Badge>
-                    ))}
-                  </div>
                 </Form.Group>
 
                 {/* Shipping & Returns */}
@@ -964,7 +1176,7 @@ export default function AddProduct() {
                   <Form.Control
                     as="textarea"
                     rows={3}
-                    style={{fontSize:14}}
+                    style={{ fontSize: 14 }}
                     name="shippingAndReturns"
                     value={product?.shippingAndReturns || ""}
                     onChange={(e) =>
@@ -973,20 +1185,85 @@ export default function AddProduct() {
                     placeholder="Enter shipping & return policy"
                   />
                 </Form.Group>
-
-                {/* Estimated Shipping Date */}
                 <Form.Group className="mb-3">
                   <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
-                    Estimated Shipping Date
+                    Style No.
                   </Form.Label>
                   <Form.Control
-                    type="date"
-                    name="estimatedShippingDate"
-                    style={{fontSize:14}}
-                    value={product.estimatedShippingDate || ""}
+                    style={{ fontSize: 14 }}
+                    name="styleNo"
+                    value={product?.styleNo || ""}
+                    onChange={(e) => handleChange("styleNo", e.target.value)}
+                    placeholder="Enter style number (e.g. ST1234)"
+                  />
+                </Form.Group>
+
+                <Form.Group className="mb-3">
+                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                    Fabric
+                  </Form.Label>
+                  <Form.Control
+                    style={{ fontSize: 14 }}
+                    name="fabric"
+                    value={product?.fabric || ""}
+                    onChange={(e) => handleChange("fabric", e.target.value)}
+                    placeholder="Enter fabric type (e.g. Cotton, Silk)"
+                  />
+                </Form.Group>
+
+                <Form.Group className="mb-3">
+                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                    Work
+                  </Form.Label>
+                  <Form.Control
+                    style={{ fontSize: 14 }}
+                    name="work"
+                    value={product?.work || ""}
+                    onChange={(e) => handleChange("work", e.target.value)}
+                    placeholder="Enter work details (e.g. Embroidery, Zari)"
+                  />
+                </Form.Group>
+
+                <Form.Group className="mb-3">
+                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                    Pack Contains
+                  </Form.Label>
+                  <Form.Control
+                    style={{ fontSize: 14 }}
+                    name="packContains"
+                    value={product?.packContains || ""}
                     onChange={(e) =>
-                      handleChange("estimatedShippingDate", e.target.value)
+                      handleChange("packContains", e.target.value)
                     }
+                    placeholder="Enter items included (e.g. Kurta, Dupatta, Bottom)"
+                  />
+                </Form.Group>
+
+                <Form.Group className="mb-3">
+                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                    Care
+                  </Form.Label>
+                  <Form.Control
+                    style={{ fontSize: 14 }}
+                    name="care"
+                    value={product?.care || ""}
+                    onChange={(e) => handleChange("care", e.target.value)}
+                    placeholder="Enter care instructions (e.g. Dry Clean Only)"
+                  />
+                </Form.Group>
+
+                <Form.Group className="mb-3">
+                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                    Note
+                  </Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    rows={3}
+                    style={{ fontSize: 14 }}
+                    name="note"
+                    value={product?.note || ""}
+                    onChange={(e) => handleChange("note", e.target.value)}
+                    placeholder="Enter additional product notes (optional)"
                   />
                 </Form.Group>
               </Card.Body>
@@ -1012,96 +1289,6 @@ export default function AddProduct() {
                 </Form.Group>
               </Card.Body>
             </Card>
-
-            <Card className="mt-4 shadow-sm">
-              <Card.Body>
-                <h5 className="mb-3" style={{fontSize:16}}>Inventory by Size</h5>
-
-                {Object.entries(product.inventoryBySize || {}).map(
-                  ([size, qty], index) => (
-                    <Row key={index} className="align-items-end mb-2">
-                      <Col>
-                        <Form.Group>
-                          <Form.Label style={{fontSize:14,fontWeight:500}}>Size</Form.Label>
-                          <Form.Control
-                            type="text"
-                            value={size}
-                            style={{fontSize:14}}
-                            onChange={(e) => {
-                              const newSize = e.target.value;
-                              setProduct((prev) => {
-                                const updated = { ...prev.inventoryBySize };
-                                // Move quantity to new key
-                                delete updated[size];
-                                updated[newSize] = qty;
-                                return { ...prev, inventoryBySize: updated };
-                              });
-                            }}
-                            placeholder="e.g. M, L, XL"
-                          />
-                        </Form.Group>
-                      </Col>
-
-                      <Col>
-                        <Form.Group>
-                          <Form.Label style={{fontSize:14,fontWeight:500}}>Quantity</Form.Label>
-                          <Form.Control
-                            type="number"
-                            min="0"
-                            value={qty}
-                            style={{fontSize:14}}
-                            onChange={(e) => {
-                              const value = parseInt(e.target.value, 10) || 0;
-                              setProduct((prev) => ({
-                                ...prev,
-                                inventoryBySize: {
-                                  ...prev.inventoryBySize,
-                                  [size]: value,
-                                },
-                              }));
-                            }}
-                            placeholder="Enter stock quantity"
-                          />
-                        </Form.Group>
-                      </Col>
-
-                      <Col xs="auto">
-                        <Button
-                          variant="danger"
-                          size="sm"
-                          onClick={() =>
-                            setProduct((prev) => {
-                              const updated = { ...prev.inventoryBySize };
-                              delete updated[size];
-                              return { ...prev, inventoryBySize: updated };
-                            })
-                          }
-                        >
-                          Remove
-                        </Button>
-                      </Col>
-                    </Row>
-                  )
-                )}
-
-                <Button
-                  variant="primary"
-                  size="sm"
-                  style={{ width: 150, borderRadius: 100, backgroundColor: "#282e36ff", border: "none" }}
-                  onClick={() =>
-                    setProduct((prev) => ({
-                      ...prev,
-                      inventoryBySize: {
-                        ...prev.inventoryBySize,
-                        "": 0, // new row with empty size
-                      },
-                    }))
-                  }
-                >
-                  <IoAddCircleOutline size={15}/> Add Size
-                </Button>
-              </Card.Body>
-            </Card>
           </Col>
 
           {/* Additional Info */}
@@ -1119,7 +1306,9 @@ export default function AddProduct() {
                 </Form.Group> */}
                 <ColourDropdown product={product} setProduct={setProduct} />
                 <Form.Group>
-                  <Form.Label style={{fontWeight:500,fontSize:14}}>Fulfillment Type  <span style={{color:"red"}}>*</span></Form.Label>
+                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                    Fulfillment Type <span style={{ color: "red" }}>*</span>
+                  </Form.Label>
                   <Form.Select
                     name="fulfillmentType"
                     value={product.fulfillmentType}
@@ -1130,6 +1319,26 @@ export default function AddProduct() {
                     <option value="READY_TO_SHIP">Ready to Ship</option>
                     <option value="MADE_TO_ORDER">Made to Order</option>
                   </Form.Select>
+                </Form.Group>
+                <br />
+                <Form.Group className="mb-3">
+                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                    Estimated Shipping (in days)
+                  </Form.Label>
+                  <Form.Control
+                    type="number"
+                    name="estimatedShippingDays"
+                    style={{ fontSize: 14 }}
+                    min={1}
+                    value={product.estimatedShippingDays || ""}
+                    onChange={(e) =>
+                      handleChange(
+                        "estimatedShippingDays",
+                        Number(e.target.value)
+                      )
+                    }
+                    placeholder="Enter number of days (e.g. 5)"
+                  />
                 </Form.Group>
               </Card.Body>
             </Card>

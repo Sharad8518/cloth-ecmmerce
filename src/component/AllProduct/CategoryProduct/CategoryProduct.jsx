@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Container,
   Row,
@@ -7,90 +7,18 @@ import {
   Form,
   Badge,
   Button,
+  Spinner,
 } from "react-bootstrap";
 import NavbarMenu from "../../Navbar/NavbarMenu";
 import ProductList from "../../ProductList/ProductList";
 import BreadcrumbSinglePage from "../../layout/BreadcrumbSinglePage";
 import Footer from "../../Footer/Footer";
-import styles from "./CategoryProduct.module.css"
-// products.js
-const products = [
-  {
-    id: 1,
-    title: "Elegant Silk Saree",
-    description: "Hand-woven silk saree with intricate border details.",
-    price: 1499,
-    image:
-      "https://images.meesho.com/images/products/374162167/yqups_512.webp?width=512",
-  },
-  {
-    id: 2,
-    title: "Designer Lehenga",
-    description: "Heavy embroidered lehenga perfect for weddings.",
-    price: 2999,
-    image:
-      "https://images.meesho.com/images/products/374162166/y2r1s_512.webp?width=512",
-  },
-  {
-    id: 3,
-    title: "Chiffon Dupatta Set",
-    description: "Lightweight dupatta set for casual occasions.",
-    price: 799,
-    image: "https://images.meesho.com/images/products/243573297/7umse_512.jpg",
-  },
-  {
-    id: 4,
-    title: "Printed Cotton Kurti",
-    description: "Comfortable kurti with vibrant prints.",
-    price: 999,
-    image: "https://images.meesho.com/images/products/354373806/eoupw_512.webp",
-  },
-  {
-    id: 5,
-    title: "Chiffon Dupatta Set",
-    description: "Lightweight dupatta set for casual occasions.",
-    price: 799,
-    image: "https://images.meesho.com/images/products/243573297/7umse_512.jpg",
-  },
-  {
-    id: 6,
-    title: "Printed Cotton Kurti",
-    description: "Comfortable kurti with vibrant prints.",
-    price: 999,
-    image: "https://images.meesho.com/images/products/354373806/eoupw_512.webp",
-  },
-  {
-    id: 7,
-    title: "Chiffon Dupatta Set",
-    description: "Lightweight dupatta set for casual occasions.",
-    price: 799,
-    image: "https://images.meesho.com/images/products/243573297/7umse_512.jpg",
-  },
-  {
-    id: 8,
-    title: "Printed Cotton Kurti",
-    description: "Comfortable kurti with vibrant prints.",
-    price: 999,
-    image: "https://images.meesho.com/images/products/354373806/eoupw_512.webp",
-  },
-  {
-    id: 9,
-    title: "Chiffon Dupatta Set",
-    description: "Lightweight dupatta set for casual occasions.",
-    price: 799,
-    image: "https://images.meesho.com/images/products/243573297/7umse_512.jpg",
-  },
-  {
-    id: 10,
-    title: "Printed Cotton Kurti",
-    description: "Comfortable kurti with vibrant prints.",
-    price: 999,
-    image: "https://images.meesho.com/images/products/354373806/eoupw_512.webp",
-  },
-];
+import styles from "./CategoryProduct.module.css";
+import { filterProduct } from "../../api/user/Productapi";
+import {getBanner} from "../../api/user/bannerApi"
 
 export default function CategoryProduct() {
-  // State to track all selected filters
+  // State to track filters
   const [filters, setFilters] = useState({
     price: [],
     category: [],
@@ -102,7 +30,56 @@ export default function CategoryProduct() {
     dupatta: [],
   });
 
-  // Add or remove filter
+  // Data from API
+  const [products, setProducts] = useState([]);
+  const [banner,setBanner] =useState([])
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [sortBy, setSortBy] = useState("popularity");
+  const [loading, setLoading] = useState(false);
+
+useEffect(() => {
+  const fetchBanner = async () => {
+    try {
+      const res = await getBanner();
+      console.log("res", res);
+      setBanner(res)
+    } catch (err) {
+      console.error("Error fetching banner:", err);
+    }
+  };
+
+  fetchBanner();
+}, []);
+  // 🔹 Convert filter state into params object for API
+  const buildParams = () => {
+    let params = { page: currentPage, limit: 12, sort: sortBy };
+    Object.keys(filters).forEach((key) => {
+      if (filters[key].length > 0) params[key] = filters[key];
+    });
+    return params;
+  };
+
+  // 🔹 Fetch products from API
+  const fetchProducts = async () => {
+    setLoading(true);
+    try {
+      const data = await filterProduct(buildParams());
+      setProducts(data.products || []);
+      setTotalPages(data.pages || 1);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Run whenever filters, page, or sort change
+  useEffect(() => {
+    fetchProducts();
+  }, [filters, currentPage, sortBy]);
+
+  // Handle filter change
   const handleFilterChange = (type, value) => {
     setFilters((prev) => {
       const current = prev[type];
@@ -112,6 +89,7 @@ export default function CategoryProduct() {
         return { ...prev, [type]: [...current, value] };
       }
     });
+    setCurrentPage(1); // reset to first page
   };
 
   // Clear all filters
@@ -126,34 +104,16 @@ export default function CategoryProduct() {
       occasion: [],
       dupatta: [],
     });
+    setCurrentPage(1);
   };
 
-  // Get all selected filters as flat array with type
+  // Selected filter tags
   const selectedFilters = Object.entries(filters).flatMap(([type, values]) =>
     values.map((v) => ({ type, value: v }))
   );
 
-  const [sortBy, setSortBy] = useState("popularity");
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const itemsPerPage = 8; // adjust per need
-  const totalPages = Math.ceil(products.length / itemsPerPage);
-
-  // Slice products for pagination
-  const paginatedProducts = products.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  // Handle sorting (placeholder logic – you can customize)
-  const handleSortChange = (e) => {
-    setSortBy(e.target.value);
-    setCurrentPage(1); // reset to first page on sort change
-  };
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
+  console.log("selectedFilters", selectedFilters);
+  console.log("products", products);
 
   return (
     <div>
@@ -162,19 +122,24 @@ export default function CategoryProduct() {
       <br />
       <div style={{ width: "100%", boxSizing: "border-box" }}>
         <img
-          src="https://png.pngtree.com/png-vector/20221018/ourmid/pngtree-social-media-banner-for-happy-raksha-bandhan-banner-holiday-marketing-vector-png-image_28481088.jpg"
+          src={banner[0]?.imageUrl}
           style={{ width: "100%", height: "100%" }}
+          alt="Banner"
         />
       </div>
       <br />
-      <Container >
+      <Container fluid style={{width:"90%"}}>
         <BreadcrumbSinglePage />
         <Row>
-          {/* Left Filter Section */}
-          <Col md={3} style={{ background: "#f8f9fa", padding: "20px" }} className={styles.filterBox}>
+          {/* Left Filters */}
+          <Col
+            md={2}
+            style={{ background: "#f8f9fa", padding: "20px" }}
+            className={styles.filterBox}
+          >
             <h5>Filters</h5>
             <Accordion defaultActiveKey="0" alwaysOpen>
-              {/* Shop by Price */}
+              {/* Price */}
               <Accordion.Item eventKey="0">
                 <Accordion.Header>Shop by Price</Accordion.Header>
                 <Accordion.Body>
@@ -195,7 +160,8 @@ export default function CategoryProduct() {
                 </Accordion.Body>
               </Accordion.Item>
 
-              {/* Category */}
+              {/* Other filter sections (category, size, color, etc.) */}
+              {/* Example for Category */}
               <Accordion.Item eventKey="1">
                 <Accordion.Header>Category</Accordion.Header>
                 <Accordion.Body>
@@ -210,7 +176,7 @@ export default function CategoryProduct() {
                   ))}
                 </Accordion.Body>
               </Accordion.Item>
-
+              {/* Repeat for Size, Color, Fabric, Craft, Occasion, Dupatta */}
               {/* Size */}
               <Accordion.Item eventKey="2">
                 <Accordion.Header>Size</Accordion.Header>
@@ -310,8 +276,8 @@ export default function CategoryProduct() {
           </Col>
 
           {/* Right Product Section */}
-          <Col md={9} style={{  }}>
-            {/* Selected Filters */}
+          <Col md={10}>
+            {/* Selected filters */}
             {selectedFilters.length > 0 && (
               <div style={{ marginBottom: 20 }}>
                 <div
@@ -337,14 +303,14 @@ export default function CategoryProduct() {
                     >
                       {filter.value}
                       <span
-                        onClick={() => {
+                        onClick={() =>
                           setFilters((prev) => ({
                             ...prev,
                             [filter.type]: prev[filter.type].filter(
                               (v) => v !== filter.value
                             ),
-                          }));
-                        }}
+                          }))
+                        }
                         style={{
                           marginLeft: 4,
                           fontWeight: "bold",
@@ -367,77 +333,67 @@ export default function CategoryProduct() {
               </div>
             )}
 
-            {/* Product List Placeholder */}
+            {/* Sorting + Pagination */}
             <div
               style={{
-              
-                minHeight: "500px",
-                
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "15px",
               }}
             >
-              {/* <h4>Product Listings</h4> */}
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginBottom: "15px",
-                }}
-              >
-                <div>
-                  {Array.from({ length: totalPages }, (_, i) => (
-                    <button
-                      key={i}
-                      onClick={() => handlePageChange(i + 1)}
-                      style={{
-                        padding: "6px 10px",
-                        margin: "0 5px",
-                        background:
-                          currentPage === i + 1 ? "#cf3715ff" : "transparent",
-                        color: currentPage === i + 1 ? "#fff" : "#000",
-                        border: "none",
-                        borderRadius: 4,
-                        cursor: "pointer",
-                      }}
-                    >
-                      {i + 1}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Sort By Selector */}
-                <div>
-                  <select
-                    id="sortBy"
-                    value={sortBy}
-                    onChange={handleSortChange}
-                    style={{ padding: 10, paddingRight: 5, outline: "none" }}
+              {/* Pagination buttons */}
+              <div>
+                {Array.from({ length: totalPages }, (_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCurrentPage(i + 1)}
+                    style={{
+                      padding: "6px 10px",
+                      margin: "0 5px",
+                      background:
+                        currentPage === i + 1 ? "#cf3715ff" : "transparent",
+                      color: currentPage === i + 1 ? "#fff" : "#000",
+                      border: "none",
+                      borderRadius: 4,
+                      cursor: "pointer",
+                    }}
                   >
-                    <option value="bestseller">Best Seller</option>
-                    <option value="bestseller">Best Seller</option>
-                    <option value="new">New Arrival</option>
-                    <option value="popularity">Popularity</option>
-                    <option value="priceHigh">Price: High to Low</option>
-                    <option value="priceLow">Price: Low to High</option>
-                  </select>
-                </div>
-
-                {/* Pagination */}
+                    {i + 1}
+                  </button>
+                ))}
               </div>
-              <ProductList products={products} />
+
+              {/* Sort By */}
+              <div>
+                <select
+                  id="sortBy"
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  style={{ padding: 10, paddingRight: 5, outline: "none" }}
+                >
+                  <option value="bestseller">Best Seller</option>
+                  <option value="new">New Arrival</option>
+                  <option value="popularity">Popularity</option>
+                  <option value="priceHigh">Price: High to Low</option>
+                  <option value="priceLow">Price: Low to High</option>
+                </select>
+              </div>
             </div>
+
+            {/* Product list */}
+            {loading ? (
+              <div style={{ textAlign: "center", padding: 50 }}>
+                <Spinner animation="border" />
+              </div>
+            ) : (
+              <ProductList products={products} />
+            )}
           </Col>
         </Row>
       </Container>
-      <br/>
-      <Footer/>
-        <div className={styles.mobileBottomfilter}>
-          <div style={{width:"50%",display:"flex",alignItems:"center",justifyContent:"center",color:"#000",fontWeight:"600"}}>FILTER</div>
-          <div style={{width:"50%",display:"flex",alignItems:"center",justifyContent:"center",color:"#000",fontWeight:"600"}}>SORT</div>
-      
+      <br />
+      <Footer />
     </div>
-    </div>
-
-  
   );
 }
