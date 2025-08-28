@@ -23,6 +23,9 @@ import Favourites from "../User/Favourites/Favourites";
 import AdminOrders from "../Admin/Sales&Biiling/AdminOrders/AdminOrders";
 import BannerManager from "../Admin/Banner/BannerManager";
 import PromotionsPage from "../Promotion/PromotionsPage";
+import Header from "../Admin/Navbar/Header/Header";
+import Category from "../Admin/Navbar/Category/Category";
+import Collection from "../Admin/Navbar/Collection/Collection";
 
 export default function RouteManager() {
   return (
@@ -52,6 +55,9 @@ export default function RouteManager() {
           <Route path="Orders" element={<AdminOrders />} />
           <Route path="BannerManager" element={<BannerManager />} />
           <Route path="Promotions" element={<PromotionsPage />} />
+           <Route path="Header" element={<Header />} />
+            <Route path="Category" element={<Category />} />
+             <Route path="Collection" element={<Collection />} />
         </Route>
       </Route>
     </Routes>

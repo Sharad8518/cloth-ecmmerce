@@ -75,8 +75,16 @@ const Sidebar = () => {
             openDropdown === "navbar" ? styles.showDropdown : ""
           }`}
         >
-          <Link to="/dashboard/hierarchyManager" className={styles.dropdownLink}>
-            Navbar Manager
+          <Link to="/dashboard/Header" className={styles.dropdownLink}>
+            Header
+          </Link>
+
+           <Link to="/dashboard/Category" className={styles.dropdownLink}>
+            Catgory 
+          </Link>
+
+           <Link to="/dashboard/Collection" className={styles.dropdownLink}>
+            Collection
           </Link>
          
         </div>

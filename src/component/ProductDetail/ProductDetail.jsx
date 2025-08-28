@@ -292,7 +292,7 @@ export default function ProductDetail() {
 
                     // Find the variant by size
                     const variant = product.variants.find(
-                      (v) => v.size === selectedSize
+                      (v) => v.size === selectedSize.size
                     );
 
                     if (!variant) {
@@ -303,7 +303,7 @@ export default function ProductDetail() {
                     handleAddToCart({
                       productId: product._id,
                       sku: variant.sku,
-                      size: selectedSize,
+                      size: selectedSize.size,
                       color: selectedColor || "N/A",
                       quantity: 1,
                     });
@@ -327,7 +327,7 @@ export default function ProductDetail() {
                   }
 
                   const variant = product.variants.find(
-                    (v) => v.size === selectedSize
+                    (v) => v.size === selectedSize.size
                   );
 
                   if (!variant) {
@@ -342,7 +342,7 @@ export default function ProductDetail() {
                     quantity: 1,
                     variant: {
                       sku: variant.sku,
-                      size: selectedSize,
+                      size: selectedSize.size,
                       color: selectedColor || "N/A",
                       price: product.salePrice || product.mrp,
                     },

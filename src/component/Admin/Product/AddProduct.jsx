@@ -6,6 +6,7 @@ import {
   Card,
   Form,
   Button,
+  Table,
   Badge,
 } from "react-bootstrap";
 import {
@@ -659,7 +660,7 @@ export default function AddProduct() {
             </Card>
             {/* Product Details */}
             <Card className="mt-3">
-              <Card.Header>Product Details</Card.Header>
+              <Card.Header>Product Heading</Card.Header>
               <Card.Body>
                 <Form.Group className="mb-3">
                   <Form.Label style={{ fontWeight: "600", fontSize: 15 }}>
@@ -883,152 +884,118 @@ export default function AddProduct() {
             <Card className="mt-3" style={{ padding: "20px" }}>
               <div className="mt-4">
                 <h6>Variants</h6>
-                {product.variants.map((variant, vIndex) => (
-                  <Card key={vIndex} className="mb-3">
-                    <Card.Body>
-                      <div className="d-flex justify-content-between align-items-center mb-2">
-                        <strong>Variant {vIndex + 1}</strong>
-                        <Button
-                          variant="danger"
-                          size="sm"
-                          onClick={() => removeVariant(vIndex)}
-                        >
-                          Remove
-                        </Button>
-                      </div>
 
-                      {/* Sizes (Multi Input or Comma-separated) */}
-                      <Row className="mb-2">
-                        <Col>
-                          <Form.Label>Size</Form.Label>
-                          <Form.Select
-                            style={{ fontSize: 14 }}
-                            value={variant.size || ""}
-                            onChange={(e) =>
-                              updateVariant(vIndex, "size", e.target.value)
-                            }
-                          >
-                            <option value="">Select Size</option>
-                            <option value="XS">XS</option>
-                            <option value="S">S</option>
-                            <option value="M">M</option>
-                            <option value="L">L</option>
-                            <option value="XL">XL</option>
-                            <option value="XXL">XXL</option>
-                          </Form.Select>
-                        </Col>
-                      </Row>
+                <Table striped bordered hover size="sm" className="mt-3">
+                  <thead>
+                    <tr>
+                      <th>Size</th>
+                      <th>Status</th>
+                      <th>Qty</th>
+                      <th>Low Stock Alert</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {product.variants.map((variant, vIndex) => {
+                      // Get all selected sizes
+                      const selectedSizes = product.variants.map((v) => v.size);
 
-                      {/* Padding Required */}
-                      <Row className="mb-2">
-                        <Col>
-                          <Form.Label>Padding Required</Form.Label>
-                          <Form.Select
-                            value={variant.paddingRequired}
-                            style={{ fontSize: 14 }}
-                            onChange={(e) =>
-                              updateVariant(
-                                vIndex,
-                                "paddingRequired",
-                                e.target.value
-                              )
-                            }
-                          >
-                            <option value="No">No</option>
-                            <option value="Yes">Yes</option>
-                          </Form.Select>
-                        </Col>
-                      </Row>
+                      return (
+                        <tr key={vIndex}>
+                          {/* Size */}
+                          <td>
+                            <Form.Select
+                              size="sm"
+                              style={{ fontSize: 14 }}
+                              value={variant.size || ""}
+                              onChange={(e) =>
+                                updateVariant(vIndex, "size", e.target.value)
+                              }
+                            >
+                              <option value="">Select</option>
+                              {["XS", "S", "M", "L", "XL", "XXL"].map(
+                                (size) => (
+                                  <option
+                                    key={size}
+                                    value={size}
+                                    disabled={
+                                      selectedSizes.includes(size) &&
+                                      variant.size !== size
+                                    }
+                                  >
+                                    {size}
+                                  </option>
+                                )
+                              )}
+                            </Form.Select>
+                          </td>
 
-                      {variant.paddingRequired === "Yes" && (
-                        <>
-                          {/* Waist / Length / Height */}
-                          <Row className="mb-2">
-                            <Col md={4}>
-                              <Form.Label>Waist</Form.Label>
-                              <Form.Control
-                                type="text"
-                                style={{ fontSize: 14 }}
-                                value={variant.waist}
-                                placeholder="e.g. 25 Inch"
-                                onChange={(e) =>
-                                  updateVariant(vIndex, "waist", e.target.value)
-                                }
-                              />
-                            </Col>
-                            <Col md={4}>
-                              <Form.Label>Length</Form.Label>
-                              <Form.Control
-                                type="text"
-                                style={{ fontSize: 14 }}
-                                value={variant.length}
-                                placeholder="e.g. 38 Inch"
-                                onChange={(e) =>
-                                  updateVariant(
-                                    vIndex,
-                                    "length",
-                                    e.target.value
-                                  )
-                                }
-                              />
-                            </Col>
-                            <Col md={4}>
-                              <Form.Label>Height</Form.Label>
-                              <Form.Control
-                                type="text"
-                                style={{ fontSize: 14 }}
-                                value={variant.height}
-                                placeholder="e.g. 5 feet 4 Inch"
-                                onChange={(e) =>
-                                  updateVariant(
-                                    vIndex,
-                                    "height",
-                                    e.target.value
-                                  )
-                                }
-                              />
-                            </Col>
-                          </Row>
-                        </>
-                      )}
+                          {/* Status */}
+                          <td>
+                            <Form.Select
+                              size="sm"
+                              style={{ fontSize: 14 }}
+                              value={variant.status || "Active"}
+                              onChange={(e) =>
+                                updateVariant(vIndex, "status", e.target.value)
+                              }
+                            >
+                              <option value="Active">Active</option>
+                              <option value="Inactive">Inactive</option>
+                            </Form.Select>
+                          </td>
 
-                      {/* Stock & Low Stock Alert */}
-                      <Row className="mt-2">
-                        <Col md={6}>
-                          <Form.Label>Stock</Form.Label>
-                          <Form.Control
-                            type="number"
-                            style={{ fontSize: 14 }}
-                            value={variant.stock}
-                            onChange={(e) =>
-                              updateVariant(
-                                vIndex,
-                                "stock",
-                                Number(e.target.value)
-                              )
-                            }
-                          />
-                        </Col>
-                        <Col md={6}>
-                          <Form.Label>Low Stock Alert Qty</Form.Label>
-                          <Form.Control
-                            type="number"
-                            style={{ fontSize: 14 }}
-                            value={variant.lowStockAlertQty}
-                            onChange={(e) =>
-                              updateVariant(
-                                vIndex,
-                                "lowStockAlertQty",
-                                Number(e.target.value)
-                              )
-                            }
-                          />
-                        </Col>
-                      </Row>
-                    </Card.Body>
-                  </Card>
-                ))}
+                          {/* Qty */}
+                          <td>
+                            <Form.Control
+                              type="number"
+                              size="sm"
+                              style={{ fontSize: 14 }}
+                              value={variant.stock}
+                              onChange={(e) =>
+                                updateVariant(
+                                  vIndex,
+                                  "stock",
+                                  Number(e.target.value)
+                                )
+                              }
+                            />
+                          </td>
 
+                          {/* Low Stock */}
+                          <td>
+                            <Form.Control
+                              type="number"
+                              size="sm"
+                              style={{ fontSize: 14 }}
+                              value={variant.lowStockAlertQty}
+                              onChange={(e) =>
+                                updateVariant(
+                                  vIndex,
+                                  "lowStockAlertQty",
+                                  Number(e.target.value)
+                                )
+                              }
+                            />
+                          </td>
+
+                          {/* Remove Button */}
+                          <td className="text-center">
+                            <Button
+                              variant="danger"
+                              size="sm"
+                              onClick={() => removeVariant(vIndex)}
+                            >
+                              Remove
+                            </Button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </Table>
+
+                {/* Add Variant Button */}
                 <Button
                   onClick={addVariant}
                   variant="primary"
@@ -1048,6 +1015,162 @@ export default function AddProduct() {
                   Add Variant
                 </Button>
               </div>
+            </Card>
+
+            <Card style={{ marginTop: "20px" }}>
+              <Card.Header>Shipping & Returns</Card.Header>
+              <Card.Body>
+                <Form.Group className="mb-3">
+                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                    Shipping & Returns
+                  </Form.Label>
+                  <Form.Select
+                    style={{ fontSize: 14 }}
+                    value={product.shippingAndReturns || ""}
+                    onChange={(e) =>
+                      handleChange("shippingAndReturns", e.target.value)
+                    }
+                  >
+                    <option value="">Select Policy</option>
+                    <option value="7 Days Return">7 Days Return</option>
+                    <option value="Exchange Only">Exchange Only</option>
+                    <option value="No Return / Exchange">
+                      No Return / Exchange
+                    </option>
+                  </Form.Select>
+                </Form.Group>
+              </Card.Body>
+            </Card>
+
+            <Card style={{ marginTop: "20px" }}>
+              <Card.Header>Product Speciality</Card.Header>
+              <Card.Body>
+                <Form.Group className="mb-3">
+                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                    Product Speciality
+                  </Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    rows={3}
+                    style={{ fontSize: 14 }}
+                    value={product.productSpeciality || ""}
+                    onChange={(e) =>
+                      handleChange("productSpeciality", e.target.value)
+                    }
+                    placeholder="Enter speciality (e.g. Handcrafted, Limited Edition)"
+                  />
+                </Form.Group>
+
+                <Form.Group className="mb-3">
+                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                    Style & Fit
+                  </Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    rows={3}
+                    style={{ fontSize: 14 }}
+                    value={product.styleAndFit || ""}
+                    onChange={(e) =>
+                      handleChange("styleAndFit", e.target.value)
+                    }
+                    placeholder="Enter style & fit details (e.g. Regular Fit, A-Line Cut)"
+                  />
+                </Form.Group>
+              </Card.Body>
+            </Card>
+
+            <Card className="mt-3">
+              <Card.Header>Measurements</Card.Header>
+              <Card.Body>
+                {/* Padding Required */}
+                <Form.Group className="mb-3">
+                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                    Padding Required?
+                  </Form.Label>
+                  <Form.Select
+                    style={{ fontSize: 14 }}
+                    value={product.paddingRequired || "No"}
+                    onChange={(e) =>
+                      handleChange("paddingRequired", e.target.value)
+                    }
+                  >
+                    <option value="No">No</option>
+                    <option value="Yes">Yes</option>
+                  </Form.Select>
+                  <Form.Text className="text-muted">
+                    Note: Select one. (Can also be ignored by user)
+                  </Form.Text>
+                </Form.Group>
+
+                {/* Show only if Padding Required = Yes */}
+                {product.paddingRequired === "Yes" && (
+                  <>
+                    {/* Waist */}
+                    <Form.Group className="mb-3">
+                      <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                        Waist
+                      </Form.Label>
+                      <Form.Select
+                        style={{ fontSize: 14 }}
+                        value={product.waist || ""}
+                        onChange={(e) => handleChange("waist", e.target.value)}
+                      >
+                        <option value="">Select Waist</option>
+                        <option value="25 Inch">25 Inch</option>
+                        <option value="26 Inch">26 Inch</option>
+                        <option value="27 Inch">27 Inch</option>
+                        <option value="28 Inch">28 Inch</option>
+                      </Form.Select>
+                      <Form.Text className="text-muted">
+                        Note: Select from list
+                      </Form.Text>
+                    </Form.Group>
+
+                    {/* Length */}
+                    <Form.Group className="mb-3">
+                      <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                        Length (Waist to Floor including heel)
+                      </Form.Label>
+                      <Form.Select
+                        style={{ fontSize: 14 }}
+                        value={product.length || ""}
+                        onChange={(e) => handleChange("length", e.target.value)}
+                      >
+                        <option value="">Select Length</option>
+                        <option value="36 Inch (91 cm)">36 Inch (91 cm)</option>
+                        <option value="38 Inch (96 cm)">38 Inch (96 cm)</option>
+                        <option value="40 Inch (102 cm)">
+                          40 Inch (102 cm)
+                        </option>
+                      </Form.Select>
+                      <Form.Text className="text-muted">
+                        Note: Select from list
+                      </Form.Text>
+                    </Form.Group>
+
+                    {/* Height */}
+                    <Form.Group className="mb-3">
+                      <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                        Your Height (Including heel)
+                      </Form.Label>
+                      <Form.Select
+                        style={{ fontSize: 14 }}
+                        value={product.height || ""}
+                        onChange={(e) => handleChange("height", e.target.value)}
+                      >
+                        <option value="">Select Height</option>
+                        <option value="5 feet 2 Inch">5 feet 2 Inch</option>
+                        <option value="5 feet 3 Inch">5 feet 3 Inch</option>
+                        <option value="5 feet 4 Inch">5 feet 4 Inch</option>
+                        <option value="5 feet 5 Inch">5 feet 5 Inch</option>
+                      </Form.Select>
+                      <Form.Text className="text-muted">
+                        Note: Select from list
+                      </Form.Text>
+                    </Form.Group>
+                  </>
+                )}
+              </Card.Body>
             </Card>
           </Col>
 
@@ -1145,84 +1268,67 @@ export default function AddProduct() {
             </Card>
 
             <Card style={{ marginTop: "20px" }}>
-              <Card.Header>Shipping & Product Info</Card.Header>
+              <Card.Header>Product Details</Card.Header>
               <Card.Body>
-                {/* Product Speciality */}
-                <Form.Group className="mb-3">
-                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
-                    Product Speciality
-                  </Form.Label>
-                  <Row>
-                    <Col md={12}>
+                <Row>
+                  <Col md={6}>
+                    <Form.Group className="mb-3">
+                      <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                        Style No.
+                      </Form.Label>
                       <Form.Control
-                        as="textarea"
-                        rows={3} // you can adjust number of visible lines
                         style={{ fontSize: 14 }}
-                        value={product.productSpeciality || ""}
+                        value={product.styleNo || ""}
                         onChange={(e) =>
-                          handleChange("productSpeciality", e.target.value)
+                          handleChange("styleNo", e.target.value)
                         }
-                        placeholder="Enter speciality (e.g. Handcrafted)"
+                        placeholder="Enter style number (e.g. ST1234)"
                       />
-                    </Col>
-                  </Row>
-                </Form.Group>
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group className="mb-3">
+                      <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                        Colour
+                      </Form.Label>
+                      <Form.Control
+                        style={{ fontSize: 14 }}
+                        value={product.colour || ""}
+                        onChange={(e) => handleChange("colour", e.target.value)}
+                        placeholder="Enter colour (e.g. Red, Blue)"
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
 
-                {/* Shipping & Returns */}
-                <Form.Group className="mb-3">
-                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
-                    Shipping & Returns
-                  </Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    rows={3}
-                    style={{ fontSize: 14 }}
-                    name="shippingAndReturns"
-                    value={product?.shippingAndReturns || ""}
-                    onChange={(e) =>
-                      handleChange("shippingAndReturns", e.target.value)
-                    }
-                    placeholder="Enter shipping & return policy"
-                  />
-                </Form.Group>
-                <Form.Group className="mb-3">
-                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
-                    Style No.
-                  </Form.Label>
-                  <Form.Control
-                    style={{ fontSize: 14 }}
-                    name="styleNo"
-                    value={product?.styleNo || ""}
-                    onChange={(e) => handleChange("styleNo", e.target.value)}
-                    placeholder="Enter style number (e.g. ST1234)"
-                  />
-                </Form.Group>
-
-                <Form.Group className="mb-3">
-                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
-                    Fabric
-                  </Form.Label>
-                  <Form.Control
-                    style={{ fontSize: 14 }}
-                    name="fabric"
-                    value={product?.fabric || ""}
-                    onChange={(e) => handleChange("fabric", e.target.value)}
-                    placeholder="Enter fabric type (e.g. Cotton, Silk)"
-                  />
-                </Form.Group>
-
-                <Form.Group className="mb-3">
-                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
-                    Work
-                  </Form.Label>
-                  <Form.Control
-                    style={{ fontSize: 14 }}
-                    name="work"
-                    value={product?.work || ""}
-                    onChange={(e) => handleChange("work", e.target.value)}
-                    placeholder="Enter work details (e.g. Embroidery, Zari)"
-                  />
-                </Form.Group>
+                <Row>
+                  <Col md={6}>
+                    <Form.Group className="mb-3">
+                      <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                        Fabric
+                      </Form.Label>
+                      <Form.Control
+                        style={{ fontSize: 14 }}
+                        value={product.fabric || ""}
+                        onChange={(e) => handleChange("fabric", e.target.value)}
+                        placeholder="Enter fabric type (e.g. Cotton, Silk)"
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group className="mb-3">
+                      <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                        Work / Craft
+                      </Form.Label>
+                      <Form.Control
+                        style={{ fontSize: 14 }}
+                        value={product.work || ""}
+                        onChange={(e) => handleChange("work", e.target.value)}
+                        placeholder="Enter work (e.g. Embroidery, Zari)"
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
 
                 <Form.Group className="mb-3">
                   <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
@@ -1230,14 +1336,69 @@ export default function AddProduct() {
                   </Form.Label>
                   <Form.Control
                     style={{ fontSize: 14 }}
-                    name="packContains"
-                    value={product?.packContains || ""}
+                    value={product.packContains || ""}
                     onChange={(e) =>
                       handleChange("packContains", e.target.value)
                     }
-                    placeholder="Enter items included (e.g. Kurta, Dupatta, Bottom)"
+                    placeholder="Enter items (e.g. Kurta, Dupatta, Bottom)"
                   />
                 </Form.Group>
+
+                <Row>
+                  <Col md={6}>
+                    <Form.Group className="mb-3">
+                      <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                        Occasion
+                      </Form.Label>
+                      <Form.Control
+                        style={{ fontSize: 14 }}
+                        value={product.occasion || ""}
+                        onChange={(e) =>
+                          handleChange("occasion", e.target.value)
+                        }
+                        placeholder="Enter occasion (e.g. Casual, Party, Wedding)"
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group className="mb-3">
+                      <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                        Dupatta
+                      </Form.Label>
+
+                      <Form.Check
+                        type="switch"
+                        id="dupatta-switch"
+                        label={product.dupatta?.enabled ? "Yes" : "No"}
+                        checked={product.dupatta?.enabled || false} // 👈 default false = No
+                        onChange={(e) =>
+                          handleChange("dupatta", {
+                            ...product.dupatta,
+                            enabled: e.target.checked,
+                          })
+                        }
+                      />
+                    </Form.Group>
+                  </Col>
+
+                  <Col md={12}>
+                    {product.dupatta?.enabled && (
+                      <Form.Control
+                        type="text"
+                        style={{ fontSize: 14, marginTop: 8 }}
+                        value={product.dupatta?.description || ""}
+                        onChange={(e) =>
+                          handleChange("dupatta", {
+                            ...product.dupatta,
+                            description: e.target.value,
+                          })
+                        }
+                        placeholder="Enter dupatta details (e.g. Net, Printed, Plain)"
+                      />
+                    )}
+                  </Col>
+                </Row>
+                <br />
 
                 <Form.Group className="mb-3">
                   <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
@@ -1245,13 +1406,47 @@ export default function AddProduct() {
                   </Form.Label>
                   <Form.Control
                     style={{ fontSize: 14 }}
-                    name="care"
-                    value={product?.care || ""}
+                    value={product.care || ""}
                     onChange={(e) => handleChange("care", e.target.value)}
                     placeholder="Enter care instructions (e.g. Dry Clean Only)"
                   />
                 </Form.Group>
 
+                {/* Production Detail: Yes/No Toggle + Description */}
+                <Form.Group className="mb-3">
+                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                    Production Detail
+                  </Form.Label>
+                  <Form.Check
+                    type="switch"
+                    id="production-detail-switch"
+                    label={product.productionDetail?.enabled ? "Yes" : "No"}
+                    checked={product.productionDetail?.enabled || false}
+                    onChange={(e) =>
+                      handleChange("productionDetail", {
+                        ...product.productionDetail,
+                        enabled: e.target.checked,
+                      })
+                    }
+                  />
+                  {product.productionDetail?.enabled && (
+                    <Form.Control
+                      as="textarea"
+                      rows={3}
+                      style={{ fontSize: 14, marginTop: 8 }}
+                      value={product.productionDetail?.description || ""}
+                      onChange={(e) =>
+                        handleChange("productionDetail", {
+                          ...product.productionDetail,
+                          description: e.target.value,
+                        })
+                      }
+                      placeholder="Enter production description"
+                    />
+                  )}
+                </Form.Group>
+
+                {/* Note */}
                 <Form.Group className="mb-3">
                   <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
                     Note
@@ -1260,8 +1455,7 @@ export default function AddProduct() {
                     as="textarea"
                     rows={3}
                     style={{ fontSize: 14 }}
-                    name="note"
-                    value={product?.note || ""}
+                    value={product.note || ""}
                     onChange={(e) => handleChange("note", e.target.value)}
                     placeholder="Enter additional product notes (optional)"
                   />
@@ -1289,6 +1483,9 @@ export default function AddProduct() {
                 </Form.Group>
               </Card.Body>
             </Card>
+            <FAQForm product={product} setProduct={setProduct} />
+
+            <SEOForm seoData={product} setSeoData={setProduct} />
           </Col>
 
           {/* Additional Info */}
@@ -1304,7 +1501,7 @@ export default function AddProduct() {
                     onChange={handleChange}
                   />
                 </Form.Group> */}
-                <ColourDropdown product={product} setProduct={setProduct} />
+                {/* <ColourDropdown product={product} setProduct={setProduct} /> */}
                 <Form.Group>
                   <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
                     Fulfillment Type <span style={{ color: "red" }}>*</span>
@@ -1342,10 +1539,6 @@ export default function AddProduct() {
                 </Form.Group>
               </Card.Body>
             </Card>
-
-            <FAQForm product={product} setProduct={setProduct} />
-
-            <SEOForm seoData={product} setSeoData={setProduct} />
           </Col>
 
           {/* Submit */}
