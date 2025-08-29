@@ -1,7 +1,12 @@
 import React, { useState } from "react";
-import { sendOTP, verifyOTP, updateProfile,loginWithGoogleAPI } from "../../api/user/authApi";
+import {
+  sendOTP,
+  verifyOTP,
+  updateProfile,
+  loginWithGoogleAPI,
+} from "../../api/user/authApi";
 import CompleteProfile from "../CompleteProfile";
-import { useGoogleLogin } from "@react-oauth/google";
+import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 
 export default function MobileLoginOTP({ isOpen, closeModal }) {
@@ -126,33 +131,25 @@ export default function MobileLoginOTP({ isOpen, closeModal }) {
     }
   };
 
+  //   const loginWithGoogle = useGoogleLogin({
+  //   onSuccess: async (credentialResponse) => {
+  //     console.log("Access Token:", credentialResponse.credential);
+  //     // try{
+  //     //    const data = await loginWithGoogleAPI(token);
+  //     // }catch(err){
+  //     //  console.error("Google login failed:", err.message);
+  //     // }
 
-  const loginWithGoogle = useGoogleLogin({
-    clientId:
-      "489329560689-n1hmlss9s8s950umc729bnatcltt1lrf.apps.googleusercontent.com",
-    onSuccess: async (credentialResponse) => {
-      if (!credentialResponse.credential) return;
-      const token = credentialResponse.credential;
-      try {
-        // Call backend API with idToken
-        const data = await loginWithGoogleAPI(token);
-        console.log("Backend Response:", data);
-        // Save JWT token locally
-        localStorage.setItem("token", data.token);
-        // (optional) save user info
-        localStorage.setItem("user", JSON.stringify(data.user));
-      } catch (err) {
-        console.error("Google login failed:", err.message);
-      }
-    },
-    onError: () => {
-      console.log("Login Failed");
-    },
-  });
+  //     // Fetch user profile
+  //     // const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+  //     //   headers: {
+  //     //     Authorization: `Bearer ${tokenResponse.access_token}`,
+  //     //   },
+  //     // });
 
-
-
-
+  //   },
+  //   onError: () => console.log("Login Failed"),
+  // });
 
   if (!isOpen) return null;
 
@@ -266,7 +263,7 @@ export default function MobileLoginOTP({ isOpen, closeModal }) {
                 </p>
                 <p style={{ fontSize: 12 }}>Or continue with</p>
                 <div style={{ display: "flex", justifyContent: "center" }}>
-                  <div
+                  {/* <div
                     style={{
                       width: 60,
                       height: 60,
@@ -282,8 +279,8 @@ export default function MobileLoginOTP({ isOpen, closeModal }) {
                       src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png"
                       style={{ width: 40, height: 40 }}
                     />
-                  </div>
-                  <div
+                  </div> */}
+                  {/* <div
                     style={{
                       width: 60,
                       height: 60,
@@ -298,7 +295,33 @@ export default function MobileLoginOTP({ isOpen, closeModal }) {
                       src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Facebook_f_logo_%282019%29.svg/250px-Facebook_f_logo_%282019%29.svg.png"
                       style={{ width: 40, height: 40 }}
                     />
-                  </div>
+                  </div> */}
+
+                  <GoogleLogin
+                    onSuccess={async (credentialResponse) => {
+                      if (!credentialResponse.credential) return;
+                      try {
+                        // Call your API helper with the Google ID token
+                        const data = await loginWithGoogleAPI(
+                          credentialResponse.credential
+                        );
+                        if (data.success) {
+                          // Save your backend’s JWT + user info
+                          localStorage.setItem("token", data.token);
+                          localStorage.setItem(
+                            "user",
+                            JSON.stringify(data.user)
+                          );
+                          closeModal()
+                        }
+                      } catch (err) {
+                        console.error("Google login failed:", err.message);
+                      }
+                    }}
+                    onError={() => {
+                      console.log("Login Failed");
+                    }}
+                  />
                 </div>
               </>
             ) : (

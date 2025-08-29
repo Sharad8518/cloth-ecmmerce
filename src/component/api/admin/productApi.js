@@ -71,3 +71,11 @@ export const addSimilarToProduct = async (productId, similarProductIds) => {
   });
   return response.data;
 };
+
+export const addFBTToProduct = async (productId, fbtIds) => {
+  const response = await axios.post("/admin/add-fbt", {
+    productId,
+    fbtIds,
+  });
+  return response.data;
+};
