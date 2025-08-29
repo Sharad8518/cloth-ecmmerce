@@ -33,6 +33,19 @@ export const verifyOTP = async (phone, otp) => {
   }
 };
 
+export const loginWithGoogleAPI = async (idToken) => {
+  try {
+    const response = await axios.post("/user/googleLogin", { idToken });
+    return response.data; // { success, token, user }
+  } catch (error) {
+    if (error.response) {
+      throw new Error(error.response.data.message || "Google login failed");
+    } else {
+      throw new Error("Network error");
+    }
+  }
+};
+
 export const updateProfile = async ({ userId, name, email, addresses }) => {
   try {
     const res = await axios.post("/user/completeProfile", {

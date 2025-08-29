@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { sendOTP, verifyOTP, updateProfile } from "../../api/user/authApi";
+import { sendOTP, verifyOTP, updateProfile,loginWithGoogleAPI } from "../../api/user/authApi";
 import CompleteProfile from "../CompleteProfile";
 import { useGoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
@@ -126,21 +126,31 @@ export default function MobileLoginOTP({ isOpen, closeModal }) {
     }
   };
 
+
   const loginWithGoogle = useGoogleLogin({
-  clientId: "489329560689-n1hmlss9s8s950umc729bnatcltt1lrf.apps.googleusercontent.com", // <- This must match the OAuth client
-  onSuccess: (credentialResponse) => {
-    if (!credentialResponse.credential) return;
+    clientId:
+      "489329560689-n1hmlss9s8s950umc729bnatcltt1lrf.apps.googleusercontent.com",
+    onSuccess: async (credentialResponse) => {
+      if (!credentialResponse.credential) return;
+      const token = credentialResponse.credential;
+      try {
+        // Call backend API with idToken
+        const data = await loginWithGoogleAPI(token);
+        console.log("Backend Response:", data);
+        // Save JWT token locally
+        localStorage.setItem("token", data.token);
+        // (optional) save user info
+        localStorage.setItem("user", JSON.stringify(data.user));
+      } catch (err) {
+        console.error("Google login failed:", err.message);
+      }
+    },
+    onError: () => {
+      console.log("Login Failed");
+    },
+  });
 
-    const token = credentialResponse.credential;
-    const userInfo = jwtDecode(token); // Decode the JWT
-    console.log("User Info:", userInfo);
 
-    // Optionally save token locally or call backend
-  },
-  onError: () => {
-    console.log("Login Failed");
-  },
-});
 
 
 
