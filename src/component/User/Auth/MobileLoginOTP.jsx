@@ -127,20 +127,20 @@ export default function MobileLoginOTP({ isOpen, closeModal }) {
   };
 
   const loginWithGoogle = useGoogleLogin({
-    onSuccess: (credentialResponse) => {
-      if (!credentialResponse.credential) return;
+  clientId: "489329560689-n1hmlss9s8s950umc729bnatcltt1lrf.apps.googleusercontent.com", // <- This must match the OAuth client
+  onSuccess: (credentialResponse) => {
+    if (!credentialResponse.credential) return;
 
-      const token = credentialResponse.credential;
-      const userInfo = jwtDecode(token); // Decode the JWT
-      console.log("User Info:", userInfo);
+    const token = credentialResponse.credential;
+    const userInfo = jwtDecode(token); // Decode the JWT
+    console.log("User Info:", userInfo);
 
-      // Optionally save user info locally
-  
-    },
-    onError: () => {
-      console.log("Login Failed");
-    },
-  });
+    // Optionally save token locally or call backend
+  },
+  onError: () => {
+    console.log("Login Failed");
+  },
+});
 
 
 
