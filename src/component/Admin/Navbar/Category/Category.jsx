@@ -28,6 +28,7 @@ import {
   createCollection,
   updateCollection,
   deleteCollection,
+  getHeadersAllowCategory
 } from "../../../api/admin/hierarchyManagerApi";
 import { FiEdit3 } from "react-icons/fi";
 import { AiOutlineDelete } from "react-icons/ai";
@@ -50,7 +51,7 @@ export default function Category() {
   }, []);
 
   const fetchHeaders = async () => {
-    const res = await getHeaders();
+    const res = await getHeadersAllowCategory();
     setHeaders(res);
   };
 
@@ -72,7 +73,7 @@ export default function Category() {
   const loadCategories = async (headerId) => {
     setSelectedHeader(headerId);
     const res = await getCategories();
-    setCategories(res.filter((c) => c.header._id === headerId));
+    setCategories(res.filter((c) => c?.header?._id === headerId));
     console.log("Categories loaded for header:", res);
     setSubCategories([]);
     setCollections([]);
@@ -81,14 +82,14 @@ export default function Category() {
   const loadSubCategories = async (categoryId) => {
     setSelectedCategory(categoryId);
     const res = await getSubCategories();
-    setSubCategories(res.filter((s) => s.category._id === categoryId));
+    setSubCategories(res.filter((s) => s?.category?._id === categoryId));
     setCollections([]);
   };
 
   const loadCollections = async (subCategoryId) => {
     setSelectedSubCategory(subCategoryId);
     const res = await getCollections();
-    setCollections(res.filter((c) => c.subcategory._id === subCategoryId));
+    setCollections(res.filter((c) => c?.subcategory?._id === subCategoryId));
   };
 
   // Save entity
@@ -102,21 +103,21 @@ export default function Category() {
 
     if (entity === "categorys") {
       data._id
-        ? await updateCategory(data._id, data)
+        ? await updateCategory(data?._id, data)
         : await createCategory(data);
       loadCategories(selectedHeader);
     }
 
     if (entity === "subcategorys") {
       data._id
-        ? await updateSubCategory(data._id, data)
+        ? await updateSubCategory(data?._id, data)
         : await createSubCategory(data);
       loadSubCategories(selectedCategory);
     }
 
     if (entity === "collections") {
       data._id
-        ? await updateCollection(data._id, data)
+        ? await updateCollection(data?._id, data)
         : await createCollection(data);
       loadCollections(selectedSubCategory);
     }
@@ -192,7 +193,7 @@ export default function Category() {
           ${selectedHeader === h._id ? styles.listGroupItemActiveCustom : ""}`}
       >
         <span>{h.title}</span>
-        <div className="d-flex gap-2">
+        {/* <div className="d-flex gap-2">
           <Button
             size="sm"
             className={`${styles.actionButton} ${styles.editButton}`}
@@ -213,17 +214,18 @@ export default function Category() {
           >
             <AiOutlineDelete />
           </Button>
-        </div>
+        </div> */}
       </div>
     ))}
   </div>
 </Card>
+<br/>
       <Row>
         {/* Headers */}
      
 
         {/* Categories */}
-        <Col md={4}>
+        <Col md={6}>
           <Card>
             <Card.Header className="d-flex justify-content-between align-items-center">
               <strong>Categories</strong>
@@ -284,7 +286,7 @@ export default function Category() {
         </Col>
 
         {/* SubCategories */}
-        <Col md={4}>
+        <Col md={6}>
           <Card>
             <Card.Header className="d-flex justify-content-between align-items-center">
               <strong>SubCategories</strong>
@@ -345,52 +347,7 @@ export default function Category() {
         </Col>
 
         {/* Collections */}
-        <Col md={4}>
-          <Card>
-            <Card.Header className="d-flex justify-content-between align-items-center">
-              <strong>Collections</strong>
-             
-            </Card.Header>
-            <ListGroup variant="flush">
-              {collections.map((col) => (
-                <ListGroup.Item
-                  key={col._id}
-                  className="d-flex justify-content-between align-items-center"
-                >
-                  {col.name}
-                  <div>
-                    <Button
-                      size="sm"
-                        className={`${styles.actionButton} ${styles.editButton}`}
-                      onClick={() => openModal("collections", col)}
-                    >
-                      <FiEdit3 />
-                    </Button>{" "}
-                    <Button
-                      size="sm"
-                     className={`${styles.actionButton} ${styles.deleteButton}`}
-                      onClick={() => deleteEntity("collections", col._id)}
-                    >
-                      <AiOutlineDelete />
-                    </Button>
-                  </div>
-                </ListGroup.Item>
-              ))}
-            </ListGroup>
-             {selectedSubCategory && (
-                <Button
-                  className={styles.addButton}
-                  onClick={() =>
-                    openModal("collections", {
-                      subcategory: selectedSubCategory,
-                    })
-                  }
-                >
-                  + Add
-                </Button>
-              )}
-          </Card>
-        </Col>
+        
       </Row>
 
       {/* Modal */}

@@ -13,6 +13,12 @@ export const getHeaders = async () => {
   return response.data;
 };
 
+
+export const getHeadersAllowCategory = async () => {
+  const response = await axios.get("/admin/headers/category");
+  return response.data;
+};
+
 /* Get Single Header */
 export const getHeader = async (id) => {
   const response = await axios.get(`/admin/headers/${id}`);

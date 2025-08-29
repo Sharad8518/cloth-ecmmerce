@@ -23,6 +23,7 @@ import ColourDropdown from "./ColourDropdown/ColourDropdown";
 import FAQForm from "./FAQForm/FAQForm";
 import { IoAddCircleOutline } from "react-icons/io5";
 import Swal from "sweetalert2";
+import VariantsCard from "./Variants/VariantsCard";
 
 export default function AddProduct() {
   const [headers, setHeaders] = useState([]);
@@ -52,16 +53,32 @@ export default function AddProduct() {
     subCategories: [], // selected subcategories
     collections: [], // selected collections
 
+    shortDescription: "",
     estimatedShippingDays: "",
     shippingAndReturns: "",
     productSpeciality: "",
     faq: [],
     styleNo: "",
+    styleAndFit: "",
     fabric: "",
     work: "",
     packContains: "",
     care: "",
     note: "",
+    productionDetail: {
+      enabled: false,
+      description: "",
+    },
+
+    dupatta: {
+      enabled: false,
+      description: "",
+    },
+
+    paddingRequired: "No", // default No
+    waist: "",
+    length: "",
+    height: "",
 
     // ✅ SEO
     seo: {
@@ -115,17 +132,29 @@ export default function AddProduct() {
     setSubCategories([]);
     setCollections([]);
   };
-  const loadSubCategories = async (categoryId) => {
-    setSelectedCategory(categoryId);
-    const res = await getSubCategories();
-    setSubCategories(res.filter((s) => s.category._id === categoryId));
-    setCollections([]);
-  };
-  const loadCollections = async (subCategoryId) => {
-    setSelectedSubCategory(subCategoryId);
-    const res = await getCollections();
-    setCollections(res.filter((c) => c.subcategory._id === subCategoryId));
-  };
+const loadSubCategories = async (categoryId) => {
+  setSelectedCategory(categoryId);
+  const res = await getSubCategories();
+
+  const filtered = (res || []).filter(
+    (s) => s?.category?._id === categoryId
+  );
+
+  setSubCategories(filtered);
+  setCollections([]);
+}
+
+
+const loadCollections = async (subCategoryId) => {
+  setSelectedSubCategory(subCategoryId);
+  const res = await getCollections();
+
+  const filtered = (res || []).filter(
+    (c) => c?.subcategory?._id === subCategoryId
+  );
+
+  setCollections(filtered);
+};
 
   // ✅ Validate file
   const validateFile = (file) => {
@@ -207,10 +236,7 @@ export default function AddProduct() {
         ...(prev.variants || []),
         {
           size: "", // single string
-          paddingRequired: "No",
-          waist: "",
-          length: "",
-          height: "",
+          status: "Active",
           stock: 0,
           lowStockAlertQty: 5,
         },
@@ -281,6 +307,21 @@ export default function AddProduct() {
       productSpeciality: prev.productSpeciality.filter((_, i) => i !== index),
     }));
   };
+  const addMoreSizes = () => {
+    // Example: push multiple sizes at once
+    const extraSizes = ["3XL", "4XL", "5XL"];
+    const newVariants = extraSizes.map((size) => ({
+      size,
+      status: "Active",
+      stock: 0,
+      lowStockAlertQty: 0,
+    }));
+
+    setProduct((prev) => ({
+      ...prev,
+      variants: [...prev.variants, ...newVariants],
+    }));
+  };
   const [loading, setLoading] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -289,7 +330,6 @@ export default function AddProduct() {
     try {
       const result = await addProduct(product);
       console.log("✅ Product created:", result);
-
       Swal.fire({
         icon: "success",
         title: "Product Created",
@@ -411,37 +451,44 @@ export default function AddProduct() {
                       padding: "8px",
                     }}
                   >
-                    {categories.map((c) => (
-                      <Form.Check
-                        key={c._id}
-                        type="checkbox"
-                        label={c.name}
-                        style={{ fontSize: 14 }}
-                        checked={product.categories?.includes(c.name) || false}
-                        onChange={async (e) => {
-                          let newCategories;
-                          if (e.target.checked) {
-                            newCategories = [
-                              ...(product.categories || []),
-                              c.name,
-                            ];
-                            setProduct((p) => ({
-                              ...p,
-                              categories: newCategories,
-                            }));
-                            await loadSubCategories(c._id);
-                          } else {
-                            newCategories = (product.categories || []).filter(
-                              (name) => name !== c.name
-                            );
-                            setProduct((p) => ({
-                              ...p,
-                              categories: newCategories,
-                            }));
+                    {categories.map((c) =>
+                      c ? (
+                        <Form.Check
+                          key={c._id}
+                          type="checkbox"
+                          label={c.name}
+                          style={{ fontSize: 14 }}
+                          checked={
+                            product.categories?.includes(c.name) || false
                           }
-                        }}
-                      />
-                    ))}
+                          onChange={async (e) => {
+                            let newCategories;
+                            if (e.target.checked) {
+                              newCategories = [
+                                ...(product.categories || []),
+                                c.name,
+                              ];
+                              setProduct((p) => ({
+                                ...p,
+                                categories: newCategories,
+                              }));
+                              if (c._id) {
+                                console.log("c._id", c._id);
+                                await loadSubCategories(c._id);
+                              }
+                            } else {
+                              newCategories = (product.categories || []).filter(
+                                (name) => name !== c.name
+                              );
+                              setProduct((p) => ({
+                                ...p,
+                                categories: newCategories,
+                              }));
+                            }
+                          }}
+                        />
+                      ) : null
+                    )}
                   </div>
 
                   <div style={{ marginTop: "8px" }}>
@@ -496,7 +543,7 @@ export default function AddProduct() {
                       padding: "8px",
                     }}
                   >
-                    {subCategories.map((sc) => (
+                    {subCategories.filter(Boolean).map((sc) => (
                       <Form.Check
                         key={sc._id}
                         type="checkbox"
@@ -527,7 +574,9 @@ export default function AddProduct() {
                               itemNumber,
                             }));
 
-                            await loadCollections(sc._id);
+                            if (sc?._id) {
+                              await loadCollections(sc._id);
+                            }
                           } else {
                             newSubCategories = (
                               product.subCategories || []
@@ -882,205 +931,17 @@ export default function AddProduct() {
             </Card>
 
             <Card className="mt-3" style={{ padding: "20px" }}>
-              <div className="mt-4">
-                <h6>Variants</h6>
-
-                <Table striped bordered hover size="sm" className="mt-3">
-                  <thead>
-                    <tr>
-                      <th>Size</th>
-                      <th>Status</th>
-                      <th>Qty</th>
-                      <th>Low Stock Alert</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {product.variants.map((variant, vIndex) => {
-                      // Get all selected sizes
-                      const selectedSizes = product.variants.map((v) => v.size);
-
-                      return (
-                        <tr key={vIndex}>
-                          {/* Size */}
-                          <td>
-                            <Form.Select
-                              size="sm"
-                              style={{ fontSize: 14 }}
-                              value={variant.size || ""}
-                              onChange={(e) =>
-                                updateVariant(vIndex, "size", e.target.value)
-                              }
-                            >
-                              <option value="">Select</option>
-                              {["XS", "S", "M", "L", "XL", "XXL"].map(
-                                (size) => (
-                                  <option
-                                    key={size}
-                                    value={size}
-                                    disabled={
-                                      selectedSizes.includes(size) &&
-                                      variant.size !== size
-                                    }
-                                  >
-                                    {size}
-                                  </option>
-                                )
-                              )}
-                            </Form.Select>
-                          </td>
-
-                          {/* Status */}
-                          <td>
-                            <Form.Select
-                              size="sm"
-                              style={{ fontSize: 14 }}
-                              value={variant.status || "Active"}
-                              onChange={(e) =>
-                                updateVariant(vIndex, "status", e.target.value)
-                              }
-                            >
-                              <option value="Active">Active</option>
-                              <option value="Inactive">Inactive</option>
-                            </Form.Select>
-                          </td>
-
-                          {/* Qty */}
-                          <td>
-                            <Form.Control
-                              type="number"
-                              size="sm"
-                              style={{ fontSize: 14 }}
-                              value={variant.stock}
-                              onChange={(e) =>
-                                updateVariant(
-                                  vIndex,
-                                  "stock",
-                                  Number(e.target.value)
-                                )
-                              }
-                            />
-                          </td>
-
-                          {/* Low Stock */}
-                          <td>
-                            <Form.Control
-                              type="number"
-                              size="sm"
-                              style={{ fontSize: 14 }}
-                              value={variant.lowStockAlertQty}
-                              onChange={(e) =>
-                                updateVariant(
-                                  vIndex,
-                                  "lowStockAlertQty",
-                                  Number(e.target.value)
-                                )
-                              }
-                            />
-                          </td>
-
-                          {/* Remove Button */}
-                          <td className="text-center">
-                            <Button
-                              variant="danger"
-                              size="sm"
-                              onClick={() => removeVariant(vIndex)}
-                            >
-                              Remove
-                            </Button>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </Table>
-
-                {/* Add Variant Button */}
-                <Button
-                  onClick={addVariant}
-                  variant="primary"
-                  size="sm"
-                  style={{
-                    width: 150,
-                    borderRadius: 100,
-                    backgroundColor: "#282e36ff",
-                    border: "none",
-                  }}
-                >
-                  <IoAddCircleOutline
-                    color="#fff"
-                    size={17}
-                    style={{ marginTop: -2 }}
-                  />{" "}
-                  Add Variant
-                </Button>
-              </div>
-            </Card>
-
-            <Card style={{ marginTop: "20px" }}>
-              <Card.Header>Shipping & Returns</Card.Header>
-              <Card.Body>
-                <Form.Group className="mb-3">
-                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
-                    Shipping & Returns
-                  </Form.Label>
-                  <Form.Select
-                    style={{ fontSize: 14 }}
-                    value={product.shippingAndReturns || ""}
-                    onChange={(e) =>
-                      handleChange("shippingAndReturns", e.target.value)
-                    }
-                  >
-                    <option value="">Select Policy</option>
-                    <option value="7 Days Return">7 Days Return</option>
-                    <option value="Exchange Only">Exchange Only</option>
-                    <option value="No Return / Exchange">
-                      No Return / Exchange
-                    </option>
-                  </Form.Select>
-                </Form.Group>
-              </Card.Body>
-            </Card>
-
-            <Card style={{ marginTop: "20px" }}>
-              <Card.Header>Product Speciality</Card.Header>
-              <Card.Body>
-                <Form.Group className="mb-3">
-                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
-                    Product Speciality
-                  </Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    rows={3}
-                    style={{ fontSize: 14 }}
-                    value={product.productSpeciality || ""}
-                    onChange={(e) =>
-                      handleChange("productSpeciality", e.target.value)
-                    }
-                    placeholder="Enter speciality (e.g. Handcrafted, Limited Edition)"
-                  />
-                </Form.Group>
-
-                <Form.Group className="mb-3">
-                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
-                    Style & Fit
-                  </Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    rows={3}
-                    style={{ fontSize: 14 }}
-                    value={product.styleAndFit || ""}
-                    onChange={(e) =>
-                      handleChange("styleAndFit", e.target.value)
-                    }
-                    placeholder="Enter style & fit details (e.g. Regular Fit, A-Line Cut)"
-                  />
-                </Form.Group>
-              </Card.Body>
+              <VariantsCard
+                product={product}
+                setProduct={setProduct}
+                addVariant={addVariant}
+                updateVariant={updateVariant}
+                removeVariant={removeVariant}
+              />
             </Card>
 
             <Card className="mt-3">
-              <Card.Header>Measurements</Card.Header>
+              <Card.Header>Additional Info For Better Fit</Card.Header>
               <Card.Body>
                 {/* Padding Required */}
                 <Form.Group className="mb-3">
@@ -1172,11 +1033,8 @@ export default function AddProduct() {
                 )}
               </Card.Body>
             </Card>
-          </Col>
 
-          {/* Pricing */}
-          <Col md={5}>
-            <Card style={{ marginTop: "0px" }}>
+            <Card style={{ marginTop: "20px" }}>
               <Card.Header>Pricing</Card.Header>
               <Card.Body>
                 <Row className="mb-3">
@@ -1266,11 +1124,31 @@ export default function AddProduct() {
                 </Row>
               </Card.Body>
             </Card>
+          </Col>
 
-            <Card style={{ marginTop: "20px" }}>
+          {/* Pricing */}
+          <Col md={5}>
+            <Card style={{ marginTop: "0px" }}>
               <Card.Header>Product Details</Card.Header>
               <Card.Body>
                 <Row>
+                  <Col md={12}>
+                    <Form.Group className="mb-3">
+                      <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                        Short Description
+                      </Form.Label>
+                      <Form.Control
+                        as="textarea"
+                        rows={2}
+                        style={{ fontSize: 14 }}
+                        value={product.shortDescription || ""}
+                        onChange={(e) =>
+                          handleChange("shortDescription", e.target.value)
+                        }
+                        placeholder="Enter a short summary of the product (e.g. Elegant silk saree with zari work)"
+                      />
+                    </Form.Group>
+                  </Col>
                   <Col md={6}>
                     <Form.Group className="mb-3">
                       <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
@@ -1464,34 +1342,44 @@ export default function AddProduct() {
             </Card>
 
             <Card style={{ marginTop: "20px" }}>
-              <Card.Header>Product Status</Card.Header>
+              <Card.Header>Product Speciality</Card.Header>
               <Card.Body>
-                <Form.Group>
+                <Form.Group className="mb-3">
                   <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
-                    Status
+                    Product Speciality
                   </Form.Label>
-                  <Form.Select
-                    name="status"
+                  <Form.Control
+                    as="textarea"
+                    rows={3}
                     style={{ fontSize: 14 }}
-                    value={product.status || "DRAFT"}
-                    onChange={(e) => handleChange("status", e.target.value)}
-                  >
-                    <option value="DRAFT">Draft</option>
-                    <option value="ACTIVE">Active</option>
-                    <option value="ARCHIVED">Archived</option>
-                  </Form.Select>
+                    value={product.productSpeciality || ""}
+                    onChange={(e) =>
+                      handleChange("productSpeciality", e.target.value)
+                    }
+                    placeholder="Enter speciality (e.g. Handcrafted, Limited Edition)"
+                  />
+                </Form.Group>
+
+                <Form.Group className="mb-3">
+                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                    Style & Fit
+                  </Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    rows={3}
+                    style={{ fontSize: 14 }}
+                    value={product.styleAndFit || ""}
+                    onChange={(e) =>
+                      handleChange("styleAndFit", e.target.value)
+                    }
+                    placeholder="Enter style & fit details (e.g. Regular Fit, A-Line Cut)"
+                  />
                 </Form.Group>
               </Card.Body>
             </Card>
-            <FAQForm product={product} setProduct={setProduct} />
 
-            <SEOForm seoData={product} setSeoData={setProduct} />
-          </Col>
-
-          {/* Additional Info */}
-          <Col md={6}>
-            <Card>
-              <Card.Header>Additional Info</Card.Header>
+            <Card style={{ marginTop: 20 }}>
+              <Card.Header>Shipment & Return Info</Card.Header>
               <Card.Body>
                 {/* <Form.Group className="mb-3">
                   <Form.Label>Colour</Form.Label>
@@ -1537,9 +1425,57 @@ export default function AddProduct() {
                     placeholder="Enter number of days (e.g. 5)"
                   />
                 </Form.Group>
+
+                <Form.Group className="mb-3">
+                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                    Returns Policy
+                  </Form.Label>
+                  <Form.Select
+                    style={{ fontSize: 14 }}
+                    value={product.shippingAndReturns || ""}
+                    onChange={(e) =>
+                      handleChange("shippingAndReturns", e.target.value)
+                    }
+                  >
+                    <option value="">Select Policy</option>
+                    <option value="7 Days Return">7 Days Return</option>
+                    <option value="Exchange Only">Exchange Only</option>
+                    <option value="No Return / Exchange">
+                      No Return / Exchange
+                    </option>
+                  </Form.Select>
+                </Form.Group>
               </Card.Body>
             </Card>
+
+            <Card style={{ marginTop: "20px" }}>
+              <Card.Header>Product Status</Card.Header>
+              <Card.Body>
+                <Form.Group>
+                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                    Status
+                  </Form.Label>
+                  <Form.Select
+                    name="status"
+                    style={{ fontSize: 14 }}
+                    value={product.status || "DRAFT"}
+                    onChange={(e) => handleChange("status", e.target.value)}
+                  >
+                    <option value="DRAFT">Draft</option>
+                    <option value="ACTIVE">Active</option>
+                    <option value="ARCHIVED">Archived</option>
+                  </Form.Select>
+                </Form.Group>
+              </Card.Body>
+            </Card>
+
+            <FAQForm product={product} setProduct={setProduct} />
+
+            <SEOForm seoData={product} setSeoData={setProduct} />
           </Col>
+
+          {/* Additional Info */}
+          <Col md={6}></Col>
 
           {/* Submit */}
           <Col md={12} className="text-end">

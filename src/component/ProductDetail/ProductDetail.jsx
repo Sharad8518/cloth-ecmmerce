@@ -236,14 +236,15 @@ export default function ProductDetail() {
             <div className={styles.detailPrize}>Rs. {product?.salePrice}</div>
             <div className={styles.detailMRP}>MRP Inclusive of all size</div>
             <hr />
-            <div className={styles.detailSizeText}>
-              SELECT YOUR SIZE
-              <div className={styles.detailSizeGuideText}>Size Guide</div>
-            </div>
+           
             <div className={styles.detailMadeToOrderText}>
               <BiCloset size={20} /> Made To Order
             </div>
             <div className={styles.detailShip}>Ship by 11th November 2025</div>
+             <div className={styles.detailSizeText}>
+              SELECT YOUR SIZE
+              <div className={styles.detailSizeGuideText}>Size Guide</div>
+            </div>
             <div className={styles.container}>
               {product?.variants?.map((variant) => (
                 <button
@@ -398,7 +399,7 @@ export default function ProductDetail() {
                     }}
                   />
                   <div className={styles.productDetailHeading}>
-                    Know your product{" "}
+                   Product Specialty{" "}
                   </div>
                 </Accordion.Header>
                 <Accordion.Body>

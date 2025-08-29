@@ -21,7 +21,7 @@ export default function CategoryProduct() {
   // State to track filters
   const [filters, setFilters] = useState({
     price: [],
-    category: [],
+    collection: [],
     size: [],
     color: [],
     fabric: [],
@@ -163,15 +163,15 @@ useEffect(() => {
               {/* Other filter sections (category, size, color, etc.) */}
               {/* Example for Category */}
               <Accordion.Item eventKey="1">
-                <Accordion.Header>Category</Accordion.Header>
+                <Accordion.Header>Collection</Accordion.Header>
                 <Accordion.Body>
                   {["Sarees", "Lehengas", "Kurtis", "Suits"].map((val) => (
                     <Form.Check
                       key={val}
                       type="checkbox"
                       label={val}
-                      checked={filters.category.includes(val)}
-                      onChange={() => handleFilterChange("category", val)}
+                      checked={filters.collection.includes(val)}
+                      onChange={() => handleFilterChange("collection", val)}
                     />
                   ))}
                 </Accordion.Body>

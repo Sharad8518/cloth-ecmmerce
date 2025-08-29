@@ -9,7 +9,7 @@ import {
   Modal,
   Form,
   ListGroup,
-  Table
+  Table,
 } from "react-bootstrap";
 import {
   getHeaders,
@@ -155,21 +155,65 @@ export default function Header() {
   };
 
   // Toggle Active / Inactive
-const toggleActive = (headerId) => {
+const handleToggle = async (headerId, field) => {
+  const header = headers.find((h) => h._id === headerId);
+  if (!header) return;
+
+  // Map DB value to boolean
+  let newValue;
+  if (field === "status") {
+    newValue = header.status === "Active" ? "Inactive" : "Active";
+  } else if (field === "showNavbar") {
+    newValue = header.showNavbar === "Yes" ? "No" : "Yes";
+  } else if (field === "addCategory") {
+    newValue = header.addCategory === "Yes" ? "No" : "Yes";
+  } else {
+    return;
+  }
+
+  // Update UI optimistically
   setHeaders((prev) =>
-    prev.map((h) =>
-      h._id === headerId ? { ...h, isActive: !h.isActive } : h
-    )
+    prev.map((h) => (h._id === headerId ? { ...h, [field]: newValue } : h))
   );
+
+  // Update backend
+  try {
+    await updateHeader(headerId, { [field]: newValue });
+  } catch (err) {
+    console.error(err);
+  }
 };
 
-// Toggle Show in Navbar (Yes/No)
-const toggleNavbar = (headerId) => {
+  // Toggle Show in Navbar (Yes/No)
+const toggleNavbar = async (headerId) => {
+  const header = headers.find((h) => h._id === headerId);
+  if (!header) return;
+
+  const newValue = header.showNavbar === "Yes" ? "No" : "Yes";
+
+  // Optimistically update UI
   setHeaders((prev) =>
     prev.map((h) =>
-      h._id === headerId ? { ...h, showInNavbar: !h.showInNavbar } : h
+      h._id === headerId ? { ...h, showNavbar: newValue } : h
     )
   );
+
+  // Update backend using generic updateHeader
+  try {
+    await updateHeader(headerId, { showNavbar: newValue });
+  } catch (err) {
+    console.error("Failed to toggle showNavbar", err);
+  }
+};
+
+
+  const toggleAddCategory = async (entity, id) => {
+  try {
+    await axios.put(`/api/${entity}/${id}/toggle-add-category`);
+    fetchHeaders(); // refresh list
+  } catch (err) {
+    console.error("Failed to toggle addCategory", err);
+  }
 };
 
   return (
@@ -194,6 +238,7 @@ const toggleNavbar = (headerId) => {
                 <th>Edit</th>
                 <th>Active/Inactive</th>
                 <th>Show in Navbar</th>
+                <th>Add Category</th>
                 <th>Delete</th>
               </tr>
             </thead>
@@ -226,26 +271,39 @@ const toggleNavbar = (headerId) => {
                     <Button
                       size="sm"
                       className={`${styles.actionButton}`}
-                      style={{ background: "orange", border: "none" }}
+                      style={{ background:h.status ==="Active"? "green":"red",  }}
                       onClick={(e) => {
                         e.stopPropagation();
-                        toggleActive("headers", h._id);
+                       handleToggle(h._id, "status");
                       }}
                     >
-                      {h.active ? "Active" : "Inactive"}
+                      {h.status}
                     </Button>
                   </td>
                   <td>
                     <Button
                       size="sm"
+                       style={{ background:h.showNavbar ==="Yes"? "green":"red",  }}
                       className={`${styles.actionButton}`}
-                      style={{ background: "orange", border: "none" }}
                       onClick={(e) => {
                         e.stopPropagation();
-                        toggleNavbar("headers", h._id);
+                        handleToggle(h._id,"showNavbar");
                       }}
                     >
-                      {h.showInNavbar ? "Yes" : "No"}
+                      {h.showNavbar}
+                    </Button>
+                  </td>
+                  <td>
+                    <Button
+                      size="sm"
+                      className={styles.actionButton}
+                      style={{ background:h.addCategory ==="Yes"? "green":"red",  }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleToggle(h._id,"addCategory"); // ⬅️ new function
+                      }}
+                    >
+                      {h.addCategory}
                     </Button>
                   </td>
                   <td>
@@ -267,174 +325,88 @@ const toggleNavbar = (headerId) => {
         </Card.Body>
       </Card>
 
-      {/* Categories */}
-      <Row>
-        <Col md={4}>
-          <Card>
-            <Card.Header className="d-flex justify-content-between align-items-center">
-              <strong>Categories</strong>
-            </Card.Header>
-            <ListGroup variant="flush">
-              {categories.map((c) => (
-                <ListGroup.Item
-                  key={c._id}
-                  active={selectedCategory === c._id}
-                  onClick={() => loadSubCategories(c._id)}
-                  style={{ cursor: "pointer" }}
-                  className={`d-flex justify-content-between align-items-center ${
-                    styles.textHeading
-                  } ${
-                    selectedCategory === c._id
-                      ? styles.listGroupItemActiveCustom
-                      : ""
-                  }`}
-                >
-                  {c.name}
-                  <div>
-                    <Button
-                      size="sm"
-                      className={`${styles.actionButton} ${styles.editButton}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        openModal("categorys", c);
-                      }}
-                    >
-                      <FiEdit3 />
-                    </Button>{" "}
-                    <Button
-                      size="sm"
-                      className={`${styles.actionButton} ${styles.deleteButton}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        deleteEntity("categorys", c._id);
-                      }}
-                    >
-                      <AiOutlineDelete />
-                    </Button>
-                  </div>
-                </ListGroup.Item>
-              ))}
-            </ListGroup>
-            {selectedHeader && (
-              <Button
-                className={styles.addButton}
-                onClick={() =>
-                  openModal("categorys", { header: selectedHeader })
-                }
-              >
-                + Add
-              </Button>
-            )}
-          </Card>
-        </Col>
-
-        {/* SubCategories */}
-        <Col md={4}>
-          <Card>
-            <Card.Header className="d-flex justify-content-between align-items-center">
-              <strong>SubCategories</strong>
-            </Card.Header>
-            <ListGroup variant="flush">
-              {subCategories.map((s) => (
-                <ListGroup.Item
-                  key={s._id}
-                  active={selectedSubCategory === s._id}
-                  onClick={() => loadCollections(s._id)}
-                  style={{ cursor: "pointer" }}
-                  className={`d-flex justify-content-between align-items-center ${
-                    styles.textHeading
-                  } ${
-                    selectedSubCategory === s._id
-                      ? styles.listGroupItemActiveCustom
-                      : ""
-                  }`}
-                >
-                  {s.name}
-                  <div>
-                    <Button
-                      size="sm"
-                      className={`${styles.actionButton} ${styles.editButton}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        openModal("subcategorys", s);
-                      }}
-                    >
-                      <FiEdit3 />
-                    </Button>{" "}
-                    <Button
-                      size="sm"
-                      className={`${styles.actionButton} ${styles.deleteButton}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        deleteEntity("subcategorys", s._id);
-                      }}
-                    >
-                      <AiOutlineDelete />
-                    </Button>
-                  </div>
-                </ListGroup.Item>
-              ))}
-            </ListGroup>
-            {selectedCategory && (
-              <Button
-                className={styles.addButton}
-                onClick={() =>
-                  openModal("subcategorys", { category: selectedCategory })
-                }
-              >
-                + Add
-              </Button>
-            )}
-          </Card>
-        </Col>
-
-        {/* Collections */}
-        <Col md={4}>
-          <Card>
-            <Card.Header className="d-flex justify-content-between align-items-center">
-              <strong>Collections</strong>
-            </Card.Header>
-            <ListGroup variant="flush">
-              {collections.map((col) => (
-                <ListGroup.Item
-                  key={col._id}
-                  className="d-flex justify-content-between align-items-center"
-                >
-                  {col.name}
-                  <div>
-                    <Button
-                      size="sm"
-                      className={`${styles.actionButton} ${styles.editButton}`}
-                      onClick={() => openModal("collections", col)}
-                    >
-                      <FiEdit3 />
-                    </Button>{" "}
-                    <Button
-                      size="sm"
-                      className={`${styles.actionButton} ${styles.deleteButton}`}
-                      onClick={() => deleteEntity("collections", col._id)}
-                    >
-                      <AiOutlineDelete />
-                    </Button>
-                  </div>
-                </ListGroup.Item>
-              ))}
-            </ListGroup>
-            {selectedSubCategory && (
-              <Button
-                className={styles.addButton}
-                onClick={() =>
-                  openModal("collections", { subcategory: selectedSubCategory })
-                }
-              >
-                + Add
-              </Button>
-            )}
-          </Card>
-        </Col>
-      </Row>
-
       {/* Modal stays same */}
+         <Modal
+        show={modal.show}
+        onHide={() => setModal({ show: false, entity: "", data: {} })}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>
+            {modal.data._id ? "Edit" : "Add"} {modal.entity.slice(0, -1)}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group className="mb-3">
+              <Form.Label>Name / Title</Form.Label>
+              <Form.Control
+                type="text"
+                value={
+                  modal.entity === "headers"
+                    ? modal.data.title || ""
+                    : modal.data.name || ""
+                }
+                onChange={(e) =>
+                  setModal({
+                    ...modal,
+                    data: {
+                      ...modal.data,
+                      title:
+                        modal.entity === "headers"
+                          ? e.target.value
+                          : modal.data.title,
+                      name:
+                        modal.entity !== "headers"
+                          ? e.target.value
+                          : modal.data.name,
+                    },
+                  })
+                }
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Slug</Form.Label>
+              <Form.Control
+                type="text"
+                value={modal.data.slug || ""}
+                onChange={(e) =>
+                  setModal({
+                    ...modal,
+                    data: { ...modal.data, slug: e.target.value },
+                  })
+                }
+              />
+            </Form.Group>
+            {modal.entity === "collections" && (
+              <Form.Group className="mb-3">
+                <Form.Label>Description</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  value={modal.data.description || ""}
+                  onChange={(e) =>
+                    setModal({
+                      ...modal,
+                      data: { ...modal.data, description: e.target.value },
+                    })
+                  }
+                />
+              </Form.Group>
+            )}
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => setModal({ show: false, entity: "", data: {} })}
+          >
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={saveEntity}>
+            Save
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 }
