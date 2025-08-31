@@ -5,10 +5,15 @@ if (token) {
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 }
 
-export const getAllOrders = async ({ page = 1, limit = 10 }) => {
+export const getAllOrders = async ({ 
+  page = 1,
+  limit = 10,  
+  search = "", 
+  orderNumber = "", 
+  orderStatus = ""  }) => {
   try {
     const res = await axios.get("/admin/orders", {
-      params: { page, limit },
+     params: { page, limit, search, orderNumber, orderStatus },
       headers: {
         Authorization: `Bearer ${localStorage.getItem("hfz-a_tkn_238x")}`,
       },

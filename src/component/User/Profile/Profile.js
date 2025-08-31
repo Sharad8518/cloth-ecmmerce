@@ -58,6 +58,8 @@ const Profile = () => {
     <br />
     <br />
      <br />
+      <br />
+     <br />
     <Container fluid className="py-4">
       <Row>
         {/* Sidebar */}

@@ -17,6 +17,7 @@ export const getProductById = async (productId) => {
 
 
 export const filterProduct = async (params = {}) => {
+  console.log('params',params)
   const response = await axios.get(`/user/productsfilter`,{ params });
   return response.data;
 };

@@ -58,7 +58,7 @@ export default function Customer() {
 
   return (
     <Container className="mt-4">
-      <h2 className="mb-4">👥 Customers</h2>
+      <h2 className="mb-4" style={{fontSize:16}}>👥 Customers</h2>
 
       {error && <Alert variant="danger">{error}</Alert>}
 
@@ -70,7 +70,7 @@ export default function Customer() {
       ) : (
         <Card>
           <Card.Body>
-            <Table striped bordered hover responsive>
+            <Table striped bordered hover responsive style={{fontSize:13}}>
               <thead>
                 <tr>
                   <th>Name</th>

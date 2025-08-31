@@ -19,16 +19,18 @@ import {getBanner} from "../../api/user/bannerApi"
 
 export default function CategoryProduct() {
   // State to track filters
-  const [filters, setFilters] = useState({
-    price: [],
-    collection: [],
-    size: [],
-    color: [],
-    fabric: [],
-    craft: [],
-    occasion: [],
-    dupatta: [],
-  });
+const [filters, setFilters] = useState({
+  price: [],
+  collection: [],
+  size: [],
+  color: [],
+  fabric: [],
+  craft: [],
+  occasion: [],
+  dupatta: [],
+  discount: [],   // example: [10, 50] → between 10% and 50%
+});
+
 
   // Data from API
   const [products, setProducts] = useState([]);
@@ -52,19 +54,81 @@ useEffect(() => {
   fetchBanner();
 }, []);
   // 🔹 Convert filter state into params object for API
-  const buildParams = () => {
-    let params = { page: currentPage, limit: 12, sort: sortBy };
-    Object.keys(filters).forEach((key) => {
-      if (filters[key].length > 0) params[key] = filters[key];
-    });
-    return params;
+// 🛠 Convert filters state into query params
+const buildParams = (filters, currentPage = 1, sortBy = "newest") => {
+  const params = {
+    page: currentPage,
+    limit: 12,
+    sortBy, // backend expects "sortBy", not "sort"
   };
 
+    const normalize = (arr) =>
+    Array.isArray(arr) && arr.length ? arr.join(",") : undefined;
+  // 🎨 Color → backend expects `colour`
+  if (filters.color.length) {
+    params.colour = normalize(filters.color); // Express will handle ?colour=Red&colour=Blue
+  }
+
+  // 📏 Size
+  if (filters.size.length) {
+     params.size = normalize(filters.size); // backend supports ?size=M&size=XL
+  }
+
+  // 🧵 Fabric
+  if (filters.fabric.length) {
+    params.fabric = filters.fabric;
+  }
+
+  // 🎨 Craft → backend expects `work`
+  if (filters.craft.length) {
+    params.work = filters.craft;
+  }
+
+  // 🎉 Occasion → backend expects `collections`
+  if (filters.occasion.length) {
+    params.collections = filters.occasion;
+  }
+
+  // 👗 Collection → backend expects `categories`
+  if (filters.collection.length) {
+    params.categories = filters.collection;
+  }
+
+  // 🧣 Dupatta (⚠️ not in backend code — you may need to add)
+  if (filters.dupatta.length) {
+    params.dupatta = filters.dupatta;
+  }
+
+  // 💰 Price buckets → map labels to minPrice / maxPrice
+  if (filters.price.length) {
+    filters.price.forEach((range) => {
+      if (range === "Under ₹500") {
+        params.minPrice = 0;
+        params.maxPrice = 500;
+      } else if (range === "₹500 - ₹1000") {
+        params.minPrice = 500;
+        params.maxPrice = 1000;
+      } else if (range === "₹1000 - ₹2000") {
+        params.minPrice = 1000;
+        params.maxPrice = 2000;
+      } else if (range === "Above ₹2000") {
+        params.minPrice = 2000;
+      }
+    });
+  }
+
+  // 🔖 Discount
+  if (filters.discount.length) {
+    params.minDiscount = filters.discount[0];
+  }
+
+  return params;
+};
   // 🔹 Fetch products from API
   const fetchProducts = async () => {
-    setLoading(true);
+  
     try {
-      const data = await filterProduct(buildParams());
+      const data = await filterProduct(buildParams(filters, currentPage, sortBy));
       setProducts(data.products || []);
       setTotalPages(data.pages || 1);
     } catch (error) {
@@ -74,6 +138,8 @@ useEffect(() => {
     }
   };
 
+  console.log("filters",filters)
+  console.log("Final Params 👉", buildParams(filters));
   // Run whenever filters, page, or sort change
   useEffect(() => {
     fetchProducts();
@@ -133,7 +199,7 @@ useEffect(() => {
         <Row>
           {/* Left Filters */}
           <Col
-            md={2}
+            md={3}
             style={{ background: "#f8f9fa", padding: "20px" }}
             className={styles.filterBox}
           >
@@ -272,13 +338,31 @@ useEffect(() => {
                   ))}
                 </Accordion.Body>
               </Accordion.Item>
+              
+            <Accordion.Item eventKey="8">
+  <Accordion.Header>Discount</Accordion.Header>
+  <Accordion.Body>
+    {["10% or more", "20% or more", "30% or more", "40% or more", "50% or more"].map(
+      (val, idx) => (
+        <Form.Check
+          key={idx}
+          type="checkbox"
+          label={val}
+          checked={filters.discount.includes(val)}
+          onChange={() => handleFilterChange("discount", val)}
+        />
+      )
+    )}
+  </Accordion.Body>
+</Accordion.Item>
             </Accordion>
+
           </Col>
 
           {/* Right Product Section */}
-          <Col md={10}>
+          <Col md={9}>
             {/* Selected filters */}
-            {selectedFilters.length > 0 && (
+            {selectedFilters?.length > 0 && (
               <div style={{ marginBottom: 20 }}>
                 <div
                   style={{
@@ -289,7 +373,7 @@ useEffect(() => {
                   }}
                 >
                   <strong>Selected Filters:</strong>
-                  {selectedFilters.map((filter, idx) => (
+                  {selectedFilters?.map((filter, idx) => (
                     <Badge
                       key={idx}
                       bg="secondary"
@@ -373,10 +457,10 @@ useEffect(() => {
                   style={{ padding: 10, paddingRight: 5, outline: "none" }}
                 >
                   <option value="bestseller">Best Seller</option>
-                  <option value="new">New Arrival</option>
+                  <option value="newest">New Arrival</option>
                   <option value="popularity">Popularity</option>
-                  <option value="priceHigh">Price: High to Low</option>
-                  <option value="priceLow">Price: Low to High</option>
+                  <option value="highmrp">Price: High to Low</option>
+                  <option value="lowmrp">Price: Low to High</option>
                 </select>
               </div>
             </div>

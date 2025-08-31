@@ -17,7 +17,7 @@ import { useCart } from "../Context/CartProvider";
 import CartOffcanvas from "../Cart/CartOffcanvas/CartOffcanvas";
 import MobileLoginOTP from "../User/Auth/MobileLoginOTP";
 import CompleteProfile from "../User/CompleteProfile";
-import {getPromotion} from "../api/user/PromotionApi"
+import { getPromotion } from "../api/user/PromotionApi";
 import axios from "axios";
 
 const collectionMenu = [
@@ -98,7 +98,7 @@ export default function NavbarMenu() {
   const [activeHeader, setActiveHeader] = useState(null);
   const handleCloseCart = () => setCartOpen(false);
   const [collectionMenu, setCollectionMenu] = useState([]);
-  const [promotions,setPromotions] =useState([])
+  const [promotions, setPromotions] = useState([]);
 
   const loadingRef = useRef(null);
   const location = useLocation();
@@ -106,7 +106,9 @@ export default function NavbarMenu() {
   useEffect(() => {
     const fetchNavbar = async () => {
       try {
-        const res = await axios.get("https://houseofziba-nodejs.onrender.com/api/user/navbar");
+        const res = await axios.get(
+          "https://houseofziba-nodejs.onrender.com/api/user/navbar"
+        );
         const menu = res.data.map((header) => ({
           ...header,
           categories: header?.categories?.map((cat) => ({
@@ -153,20 +155,18 @@ export default function NavbarMenu() {
     }
   };
 
-  useEffect(()=>{
-    const fetch = async()=>{
-      try{
+  useEffect(() => {
+    const fetch = async () => {
+      try {
         const res = await getPromotion();
-        console.log(res)
-       setPromotions(res.dat)
-      }catch(error){
-        console.log(error)
+        console.log(res);
+        setPromotions(res.data);
+      } catch (error) {
+        console.log(error);
       }
-    }
-  fetch()
-  },[])
-
-
+    };
+    fetch();
+  }, []);
 
   return (
     <>
@@ -174,33 +174,36 @@ export default function NavbarMenu() {
         className="nav-and-submenu-wrapper"
         onMouseLeave={() => setShowModal(false)}
       >
-        {promotions?.map((promo) => (
-    <div
-      key={promo._id}
-      style={{
-        background: "linear-gradient(90deg, #ffd700, #ff8c00)",
-        color: "#1a1a1a",
-        textAlign: "center",
-        padding: "8px 18px",
-        fontWeight: 600,
-        fontSize: "13px",
-        letterSpacing: "0.5px",
-        boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-        position: "sticky",
-        top: 0,
-        zIndex: 999,
-        marginBottom: "4px",
-      }}
-    >
-      {promo.topBannerText}{" "}
-      {promo.promoOffers?.map((offer, index) => (
-        <span key={index}>
-          <span style={{ margin: "0 8px" }}>|</span>
-          {offer.condition} → {offer.reward}
-        </span>
-      ))}
-    </div>
-  ))}
+        {Array.isArray(promotions) &&
+          promotions.length > 0 &&
+          promotions.map((promo) => (
+            <div
+              key={promo._id}
+              style={{
+                background: "linear-gradient(90deg, #ffd700, #ff8c00)",
+                color: "#1a1a1a",
+                textAlign: "center",
+                padding: "8px 18px",
+                fontWeight: 600,
+                fontSize: "13px",
+                letterSpacing: "0.5px",
+                boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                position: "sticky",
+                top: 0,
+                zIndex: 999,
+               
+              }}
+            >
+              {promo.topBannerText}{" "}
+              {Array.isArray(promo.promoOffers) &&
+                promo.promoOffers.map((offer, index) => (
+                  <span key={index}>
+                    <span style={{ margin: "0 8px" }}>|</span>
+                    {offer.condition} → {offer.reward}
+                  </span>
+                ))}
+            </div>
+          ))}
         <nav
           className="navbar"
           style={{
@@ -291,7 +294,7 @@ export default function NavbarMenu() {
             height={2}
             ref={loadingRef}
             shadow={false}
-            style={{ position: "absolute", top: 80 }}
+            style={{ position: "absolute", top: 115 }}
           />
         </nav>
 
@@ -392,7 +395,7 @@ export default function NavbarMenu() {
           onClick={handleShow}
         />
 
-        <h2 className="logo-mobile">ShopMate</h2>
+        <h2 className="logo-mobile">House of Ziba</h2>
         <div style={{ marginRight: 10, display: "flex" }}>
           {/* ✅ Cart Icon with Badge */}
           <div className="cart-icon">
@@ -412,54 +415,59 @@ export default function NavbarMenu() {
         </div>
       </nav>
 
-     <Offcanvas
-      show={show}
-      onHide={handleClose}
-      placement="start"
-      className="custom-offcanvas shadow-lg"
-    >
-      <Offcanvas.Header closeButton>
-        <Offcanvas.Title className="text-lg font-semibold text-gray-800">
-          Collections
-        </Offcanvas.Title>
-      </Offcanvas.Header>
+      <Offcanvas
+        show={show}
+        onHide={handleClose}
+        placement="start"
+        className="custom-offcanvas shadow-lg"
+      >
+        <Offcanvas.Header closeButton>
+          <Offcanvas.Title className="text-lg font-semibold text-gray-800">
+            Collections
+          </Offcanvas.Title>
+        </Offcanvas.Header>
 
-      <Offcanvas.Body className="p-0">
-        <Accordion flush alwaysOpen>
-          {collectionMenu.map((header) => (
-            <Accordion.Item eventKey={header._id} key={header._id}>
-              <Accordion.Header>
-                <span className="font-medium text-gray-700">{header.title}</span>
-              </Accordion.Header>
-              <Accordion.Body className="bg-gray-50">
-                {header.categories.map((cat) => (
-                  <div key={cat._id} className="mb-4" style={{color:""}}>
-                    <p className="text-sm font-semibold text-orange-500 mb-2">
-                      {cat.name}
-                    </p>
-                    {cat.subCategories.length > 0 && (
-                      <ul className="space-y-1" style={{listStyle:"none"}}>
-                        {cat.subCategories.map((sub) => (
-                          <li key={sub._id}>
-                            <Link
-                              to={`/categoryProduct`}
-                              className="block text-gray-700 hover:text-orange-500 text-sm transition-colors duration-200"
-                              style={{textDecoration:"none",color:"#000"}}
-                            >
-                              {sub.name}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                ))}
-              </Accordion.Body>
-            </Accordion.Item>
-          ))}
-        </Accordion>
-      </Offcanvas.Body>
-    </Offcanvas>
+        <Offcanvas.Body className="p-0">
+          <Accordion flush alwaysOpen>
+            {collectionMenu.map((header) => (
+              <Accordion.Item eventKey={header._id} key={header._id}>
+                <Accordion.Header>
+                  <span className="font-medium text-gray-700">
+                    {header.title}
+                  </span>
+                </Accordion.Header>
+                <Accordion.Body className="bg-gray-50">
+                  {header.categories.map((cat) => (
+                    <div key={cat._id} className="mb-4" style={{ color: "" }}>
+                      <p className="text-sm font-semibold text-orange-500 mb-2">
+                        {cat.name}
+                      </p>
+                      {cat.subCategories.length > 0 && (
+                        <ul className="space-y-1" style={{ listStyle: "none" }}>
+                          {cat.subCategories.map((sub) => (
+                            <li key={sub._id}>
+                              <Link
+                                to={`/categoryProduct`}
+                                className="block text-gray-700 hover:text-orange-500 text-sm transition-colors duration-200"
+                                style={{
+                                  textDecoration: "none",
+                                  color: "#000",
+                                }}
+                              >
+                                {sub.name}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  ))}
+                </Accordion.Body>
+              </Accordion.Item>
+            ))}
+          </Accordion>
+        </Offcanvas.Body>
+      </Offcanvas>
       <CartOffcanvas
         show={cartOpen}
         cart={cart}

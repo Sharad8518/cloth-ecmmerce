@@ -7,6 +7,8 @@ import {
   Spinner,
   Pagination,
   Modal,
+  Form, Row, Col,
+  Card
 } from "react-bootstrap";
 import { getProducts } from "../../../api/admin/productApi";
 import { useNavigate } from "react-router-dom";
@@ -173,13 +175,17 @@ export default function AllProductAdmin() {
   const [loading, setLoading] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showModal, setShowModal] = useState(false);
+   const [search, setSearch] = useState("");
+  const [title, setTitle] = useState("");
+  const [itemNumber, setItemNumber] = useState("");
+  const [status, setStatus] = useState("");
   const limit = 20;
   const navigate = useNavigate();
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const data = await getProducts({ page, limit });
+        const data = await getProducts({ page, limit,search, title, itemNumber, status });
         setProducts(data.products || []);
         setPages(data.pages || 1);
       } catch (err) {
@@ -189,7 +195,7 @@ export default function AllProductAdmin() {
       }
     };
     fetchProducts();
-  }, [page]);
+  }, [page,search, title, itemNumber, status]);
 
   const handleEdit = (id) => console.log("Edit product:", id);
   const handleDelete = (id) => console.log("Delete product:", id);
@@ -201,6 +207,56 @@ export default function AllProductAdmin() {
   return (
     <Container className="my-5">
       <h2 className="mb-4">Products</h2>
+      <Card className="mb-4 shadow-sm">
+  <Card.Body>
+    <Form>
+      <Row className="g-3 align-items-center">
+        <Col md={3}>
+          <Form.Control
+            placeholder="Search (text)"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </Col>
+        <Col md={3}>
+          <Form.Control
+            placeholder="Title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        </Col>
+        <Col md={2}>
+          <Form.Control
+            placeholder="Item Number"
+            value={itemNumber}
+            onChange={(e) => setItemNumber(e.target.value)}
+          />
+        </Col>
+        <Col md={2}>
+          <Form.Select value={status} onChange={(e) => setStatus(e.target.value)}>
+            <option value="">All Status</option>
+            <option value="ACTIVE">Active</option>
+            <option value="Draft">Draft</option>
+          </Form.Select>
+        </Col>
+        <Col md={2} className="d-flex">
+          <Button
+            variant="secondary"
+            className="w-100"
+            onClick={() => {
+              setSearch("");
+              setTitle("");
+              setItemNumber("");
+              setStatus("");
+            }}
+          >
+            Reset
+          </Button>
+        </Col>
+      </Row>
+    </Form>
+  </Card.Body>
+</Card>
 
       {loading ? (
         <div className="d-flex justify-content-center my-5">
@@ -214,7 +270,7 @@ export default function AllProductAdmin() {
             hover
             responsive
             className="shadow-sm"
-            style={{ fontSize: 14 }}
+            style={{ fontSize: 12 }}
           >
             <thead>
               <tr>

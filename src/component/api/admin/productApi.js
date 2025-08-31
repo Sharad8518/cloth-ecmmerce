@@ -41,10 +41,22 @@ export const addProduct = async (productData) => {
 
 /* ---------------- Get All Products ---------------- */
 export const getProducts = async (queryParams = {}) => {
-  const response = await axios.get("/admin/products", { params: queryParams });
-  return response.data;
-};
+  try {
+    // Only send defined query params
+    const params = {};
+    if (queryParams.search) params.search = queryParams.search;
+    if (queryParams.title) params.title = queryParams.title;
+    if (queryParams.itemNumber) params.itemNumber = queryParams.itemNumber;
+    if (queryParams.status) params.status = queryParams.status;
+    if (queryParams.page) params.page = queryParams.page;
+    if (queryParams.limit) params.limit = queryParams.limit;
 
+    const response = await axios.get("/admin/products", { params });
+    return response.data;
+  } catch (err) {
+    throw new Error(err.response?.data?.message || "Failed to fetch products");
+  }
+};
 /* ---------------- Get Single Product ---------------- */
 export const getProductById = async (productId) => {
   const response = await axios.get(`/admin/products/${productId}`);

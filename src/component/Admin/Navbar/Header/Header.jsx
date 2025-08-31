@@ -231,7 +231,7 @@ const toggleNavbar = async (headerId) => {
         </Card.Header>
 
         <Card.Body>
-          <Table bordered hover responsive className="align-middle">
+          <Table bordered hover responsive className="align-middle" style={{fontSize:13}}>
             <thead className="table-light">
               <tr>
                 <th style={{ width: "25%" }}>Name</th>

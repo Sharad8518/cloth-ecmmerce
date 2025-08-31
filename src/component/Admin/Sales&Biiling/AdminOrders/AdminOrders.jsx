@@ -10,9 +10,10 @@ import {
   ListGroup,
   Modal,
   Form,
+  Row,
+  Col,
 } from "react-bootstrap";
-import { getAllOrders, updateOrdersStatus } from "../../../api/admin/orderApi"; // Your API
-import axios from "axios";
+import { getAllOrders, updateOrdersStatus } from "../../../api/admin/orderApi";
 
 export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
@@ -20,8 +21,16 @@ export default function AdminOrders() {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-  const [limit] = useState(10); // Orders per page
+  const [limit] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
+
+  // 🔎 Filter states
+  const [search, setSearch] = useState("");
+  const [orderNumber, setOrderNumber] = useState("");
+  const [orderStatus, setOrderStatus] = useState("");
+
+  const [updateOrder, setUpdateOrder] = useState(null);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
 
   const handleView = (order) => {
     setSelectedOrder(order);
@@ -33,9 +42,6 @@ export default function AdminOrders() {
     setShowModal(false);
   };
 
-  const [updateOrder, setUpdateOrder] = useState(null);
-  const [showUpdateModal, setShowUpdateModal] = useState(false);
-
   const handleUpdate = (order) => {
     setUpdateOrder(order);
     setShowUpdateModal(true);
@@ -46,9 +52,18 @@ export default function AdminOrders() {
     setShowUpdateModal(false);
   };
 
+  // 📦 Fetch Orders with filters + pagination
   const fetchOrders = async (pageNumber = 1) => {
     try {
-      const response = await getAllOrders({ page: pageNumber, limit });
+      setLoading(true);
+      const response = await getAllOrders({
+        page: pageNumber,
+        limit,
+        search,
+        orderNumber,
+        orderStatus,
+      });
+
       if (response.success) {
         setOrders(response.orders);
         setTotalPages(response.totalPages || 1);
@@ -63,10 +78,16 @@ export default function AdminOrders() {
 
   useEffect(() => {
     fetchOrders(page);
+    // eslint-disable-next-line
   }, []);
 
   const handlePageChange = (pageNumber) => {
     fetchOrders(pageNumber);
+  };
+
+  const handleFilterSubmit = (e) => {
+    e.preventDefault();
+    fetchOrders(1); // reset to page 1 when filters change
   };
 
   const renderPagination = () => {
@@ -89,7 +110,52 @@ export default function AdminOrders() {
 
   return (
     <Container className="my-4">
-      <h2 className="mb-4">All Orders</h2>
+      <h2 className="mb-4" style={{ fontSize: 18 }}>
+        All Orders
+      </h2>
+
+      {/* 🔎 Filter Section */}
+      <Card className="mb-3 p-3 shadow-sm">
+        <Form onSubmit={handleFilterSubmit}>
+          <Row>
+            <Col md={4}>
+              <Form.Control
+                type="text"
+                placeholder="Search by customer name/email"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </Col>
+            <Col md={3}>
+              <Form.Control
+                type="text"
+                placeholder="Order Number"
+                value={orderNumber}
+                onChange={(e) => setOrderNumber(e.target.value)}
+              />
+            </Col>
+            <Col md={3}>
+              <Form.Select
+                value={orderStatus}
+                onChange={(e) => setOrderStatus(e.target.value)}
+              >
+                <option value="">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="processing">Processing</option>
+                <option value="shipped">Shipped</option>
+                <option value="delivered">Delivered</option>
+                <option value="cancelled">Cancelled</option>
+                <option value="returned">Returned</option>
+              </Form.Select>
+            </Col>
+            <Col md={2}>
+              <Button type="submit" variant="primary" className="w-100">
+                Filter
+              </Button>
+            </Col>
+          </Row>
+        </Form>
+      </Card>
 
       {loading ? (
         <div className="text-center">
@@ -98,7 +164,7 @@ export default function AdminOrders() {
       ) : (
         <Card className="shadow-sm">
           <Card.Body>
-            <Table hover responsive>
+            <Table hover responsive style={{ fontSize: 13 }}>
               <thead>
                 <tr>
                   <th>#</th>
@@ -149,7 +215,7 @@ export default function AdminOrders() {
                           bg={
                             order.orderStatus === "delivered"
                               ? "success"
-                              : order.orderStatus === "shipment"
+                              : order.orderStatus === "shipped"
                               ? "primary"
                               : order.orderStatus === "processing"
                               ? "info"
@@ -192,7 +258,8 @@ export default function AdminOrders() {
         </Card>
       )}
 
-      {/* Modal for Order Details */}
+      {/* Existing Modals remain unchanged */}
+        {/* Modal for Order Details */}
       <Modal show={showModal} onHide={handleClose} size="lg" centered>
         <Modal.Header closeButton>
           <Modal.Title>Order Details</Modal.Title>

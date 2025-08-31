@@ -9,7 +9,7 @@ import {
   Modal,
   Form,
   ListGroup,
-  Table
+  Table,
 } from "react-bootstrap";
 import {
   getHeaders,
@@ -28,7 +28,7 @@ import {
   createCollection,
   updateCollection,
   deleteCollection,
-  getHeadersAllowCategory
+  getHeadersAllowCategory,
 } from "../../../api/admin/hierarchyManagerApi";
 import { FiEdit3 } from "react-icons/fi";
 import { AiOutlineDelete } from "react-icons/ai";
@@ -157,43 +157,42 @@ export default function Category() {
 
   return (
     <Container fluid className="p-4">
-      
-   <Card>
-  <Card.Header className="d-flex justify-content-between align-items-center">
-    <strong>Headers</strong>
-    {/* <Button
+      <Card>
+        <Card.Header className="d-flex justify-content-between align-items-center">
+          <strong>Headers</strong>
+          {/* <Button
       className={styles.addButton}
       onClick={() => openModal("headers")}
     >
       + Add
     </Button> */}
-  </Card.Header>
+        </Card.Header>
 
-  {/* Horizontal scrollable list */}
-  <div
-    style={{
-      display: "flex",
-      overflowX: "auto",
-      whiteSpace: "nowrap",
-      padding: "10px",
-      gap: "10px",
-    }}
-  >
-    {headers.map((h) => (
-      <div
-        key={h._id}
-        onClick={() => loadCategories(h._id)}
-        style={{
-          cursor: "pointer",
-          minWidth: "200px",
-          flex: "0 0 auto",
-        }}
-        className={`p-2 rounded border d-flex justify-content-between align-items-center 
+        {/* Horizontal scrollable list */}
+        <div
+          style={{
+            display: "flex",
+            overflowX: "auto",
+            whiteSpace: "nowrap",
+            padding: "10px",
+            gap: "10px",
+          }}
+        >
+          {headers?.map((h) => (
+            <div
+              key={h?._id}
+              onClick={() => loadCategories(h?._id)}
+              style={{
+                cursor: "pointer",
+                minWidth: "200px",
+                flex: "0 0 auto",
+              }}
+              className={`p-2 rounded border d-flex justify-content-between align-items-center 
           ${styles.textHeading} 
-          ${selectedHeader === h._id ? styles.listGroupItemActiveCustom : ""}`}
-      >
-        <span>{h.title}</span>
-        {/* <div className="d-flex gap-2">
+          ${selectedHeader === h?._id ? styles.listGroupItemActiveCustom : ""}`}
+            >
+              <span>{h?.title}</span>
+              {/* <div className="d-flex gap-2">
           <Button
             size="sm"
             className={`${styles.actionButton} ${styles.editButton}`}
@@ -215,21 +214,19 @@ export default function Category() {
             <AiOutlineDelete />
           </Button>
         </div> */}
-      </div>
-    ))}
-  </div>
-</Card>
-<br/>
+            </div>
+          ))}
+        </div>
+      </Card>
+      <br />
       <Row>
         {/* Headers */}
-     
 
         {/* Categories */}
         <Col md={6}>
           <Card>
             <Card.Header className="d-flex justify-content-between align-items-center">
               <strong>Categories</strong>
-             
             </Card.Header>
             <ListGroup variant="flush">
               {categories.map((c) => (
@@ -250,7 +247,7 @@ export default function Category() {
                   <div>
                     <Button
                       size="sm"
-                       className={`${styles.actionButton} ${styles.editButton}`}
+                      className={`${styles.actionButton} ${styles.editButton}`}
                       onClick={(e) => {
                         e.stopPropagation();
                         openModal("categorys", c);
@@ -272,16 +269,16 @@ export default function Category() {
                 </ListGroup.Item>
               ))}
             </ListGroup>
-             {selectedHeader && (
-                <Button
-                  className={styles.addButton}
-                  onClick={() =>
-                    openModal("categorys", { header: selectedHeader })
-                  }
-                >
-                  + Add
-                </Button>
-              )}
+            {selectedHeader && (
+              <Button
+                className={styles.addButton}
+                onClick={() =>
+                  openModal("categorys", { header: selectedHeader })
+                }
+              >
+                + Add
+              </Button>
+            )}
           </Card>
         </Col>
 
@@ -290,7 +287,6 @@ export default function Category() {
           <Card>
             <Card.Header className="d-flex justify-content-between align-items-center">
               <strong>SubCategories</strong>
-             
             </Card.Header>
             <ListGroup variant="flush">
               {subCategories.map((s) => (
@@ -321,7 +317,7 @@ export default function Category() {
                     </Button>{" "}
                     <Button
                       size="sm"
-                       className={`${styles.actionButton} ${styles.deleteButton}`}
+                      className={`${styles.actionButton} ${styles.deleteButton}`}
                       onClick={(e) => {
                         e.stopPropagation();
                         deleteEntity("subcategorys", s._id);
@@ -333,21 +329,20 @@ export default function Category() {
                 </ListGroup.Item>
               ))}
             </ListGroup>
-             {selectedCategory && (
-                <Button
-                  className={styles.addButton}
-                  onClick={() =>
-                    openModal("subcategorys", { category: selectedCategory })
-                  }
-                >
-                  + Add
-                </Button>
-              )}
+            {selectedCategory && (
+              <Button
+                className={styles.addButton}
+                onClick={() =>
+                  openModal("subcategorys", { category: selectedCategory })
+                }
+              >
+                + Add
+              </Button>
+            )}
           </Card>
         </Col>
 
         {/* Collections */}
-        
       </Row>
 
       {/* Modal */}

@@ -145,6 +145,7 @@ const handlePlaceOrder = async () => {
   return (
     <>
       <NavbarMenu />
+      <br/>
       <div style={{ maxWidth: 900, margin: "0 auto", padding: 20, paddingBottom: 100 }}>
         <h2 style={{ borderBottom: "2px solid #eee", paddingBottom: 10, marginBottom: 30 }}>
           Checkout
