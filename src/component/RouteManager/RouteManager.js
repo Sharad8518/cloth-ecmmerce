@@ -26,6 +26,7 @@ import PromotionsPage from "../Promotion/PromotionsPage";
 import Header from "../Admin/Navbar/Header/Header";
 import Category from "../Admin/Navbar/Category/Category";
 import Collection from "../Admin/Navbar/Collection/Collection";
+import Customer from "../Admin/Customer/Customer";
 
 export default function RouteManager() {
   return (
@@ -55,9 +56,10 @@ export default function RouteManager() {
           <Route path="Orders" element={<AdminOrders />} />
           <Route path="BannerManager" element={<BannerManager />} />
           <Route path="Promotions" element={<PromotionsPage />} />
-           <Route path="Header" element={<Header />} />
-            <Route path="Category" element={<Category />} />
-             <Route path="Collection" element={<Collection />} />
+          <Route path="Header" element={<Header />} />
+          <Route path="Category" element={<Category />} />
+          <Route path="Collection" element={<Collection />} />
+          <Route path="Customer" element={<Customer />} />
         </Route>
       </Route>
     </Routes>

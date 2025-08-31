@@ -161,12 +161,12 @@ export default function Category() {
    <Card>
   <Card.Header className="d-flex justify-content-between align-items-center">
     <strong>Headers</strong>
-    <Button
+    {/* <Button
       className={styles.addButton}
       onClick={() => openModal("headers")}
     >
       + Add
-    </Button>
+    </Button> */}
   </Card.Header>
 
   {/* Horizontal scrollable list */}

@@ -179,12 +179,7 @@ const toggleNavbar = (headerId) => {
       <Card className="mb-4">
         <Card.Header className="d-flex justify-content-between align-items-center">
           <strong>Collection</strong>
-          <Button
-            className={styles.addButton}
-            onClick={() => openModal("collections")}
-          >
-            + Add
-          </Button>
+         
         </Card.Header>
 
         <Card.Body>
@@ -265,6 +260,12 @@ const toggleNavbar = (headerId) => {
               ))}
             </tbody>
           </Table>
+           <Button
+            className={styles.addButton}
+            onClick={() => openModal("collections")}
+          >
+            + Add
+          </Button>
         </Card.Body>
       </Card>
 

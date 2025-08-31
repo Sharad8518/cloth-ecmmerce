@@ -113,9 +113,9 @@ const Sidebar = () => {
 
         <Nav.Link
           as={Link}
-          to="/dashboard/customers"
+          to="/dashboard/Customer"
           className={`${styles.link} ${
-            location.pathname === "/dashboard/customers" ? styles.active : ""
+            location.pathname === "/dashboard/Customer" ? styles.active : ""
           }`}
         >
           <FaUsers /> <span className={styles.label}>Customers</span>

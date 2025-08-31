@@ -132,29 +132,26 @@ export default function AddProduct() {
     setSubCategories([]);
     setCollections([]);
   };
-const loadSubCategories = async (categoryId) => {
-  setSelectedCategory(categoryId);
-  const res = await getSubCategories();
+  const loadSubCategories = async (categoryId) => {
+    setSelectedCategory(categoryId);
+    const res = await getSubCategories();
 
-  const filtered = (res || []).filter(
-    (s) => s?.category?._id === categoryId
-  );
+    const filtered = (res || []).filter((s) => s?.category?._id === categoryId);
 
-  setSubCategories(filtered);
-  setCollections([]);
-}
+    setSubCategories(filtered);
+    setCollections([]);
+  };
 
+  const loadCollections = async (subCategoryId) => {
+    setSelectedSubCategory(subCategoryId);
+    const res = await getCollections();
 
-const loadCollections = async (subCategoryId) => {
-  setSelectedSubCategory(subCategoryId);
-  const res = await getCollections();
+    const filtered = (res || []).filter(
+      (c) => c?.subcategory?._id === subCategoryId
+    );
 
-  const filtered = (res || []).filter(
-    (c) => c?.subcategory?._id === subCategoryId
-  );
-
-  setCollections(filtered);
-};
+    setCollections(filtered);
+  };
 
   // ✅ Validate file
   const validateFile = (file) => {
@@ -946,20 +943,22 @@ const loadCollections = async (subCategoryId) => {
                 {/* Padding Required */}
                 <Form.Group className="mb-3">
                   <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
-                    Padding Required?
+                    Additional Measurement Required?
                   </Form.Label>
-                  <Form.Select
-                    style={{ fontSize: 14 }}
-                    value={product.paddingRequired || "No"}
+                  <Form.Check
+                    type="switch"
+                    id="paddingRequired-switch"
+                    label={product.paddingRequired === "Yes" ? "Yes" : "No"}
+                    checked={product.paddingRequired === "Yes"}
                     onChange={(e) =>
-                      handleChange("paddingRequired", e.target.value)
+                      handleChange(
+                        "paddingRequired",
+                        e.target.checked ? "Yes" : "No"
+                      )
                     }
-                  >
-                    <option value="No">No</option>
-                    <option value="Yes">Yes</option>
-                  </Form.Select>
+                  />
                   <Form.Text className="text-muted">
-                    Note: Select one. (Can also be ignored by user)
+                    Note: Toggle Yes / No. (Can also be ignored by user)
                   </Form.Text>
                 </Form.Group>
 
