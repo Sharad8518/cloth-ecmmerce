@@ -56,7 +56,7 @@ export default function SEOForm({ seoData, setSeoData }) {
             style={{ fontSize: 14 } }
             value={seoData.seo.title}
             onChange={handleChange}
-            placeholder="Enter SEO title (max 60 chars)"
+            // placeholder="Enter SEO title (max 60 chars)"
             maxLength={60}
           />
           <small className="text-muted">{seoData.seo.title?.length || 0}/60</small>
@@ -72,7 +72,7 @@ export default function SEOForm({ seoData, setSeoData }) {
             style={{ fontSize: 14 } }
             value={seoData.seo.description}
             onChange={handleChange}
-            placeholder="Enter SEO description (max 160 chars)"
+            // placeholder="Enter SEO description (max 160 chars)"
             maxLength={160}
           />
           <small className="text-muted">{seoData.seo.description?.length || 0}/160</small>
@@ -99,7 +99,7 @@ export default function SEOForm({ seoData, setSeoData }) {
                 },
               }));
             }}
-            placeholder="e.g. my-product-name"
+            // placeholder="e.g. my-product-name"
           />
           <small className="text-muted">Only lowercase letters, numbers & hyphens allowed</small>
         </Form.Group>

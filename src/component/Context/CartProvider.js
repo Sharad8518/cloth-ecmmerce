@@ -36,6 +36,8 @@ const [cart, setCart] = useState({ items: [], totalPrice: 0, totalItems: 0 })
 
   const handleRemove = async (payload) => {
     const data = await removeFromCart(payload);
+    fetchCart();
+    console.log('data',data)
     // setCart(data.cart.items);
   };
 

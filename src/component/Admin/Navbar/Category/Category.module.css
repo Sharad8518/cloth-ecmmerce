@@ -11,7 +11,7 @@
 }
 
 .listGroupItemActiveCustom {
-  background-color: #f0f0f0 !important; /* your preferred background */
+  background-color: #60ffaa !important; /* your preferred background */
   color: #000000 !important;               /* text color */
   font-weight: 600;
 }

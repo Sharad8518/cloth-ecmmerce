@@ -3,10 +3,11 @@ import { useCart } from "../Context/CartProvider";
 import { useLocation, useNavigate } from "react-router-dom";
 import NavbarMenu from "../Navbar/NavbarMenu";
 import { getProfile, updateProfile } from "../api/user/authApi";
-import {placeOrder} from "../api/user/orderApi";
+import {placeOrder,verifyPayment} from "../api/user/orderApi";
 import { useRazorpay, RazorpayOrderOptions } from "react-razorpay";
 
 export default function Checkout() {
+    const Razorpay = useRazorpay(); 
   const { cart } = useCart();
   const location = useLocation();
 
@@ -92,6 +93,16 @@ const [paymentMethod, setPaymentMethod] = useState("COD");
     }
   };
 
+  const loadRazorpayScript = () => {
+  return new Promise((resolve) => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
+
 const handlePlaceOrder = async () => {
   if (!selectedAddress) {
     alert("Please select a delivery address");
@@ -102,45 +113,80 @@ const handlePlaceOrder = async () => {
     return;
   }
 
-  try {
-    let orderPayload = {
-      buyNow: !!location.state?.buyNowItem,
-      shippingAddress: {
-        name: userDetails?.name,
-        email: userDetails?.email,
-        phone: userDetails?.phone,
-        street: selectedAddress.street || selectedAddress.address, // depends on schema naming
-        addressLine1: selectedAddress.street,
-        city: selectedAddress.city,
-        state: selectedAddress.state,
-        postalCode: selectedAddress.postalCode,
-        country: selectedAddress.country || "India",
-      },
-      paymentMethod: "COD",
-    };
-
-    console.log("Placing order with payload:", orderPayload);
-
-    if (location.state?.buyNowItem) {
-      const item = location.state.buyNowItem;
-      orderPayload = {
-        ...orderPayload,
-        productId: item.productId,
-        variant: item.variant,
-        quantity: item.quantity,
+try {
+      const orderPayload = {
+        buyNow: !!location.state?.buyNowItem,
+        shippingAddress: {
+          name: userDetails?.name,
+          email: userDetails?.email,
+          phone: userDetails?.phone,
+          addressLine1: selectedAddress.street,
+          city: selectedAddress.city,
+          state: selectedAddress.state,
+          postalCode: selectedAddress.postalCode,
+          country: selectedAddress.country || "India",
+        },
+        paymentMethod,
+        ...(location.state?.buyNowItem && {
+          productId: location.state.buyNowItem.productId,
+          variant: location.state.buyNowItem.variant,
+          quantity: location.state.buyNowItem.quantity,
+        }),
       };
-    }
 
-    const res = await placeOrder(orderPayload);
+      const res = await placeOrder(orderPayload);
 
-    if (res.success) {
-      alert("✅ Order placed successfully!");
-      navigator("/");
-    }
-  } catch (err) {
-    alert(err.message);
+      if (!res.success) {
+        alert("Failed to place order");
+        return;
+      }
+
+      if (paymentMethod === "ONLINE" && res.razorpayOrder) {
+         const isLoaded = await loadRazorpayScript();
+  if (!isLoaded) {
+    alert("Failed to load Razorpay SDK");
+    return;
   }
+        const options = {
+          key: "rzp_test_RBrvv86oXQyKgx",
+          amount: res.razorpayOrder.amount,
+          currency: res.razorpayOrder.currency,
+          order_id: res.razorpayOrder.id,
+          name: userDetails?.name,
+          description: `Order #${res.order.invoiceNumber}`,
+          prefill: {
+            name: userDetails.name,
+            email: userDetails.email,
+            contact: userDetails.phone,
+          },
+          handler: async (response) => {
+            try {
+              await verifyPayment({
+                razorpayOrderId: response.razorpay_order_id,
+                razorpayPaymentId: response.razorpay_payment_id,
+                razorpaySignature: response.razorpay_signature,
+              });
+              alert("✅ Payment successful!");
+              navigator("/");
+            } catch (err) {
+              alert("❌ Payment verification failed: " + err.message);
+            }
+          },
+        };
+
+         const rzp = new window.Razorpay(options);
+  rzp.open();
+      } else {
+        alert("✅ Order placed successfully (COD)");
+        // navigator("/");
+      }
+    } catch (err) {
+      console.error(err);
+      alert(err.message || "Something went wrong");
+    }
 };
+
+console.log('itemsToCheckout',itemsToCheckout)
 
   return (
     <>
@@ -295,9 +341,9 @@ const handlePlaceOrder = async () => {
     <input
       type="radio"
       name="paymentMethod"
-      value="Online"
-      checked={paymentMethod === "Online"}
-      onChange={() => setPaymentMethod("Online")}
+      value="ONLINE "
+      checked={paymentMethod === "ONLINE"}
+      onChange={() => setPaymentMethod("ONLINE")}
       style={{ marginRight: "10px" }}
     />
     Online Payment

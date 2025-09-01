@@ -23,7 +23,7 @@ export const getCart = async () => {
 };
 
 // ✅ Add product to cart
-export const addToCart = async ({ productId, sku, color, size, quantity = 1 }) => {
+export const addToCart = async ({ productId, sku, color, size, quantity = 1,paddingDetails  }) => {
   try {
     const token = localStorage.getItem("token");
 
@@ -33,7 +33,7 @@ export const addToCart = async ({ productId, sku, color, size, quantity = 1 }) =
 
     const res = await axios.post(
       "/user/cart/add",
-      { productId, sku, attributes, quantity },
+      { productId, sku, attributes, quantity,paddingDetails  },
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -87,19 +87,21 @@ export const decreaseQty = async ({ productId, sku, attributes = [] }) => {
 };
 
 // ✅ Remove item
-export const removeFromCart = async ({ productId, sku, attributes = [] }) => {
+export const removeFromCart = async ({ productId, sku }) => {
+  console.log('productId',productId)
   try {
     const token = localStorage.getItem("token");
 
     const res = await axios.post(
       "/user/cart/remove",
-      { productId, sku, attributes },
+      { productId, sku }, // only send productId and sku
       {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       }
     );
+
     return res.data;
   } catch (err) {
     throw new Error(err.response?.data?.message || "Error removing from cart");

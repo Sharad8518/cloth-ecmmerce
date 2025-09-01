@@ -63,6 +63,7 @@ export default function AddProduct() {
     fabric: "",
     work: "",
     packContains: "",
+    occasion:"",
     care: "",
     note: "",
     productionDetail: {
@@ -125,34 +126,38 @@ export default function AddProduct() {
     const res = await getHeaders();
     setHeaders(res);
   };
-  const loadCategories = async (headerId) => {
-    setSelectedHeader(headerId);
-    const res = await getCategories();
-    setCategories(res.filter((c) => c.header._id === headerId));
-    setSubCategories([]);
-    setCollections([]);
-  };
-  const loadSubCategories = async (categoryId) => {
-    setSelectedCategory(categoryId);
-    const res = await getSubCategories();
+const loadCategories = async (headerId) => {
+  setSelectedHeader(headerId);
+  const res = await getCategories();
 
-    const filtered = (res || []).filter((s) => s?.category?._id === categoryId);
+  // Use optional chaining to avoid null errors
+  const filtered = (res || []).filter((c) => c?.header?._id === headerId);
 
-    setSubCategories(filtered);
-    setCollections([]);
-  };
+  setCategories(filtered);
+  setSubCategories([]);
+  setCollections([]);
+};
 
-  const loadCollections = async (subCategoryId) => {
-    setSelectedSubCategory(subCategoryId);
-    const res = await getCollections();
+const loadSubCategories = async (categoryId) => {
+  setSelectedCategory(categoryId);
+  const res = await getSubCategories();
 
-    const filtered = (res || []).filter(
-      (c) => c?.subcategory?._id === subCategoryId
-    );
+  const filtered = (res || []).filter((s) => s?.category?._id === categoryId);
 
-    setCollections(filtered);
-  };
+  setSubCategories(filtered);
+  setCollections([]);
+};
 
+const loadCollections = async (subCategoryId) => {
+  setSelectedSubCategory(subCategoryId);
+  const res = await getCollections();
+
+  const filtered = (res || []).filter(
+    (c) => c?.subcategory?._id === subCategoryId
+  );
+
+  setCollections(filtered);
+};
   // ✅ Validate file
   const validateFile = (file) => {
     // Case 1: User just uploaded (File object)
@@ -352,7 +357,7 @@ export default function AddProduct() {
         categories: [], // selected categories
         subCategories: [], // selected subcategories
         collections: [], // selected collections
-
+        occasion:"",
         estimatedShippingDays: "",
         shippingAndReturns: "",
         productSpeciality: "",
@@ -422,12 +427,12 @@ export default function AddProduct() {
                         (h) => h.title === headerTitle
                       );
                       if (selectedHeader) {
-                        await loadCategories(selectedHeader._id);
+                        await loadCategories(selectedHeader?._id);
                       }
                     }}
                   >
                     <option value="">Select Header</option>
-                    {headers.map((h) => (
+                    {headers?.map((h) => (
                       <option key={h._id} value={h.title}>
                         {h.title}
                       </option>
@@ -448,7 +453,7 @@ export default function AddProduct() {
                       padding: "8px",
                     }}
                   >
-                    {categories.map((c) =>
+                    {categories?.map((c) =>
                       c ? (
                         <Form.Check
                           key={c._id}
@@ -1051,7 +1056,7 @@ export default function AddProduct() {
                           handleChange("costPrice", e.target.value)
                         }
                         required
-                        placeholder="Enter cost price"
+                        // placeholder="Enter cost price"
                         min="0"
                       />
                     </Form.Group>
@@ -1069,7 +1074,7 @@ export default function AddProduct() {
                         onChange={(e) =>
                           handleChange("marginPercent", e.target.value)
                         }
-                        placeholder="Enter margin %"
+                        // placeholder="Enter margin %"
                         min="0"
                         max="100"
                       />
@@ -1089,7 +1094,7 @@ export default function AddProduct() {
                         style={{ fontSize: 14 }}
                         value={product.mrp || ""}
                         onChange={(e) => handleChange("mrp", e.target.value)}
-                        placeholder="Enter MRP"
+                        // placeholder="Enter MRP"
                         required
                         min="0"
                       />
@@ -1108,7 +1113,7 @@ export default function AddProduct() {
                         onChange={(e) =>
                           handleChange("salePrice", e.target.value)
                         }
-                        placeholder="Auto-calculated or editable"
+                        // placeholder="Auto-calculated or editable"
                         min="0"
                       />
                       <Form.Text
@@ -1144,7 +1149,7 @@ export default function AddProduct() {
                         onChange={(e) =>
                           handleChange("shortDescription", e.target.value)
                         }
-                        placeholder="Enter a short summary of the product (e.g. Elegant silk saree with zari work)"
+                        // placeholder="Enter a short summary of the product (e.g. Elegant silk saree with zari work)"
                       />
                     </Form.Group>
                   </Col>
@@ -1159,7 +1164,7 @@ export default function AddProduct() {
                         onChange={(e) =>
                           handleChange("styleNo", e.target.value)
                         }
-                        placeholder="Enter style number (e.g. ST1234)"
+                        // placeholder="Enter style number (e.g. ST1234)"
                       />
                     </Form.Group>
                   </Col>
@@ -1172,7 +1177,7 @@ export default function AddProduct() {
                         style={{ fontSize: 14 }}
                         value={product.colour || ""}
                         onChange={(e) => handleChange("colour", e.target.value)}
-                        placeholder="Enter colour (e.g. Red, Blue)"
+                        // placeholder="Enter colour (e.g. Red, Blue)"
                       />
                     </Form.Group>
                   </Col>
@@ -1188,7 +1193,7 @@ export default function AddProduct() {
                         style={{ fontSize: 14 }}
                         value={product.fabric || ""}
                         onChange={(e) => handleChange("fabric", e.target.value)}
-                        placeholder="Enter fabric type (e.g. Cotton, Silk)"
+                        // placeholder="Enter fabric type (e.g. Cotton, Silk)"
                       />
                     </Form.Group>
                   </Col>
@@ -1201,7 +1206,7 @@ export default function AddProduct() {
                         style={{ fontSize: 14 }}
                         value={product.work || ""}
                         onChange={(e) => handleChange("work", e.target.value)}
-                        placeholder="Enter work (e.g. Embroidery, Zari)"
+                        // placeholder="Enter work (e.g. Embroidery, Zari)"
                       />
                     </Form.Group>
                   </Col>
@@ -1217,7 +1222,7 @@ export default function AddProduct() {
                     onChange={(e) =>
                       handleChange("packContains", e.target.value)
                     }
-                    placeholder="Enter items (e.g. Kurta, Dupatta, Bottom)"
+                    // placeholder="Enter items (e.g. Kurta, Dupatta, Bottom)"
                   />
                 </Form.Group>
 
@@ -1233,7 +1238,7 @@ export default function AddProduct() {
                         onChange={(e) =>
                           handleChange("occasion", e.target.value)
                         }
-                        placeholder="Enter occasion (e.g. Casual, Party, Wedding)"
+                        // placeholder="Enter occasion (e.g. Casual, Party, Wedding)"
                       />
                     </Form.Group>
                   </Col>
@@ -1270,7 +1275,7 @@ export default function AddProduct() {
                             description: e.target.value,
                           })
                         }
-                        placeholder="Enter dupatta details (e.g. Net, Printed, Plain)"
+                        // placeholder="Enter dupatta details (e.g. Net, Printed, Plain)"
                       />
                     )}
                   </Col>
@@ -1285,7 +1290,7 @@ export default function AddProduct() {
                     style={{ fontSize: 14 }}
                     value={product.care || ""}
                     onChange={(e) => handleChange("care", e.target.value)}
-                    placeholder="Enter care instructions (e.g. Dry Clean Only)"
+                    // placeholder="Enter care instructions (e.g. Dry Clean Only)"
                   />
                 </Form.Group>
 
@@ -1318,7 +1323,7 @@ export default function AddProduct() {
                           description: e.target.value,
                         })
                       }
-                      placeholder="Enter production description"
+                      // placeholder="Enter production description"
                     />
                   )}
                 </Form.Group>
@@ -1334,7 +1339,7 @@ export default function AddProduct() {
                     style={{ fontSize: 14 }}
                     value={product.note || ""}
                     onChange={(e) => handleChange("note", e.target.value)}
-                    placeholder="Enter additional product notes (optional)"
+                    // placeholder="Enter additional product notes (optional)"
                   />
                 </Form.Group>
               </Card.Body>
@@ -1355,7 +1360,7 @@ export default function AddProduct() {
                     onChange={(e) =>
                       handleChange("productSpeciality", e.target.value)
                     }
-                    placeholder="Enter speciality (e.g. Handcrafted, Limited Edition)"
+                    // placeholder="Enter speciality (e.g. Handcrafted, Limited Edition)"
                   />
                 </Form.Group>
 
@@ -1371,7 +1376,7 @@ export default function AddProduct() {
                     onChange={(e) =>
                       handleChange("styleAndFit", e.target.value)
                     }
-                    placeholder="Enter style & fit details (e.g. Regular Fit, A-Line Cut)"
+                    // placeholder="Enter style & fit details (e.g. Regular Fit, A-Line Cut)"
                   />
                 </Form.Group>
               </Card.Body>
@@ -1421,7 +1426,7 @@ export default function AddProduct() {
                         Number(e.target.value)
                       )
                     }
-                    placeholder="Enter number of days (e.g. 5)"
+                    // placeholder="Enter number of days (e.g. 5)"
                   />
                 </Form.Group>
 

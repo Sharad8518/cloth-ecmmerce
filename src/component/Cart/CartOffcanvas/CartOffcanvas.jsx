@@ -129,10 +129,10 @@ export default function CartOffcanvas({
                     size="sm"
                     variant="danger"
                     onClick={() =>
-                      removeFromCart(item?.product?._id, item?.variant?.sku)
+                      removeFromCart({productId:item?.product?._id, sku:item?.variant?.sku})
                     }
                   >
-                    Remove
+                    Remove 
                   </Button>
                 </div>
               </div>

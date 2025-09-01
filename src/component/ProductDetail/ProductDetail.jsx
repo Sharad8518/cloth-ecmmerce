@@ -171,6 +171,14 @@ export default function ProductDetail() {
     },
   ];
 
+  const generatePaddingSku = (baseSku, padding) => {
+    if (!padding) return baseSku;
+    // Combine base SKU + measurements + unit
+    return `${baseSku}-W${padding.waist || "0"}-L${padding.length || "0"}-H${
+      padding.height || "0"
+    }-${padding.unit || "cm"}`;
+  };
+
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
   const [activeKeys, setActiveKeys] = useState([]);
@@ -178,7 +186,15 @@ export default function ProductDetail() {
   const { id } = useParams(); // ✅ get product id from URL
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const [paddingRequired, setPaddingRequired] = useState("No");
+  const [isPaddingModalOpen, setIsPaddingModalOpen] = useState(false);
+  const [paddingDetails, setPaddingDetails] = useState({
+    waist: "",
+    length: "",
+    height: "",
+    unit:"cm"
+  });
+  const [savedPaddingDetails, setSavedPaddingDetails] = useState(null);
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -195,7 +211,7 @@ export default function ProductDetail() {
     fetchProduct();
   }, [id]);
 
-  console.log("product", product?.inventoryBySize);
+  console.log("product", product);
 
   const toggleKey = (key) => {
     setActiveKeys(
@@ -205,15 +221,19 @@ export default function ProductDetail() {
           : [...prev, key] // open
     );
   };
+
   const token = localStorage.getItem("token");
   console.log("selectedSize", selectedSize);
   if (loading) {
     return <div>Loading...</div>; // or a spinner component
   }
+
   return (
     <>
       <NavbarMenu />
       <br /> <br />
+      <br />
+      <br />
       <br />
       <Container className={styles.ProductDetailContainer}>
         <Row style={{ height: "100%" }}>
@@ -233,15 +253,15 @@ export default function ProductDetail() {
             <div className={styles.detailProductDiscreaption}>
               {product?.description}
             </div>
-            <div className={styles.detailPrize}>Rs. {product?.salePrice}</div>
+            <div className={styles.detailPrize}>Rs. {product?.mrp}</div>
             <div className={styles.detailMRP}>MRP Inclusive of all size</div>
             <hr />
-           
+
             <div className={styles.detailMadeToOrderText}>
               <BiCloset size={20} /> Made To Order
             </div>
             <div className={styles.detailShip}>Ship by 11th November 2025</div>
-             <div className={styles.detailSizeText}>
+            <div className={styles.detailSizeText}>
               SELECT YOUR SIZE
               <div className={styles.detailSizeGuideText}>Size Guide</div>
             </div>
@@ -258,6 +278,36 @@ export default function ProductDetail() {
                 </button>
               ))}
             </div>
+
+            <button
+              className={styles.paddingButton}
+              onClick={() => setIsPaddingModalOpen(true)}
+            >
+              {savedPaddingDetails
+                ? "Edit Padding Details"
+                : "Padding Required For Better Fit"}
+            </button>
+
+            {/* Show saved values */}
+            {savedPaddingDetails && (
+              <div style={{ marginTop: 10 }}>
+                <strong>Padding Details:</strong> Waist:{" "}
+                {savedPaddingDetails.waist} {savedPaddingDetails.unit}, Length:{" "}
+                {savedPaddingDetails.length} {savedPaddingDetails.unit}, Height:{" "}
+                {savedPaddingDetails.height} {savedPaddingDetails.unit}{" "}
+                <button
+                  style={{
+                    marginLeft: 10,
+                    color: "red",
+                    backgroundColor: "#fff",
+                    border: "none",
+                  }}
+                  onClick={() => setSavedPaddingDetails(null)}
+                >
+                  Delete
+                </button>
+              </div>
+            )}
 
             <div
               style={{
@@ -286,7 +336,7 @@ export default function ProductDetail() {
                       return;
                     }
 
-                    if (!selectedSize) {
+                    if (!selectedSize && !savedPaddingDetails) {
                       alert("Please select a size");
                       return;
                     }
@@ -300,13 +350,24 @@ export default function ProductDetail() {
                       alert("This size is not available");
                       return;
                     }
+                    const generatePaddingSku = (baseSku, padding) => {
+                      if (!padding) return baseSku;
+                      return `${baseSku}-W${padding.waist || "0"}-L${
+                        padding.length || "0"
+                      }-H${padding.height || "0"}-${padding.unit || "cm"}`;
+                    };
 
+                    const skuWithPadding = generatePaddingSku(
+                      variant.sku,
+                      savedPaddingDetails
+                    );
                     handleAddToCart({
                       productId: product._id,
-                      sku: variant.sku,
-                      size: selectedSize.size,
+                      sku: skuWithPadding,
+                      size: selectedSize.size || null,
                       color: selectedColor || "N/A",
                       quantity: 1,
+                      paddingDetails: savedPaddingDetails,
                     });
                   }}
                 >
@@ -335,17 +396,21 @@ export default function ProductDetail() {
                     alert("This size is not available");
                     return;
                   }
-
+                  const skuWithPadding = generatePaddingSku(
+                    variant.sku,
+                    savedPaddingDetails
+                  );
                   const buyNowItem = {
                     productId: product._id,
                     title: product.title,
                     media: product.media,
                     quantity: 1,
                     variant: {
-                      sku: variant.sku,
+                      sku: skuWithPadding,
                       size: selectedSize.size,
                       color: selectedColor || "N/A",
-                      price: product.salePrice || product.mrp,
+                      price: product.mrp,
+                      paddingDetails: savedPaddingDetails,
                     },
                   };
 
@@ -378,13 +443,44 @@ export default function ProductDetail() {
                 </Accordion.Header>
                 <Accordion.Body>
                   <p>
-                    <strong>Item Number:</strong> {product?.itemNumber}
-                  </p>
-                  <p>
                     <strong>Colour:</strong> {product?.colour}
                   </p>
+                  <p>{product?.description}</p>
+                  <hr />
+                  <p>{product?.shortDescription}</p>
                   <p>
-                    <strong>Description:</strong> {product?.description}
+                    <strong>Pack Contains : </strong>
+                    {product?.packContains}
+                  </p>
+                  <p>
+                    <strong>Fabric : </strong>
+                    {product?.fabric}
+                  </p>
+                  {product?.dupatta.enabled && (
+                    <p>
+                      <strong>Dupatta : </strong>
+                      {product?.dupatta.description}
+                    </p>
+                  )}
+
+                  <p>
+                    <strong>Work /Craft : </strong>
+                    {product?.work}
+                  </p>
+
+                  <p>
+                    <strong>Care : </strong>
+                    {product?.care}
+                  </p>
+
+                  <p>
+                    <strong>Occasion : </strong>
+                    {product?.occasion}
+                  </p>
+
+                  <p>
+                    <strong>Note : </strong>
+                    {product?.note}
                   </p>
                 </Accordion.Body>
               </Accordion.Item>
@@ -399,18 +495,16 @@ export default function ProductDetail() {
                     }}
                   />
                   <div className={styles.productDetailHeading}>
-                   Product Specialty{" "}
+                    Product Specialty{" "}
                   </div>
                 </Accordion.Header>
                 <Accordion.Body>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                  irure dolor in reprehenderit in voluptate velit esse cillum
-                  dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                  cupidatat non proident, sunt in culpa qui officia deserunt
-                  mollit anim id est laborum.
+                  {product?.productSpeciality}
+                  <hr />
+                  <br />
+                  <p>
+                    <strong>Style And Fit</strong> : {product?.styleAndFit}
+                  </p>
                 </Accordion.Body>
               </Accordion.Item>
               {/* <Accordion.Item eventKey="2" style={{ border: "none" }}>
@@ -460,17 +554,76 @@ export default function ProductDetail() {
                 <Accordion.Body>{product?.shippingAndReturns}</Accordion.Body>
               </Accordion.Item>
             </Accordion>
+            <CustomerReviews reviews={reviews} />
           </Col>
         </Row>
       </Container>
-      <div className={styles.customerHeading}>Customer Review</div>
-      <CustomerReviews reviews={reviews} />
+      {/* <div className={styles.customerHeading}>Customer Review</div> */}
       <Frequently items={product?.frequentlyBoughtTogether} />
       <br />
       <div style={{ padding: "2rem", backgroundColor: "#f9f9f9" }}>
         <SimilarProducts products={product?.similarProducts} />
       </div>
       <Footer />
+      {isPaddingModalOpen && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <h3>Enter Padding Details</h3>
+            <p
+              style={{ fontSize: "0.9rem", color: "#555", textAlign: "center" }}
+            >
+              Provide waist, length, and height for a better fit.
+            </p>
+
+            {["waist", "length", "height"].map((field) => (
+              <label key={field}>
+                {field.charAt(0).toUpperCase() + field.slice(1)}:
+                <div
+                  style={{ display: "flex", gap: "10px", alignItems: "center" }}
+                >
+                  <input
+                    type="number"
+                    min="0"
+                    value={paddingDetails[field]}
+                    onChange={(e) =>
+                      setPaddingDetails({
+                        ...paddingDetails,
+                        [field]: e.target.value,
+                      })
+                    }
+                  />
+                  <select
+                    value={paddingDetails.unit}
+                    onChange={(e) =>
+                      setPaddingDetails({
+                        ...paddingDetails,
+                        unit: e.target.value,
+                      })
+                    }
+                  >
+                    <option value="cm">cm</option>
+                    <option value="inch">inch</option>
+                  </select>
+                </div>
+              </label>
+            ))}
+
+            <div className={styles.modalActions}>
+              <button onClick={() => setIsPaddingModalOpen(false)}>
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  setSavedPaddingDetails(paddingDetails);
+                  setIsPaddingModalOpen(false);
+                }}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

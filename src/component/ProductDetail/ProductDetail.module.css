@@ -41,6 +41,32 @@
   
 }
 
+.paddingButton {
+  width: 48%;
+    background-color: #353535; /* Primary accent color, change to match theme */
+  color: #ffffff; /* White text */
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 1px; /* Rounded corners for modern look */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 15px; /* spacing from other elements */
+  display: inline-block;
+}
+
+.paddingButton:hover {
+  background-color: #353535; /* Darker shade on hover */
+  transform: translateY(-2px); /* Slight lift on hover */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Soft shadow */
+}
+
+.paddingButton:active {
+  transform: translateY(0); /* Reset lift on click */
+  box-shadow: none;
+}
+
 .productContentBox::-webkit-scrollbar {
   display: none;             /* Chrome, Safari, Opera */
 }
@@ -156,6 +182,144 @@
   font-family: "Inter", sans-serif; 
  
 }
+
+/* Overlay background */
+/* Overlay */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal box */
+.modalContent {
+  background-color: #fff;
+  padding: 30px 25px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Modal heading */
+.modalContent h3 {
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+  text-align: center;
+  color: #333;
+}
+
+/* Modal description */
+.modalContent p {
+  font-size: 0.9rem;
+  color: #555;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Labels and input containers */
+.modalContent label {
+  display: block;
+  margin-bottom: 15px;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+/* Flex container for input + unit selector */
+.modalContent label div {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 5px;
+}
+
+/* Numeric inputs */
+.modalContent input[type="number"] {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.modalContent input[type="number"]:focus {
+  border-color: #ff6f61;
+  outline: none;
+}
+
+/* Unit dropdown */
+.modalContent select {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  background-color: #fff;
+}
+
+/* Modal actions buttons */
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* Cancel button */
+.modalActions button:first-child {
+  background-color: #ccc;
+  color: #333;
+  padding: 8px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
+.modalActions button:first-child:hover {
+  background-color: #b3b3b3;
+}
+
+/* Save button */
+.modalActions button:last-child {
+  background-color: #ff6f61;
+  color: #fff;
+  padding: 8px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.modalActions button:last-child:hover {
+  background-color: #ff3b2f;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
 
 @media (max-width: 768px) {
 .ProductDetailContainer{

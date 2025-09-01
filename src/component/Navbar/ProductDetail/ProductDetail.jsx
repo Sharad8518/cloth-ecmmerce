@@ -459,11 +459,12 @@ export default function ProductDetail() {
                 <Accordion.Body>{product?.shippingAndReturns}</Accordion.Body>
               </Accordion.Item>
             </Accordion>
+            <CustomerReviews reviews={reviews} />
           </Col>
         </Row>
       </Container>
-      <div className={styles.customerHeading}>Customer Review</div>
-      <CustomerReviews reviews={reviews} />
+      <div className={styles.customerHeading}>Customer Review </div>
+      
       <Frequently items={product?.frequentlyBoughtTogether} />
       <br />
       <div style={{ padding: "2rem", backgroundColor: "#f9f9f9" }}>

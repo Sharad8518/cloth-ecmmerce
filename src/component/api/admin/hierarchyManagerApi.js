@@ -126,13 +126,17 @@ export const getCollection = async (id) => {
 
 /* Add Collection */
 export const createCollection = async (data) => {
-  const response = await axios.post("/admin/collections", data);
+  const response = await axios.post("/admin/collections", data,{
+      headers: { "Content-Type": "multipart/form-data" },
+  });
   return response.data;
 };
 
 /* Update Collection */
 export const updateCollection = async (id, data) => {
-  const response = await axios.put(`/admin/collections/${id}`, data);
+  const response = await axios.put(`/admin/collections/${id}`, data,{
+      headers: { "Content-Type": "multipart/form-data" },
+  });
   return response.data;
 };
 

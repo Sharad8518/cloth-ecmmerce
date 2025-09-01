@@ -6,6 +6,7 @@ if (token) {
 }
 
 export const placeOrder = async (orderData) => {
+  console.log('orderData',orderData)
   try {
     const res = await axios.post("/user/order/place", orderData, {
       headers: {
@@ -17,6 +18,25 @@ export const placeOrder = async (orderData) => {
     throw new Error(err.response?.data?.message || "Failed to place order");
   }
 }
+
+export const verifyPayment = async ({ razorpayOrderId, razorpayPaymentId, razorpaySignature }) => {
+  try {
+    const res = await axios.post(
+      "/user/order/verify-razorpay",
+      { razorpayOrderId, razorpayPaymentId, razorpaySignature },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response?.data?.message || "Payment verification failed");
+  }
+};
+
+
 
 export const getOrder = async () => {
   try {
