@@ -54,37 +54,14 @@ export default function Collection() {
     setHeaders(res);
   };
 
-  const fetchCategory = async () => {
-    const res = await getCategories();
-    setCategories(res);
-  };
 
-  const fetchSubCategory = async () => {
-    const res = await getSubCategories();
-    setSubCategories(res);
-  };
 
   const fetchCollects = async () => {
     const res = await getCollections();
     setCollections(res);
   };
 
-  const loadCategories = async (headerId) => {
-    setSelectedHeader(headerId);
-    const res = await getCategories();
-    setCategories(res.filter((c) => c.header._id === headerId));
-    console.log("Categories loaded for header:", res);
-    setSubCategories([]);
-    setCollections([]);
-  };
-
-  const loadSubCategories = async (categoryId) => {
-    setSelectedCategory(categoryId);
-    const res = await getSubCategories();
-    setSubCategories(res.filter((s) => s.category._id === categoryId));
-    setCollections([]);
-  };
-
+  
   const loadCollections = async (subCategoryId) => {
     if (!subCategoryId) {
       setCollections([]); // Clear collections if no subcategory selected
@@ -202,7 +179,7 @@ export default function Collection() {
             </thead>
             <tbody>
               {collections.map((h) => (
-                <tr key={h._id} onClick={() => loadCategories(h._id)}>
+                <tr key={h._id} >
                   {/* Image Column */}
                   <td>
                     {h.image ? (

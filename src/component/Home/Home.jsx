@@ -56,7 +56,7 @@ export default function Home() {
           <button className={styles.btnExplore}>Explore More</button>
           </div>
            <br></br>
-          {/* <AllProduct/> */}
+          <AllProduct/>
           <CategorySwiper/>
           <br/>
           <Product/>
