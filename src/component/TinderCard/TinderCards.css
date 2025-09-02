@@ -1,3 +1,9 @@
+.desktop-view{
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
 .card-container {
   position: relative;
   display: flex;
@@ -132,10 +138,70 @@ height: 350px;
   text-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
 }
 
+.mobile-view{
+  display: none;
+}
+
+.swiper {
+  width: 240px;
+  height: 320px;
+}
+
+.swiper-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.swiper-slide:nth-child(1n) {
+  background-color: rgb(206, 17, 17);
+}
+
+.swiper-slide:nth-child(2n) {
+  background-color: rgb(0, 140, 255);
+}
+
+.swiper-slide:nth-child(3n) {
+  background-color: rgb(10, 184, 111);
+}
+
+.swiper-slide:nth-child(4n) {
+  background-color: rgb(211, 122, 7);
+}
+
+.swiper-slide:nth-child(5n) {
+  background-color: rgb(118, 163, 12);
+}
+
+.swiper-slide:nth-child(6n) {
+  background-color: rgb(180, 10, 47);
+}
+
+.swiper-slide:nth-child(7n) {
+  background-color: rgb(35, 99, 19);
+}
+
+.swiper-slide:nth-child(8n) {
+  background-color: rgb(0, 68, 255);
+}
+
+.swiper-slide:nth-child(9n) {
+  background-color: rgb(218, 12, 218);
+}
+
+.swiper-slide:nth-child(10n) {
+  background-color: rgb(54, 94, 77);
+}
+
+
 @media (max-width: 750px) {
  .card-container {
   position: relative;
-  display: flex;
+  display: none;
   justify-content: center;
 
   align-items: center;
@@ -145,6 +211,10 @@ height: 350px;
   overflow: hidden;
   padding: 0 20px;
  
+}
+.mobile-view{
+  display: block;
+  margin-bottom: 20px;
 }
 
 .tinder-card {

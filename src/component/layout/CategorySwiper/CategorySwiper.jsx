@@ -55,9 +55,10 @@ export default function CategorySwiper() {
         navigation
         freeMode
         grabCursor
+        style={{width:"100%",height:"170px"}}
       >
         {categories.map((cat, index) => (
-          <SwiperSlide key={index} style={{ width: "150px" }}>
+          <SwiperSlide key={index} style={{ width: "150px" ,height:"170px",backgroundColor:"transparent"}}>
             <div className={styles.categorySlide}>
               <img src={cat.image} alt={cat.title} className={styles.categoryImg} />
               <div className={styles.categoryTitle}>{cat.title}</div>
