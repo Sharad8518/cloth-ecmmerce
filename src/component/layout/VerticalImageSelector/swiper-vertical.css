@@ -1,32 +1,38 @@
-.vertical-swiper-container {
-  width:100%;
-  height: 100%;
-  border-radius: 8px;
-  overflow: hidden;
+.vertical-scroll-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 400px; /* adjust based on your layout */
+  overflow-y: auto;
 }
 
-.vertical-swiper {
-  height: 100%;
-  justify-content: start;
-
+/* Scrollbar styling (optional, nice look) */
+.vertical-scroll-container::-webkit-scrollbar {
+  width: 6px;
 }
-.swipe-image {
-  width: 100%;
-  height: 70%;
-  object-fit: cover;       /* Ensures image fills box without distortion */
-  border-radius: 8px;
-  object-position: top center;
+.vertical-scroll-container::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+.vertical-scroll-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.image-wrapper {
   cursor: pointer;
   border: 2px solid transparent;
-  transition: border 0.2s ease;
-  display: block;
+ 
+  transition: border 0.2s ease-in-out;
 }
 
-.swipe-image.selected {
-  border: 2px solid #007bff;
+.image-wrapper img {
+ width: 80px;
+  height: 80px;
+  object-fit: contain;  /* ✅ show full image, no crop */
+  background: #f9f9f9;  /* ✅ optional: fill empty space */
+  
 }
 
-.slide-wrapper {
-  display: flex;
-  justify-content: center;
+.image-wrapper.active {
+  border: 2px solid #007bff; /* highlight selected */
 }
