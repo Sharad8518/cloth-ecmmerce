@@ -227,10 +227,10 @@ export default function NavbarMenu() {
                     setActiveHeader(header);
                     setShowModal(header.categories.length > 0); // show submenu only if categories exist
                   }}
-                  onMouseLeave={() => {
-                    setActiveHeader(null);
-                    setShowModal(false);
-                  }}
+                  // onMouseLeave={() => {
+                  //   setActiveHeader(null);
+                    
+                  // }}
                   style={{ position: "relative" }}
                 >
                   <Link to={`/categoryProduct`}>{header.title}</Link>

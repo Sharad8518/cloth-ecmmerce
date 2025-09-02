@@ -16,6 +16,8 @@ import {
 } from "react-icons/fa";
 import { PiFlagBannerFold } from "react-icons/pi";
 import styles from "./css/Sidebar.module.css";
+import { MdOutlinePolicy } from "react-icons/md";
+import { AiOutlineSound } from "react-icons/ai";
 
 const Sidebar = () => {
   const location = useLocation();
@@ -79,16 +81,14 @@ const Sidebar = () => {
             Header
           </Link>
 
-           <Link to="/dashboard/Category" className={styles.dropdownLink}>
-            Catgory 
+          <Link to="/dashboard/Category" className={styles.dropdownLink}>
+            Catgory
           </Link>
 
-           <Link to="/dashboard/Collection" className={styles.dropdownLink}>
+          <Link to="/dashboard/Collection" className={styles.dropdownLink}>
             Collection
           </Link>
-         
         </div>
-        
 
         <Nav.Link
           as={Link}
@@ -113,6 +113,16 @@ const Sidebar = () => {
 
         <Nav.Link
           as={Link}
+          to="/dashboard/Policy"
+          className={`${styles.link} ${
+            location.pathname === "/dashboard/Policy" ? styles.active : ""
+          }`}
+        >
+          <MdOutlinePolicy /> <span className={styles.label}>Policy</span>
+        </Nav.Link>
+
+        <Nav.Link
+          as={Link}
           to="/dashboard/Customer"
           className={`${styles.link} ${
             location.pathname === "/dashboard/Customer" ? styles.active : ""
@@ -125,22 +135,23 @@ const Sidebar = () => {
           as={Link}
           to="/dashboard/BannerManager"
           className={`${styles.link} ${
-            location.pathname === "/dashboard/BannerManager" ? styles.active : ""
+            location.pathname === "/dashboard/BannerManager"
+              ? styles.active
+              : ""
           }`}
         >
           <PiFlagBannerFold /> <span className={styles.label}>Banner</span>
         </Nav.Link>
 
-  <Nav.Link
+        <Nav.Link
           as={Link}
           to="/dashboard/Promotions"
           className={`${styles.link} ${
             location.pathname === "/dashboard/Promotions" ? styles.active : ""
           }`}
         >
-          <PiFlagBannerFold /> <span className={styles.label}>Promotional</span>
+          <AiOutlineSound /> <span className={styles.label}>Promotional</span>
         </Nav.Link>
-
 
         <Nav.Link
           as={Link}

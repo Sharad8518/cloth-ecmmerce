@@ -14,6 +14,7 @@ const [favorites, setFavorites] = useState([]); // store only products
       const data = await getFavorites();
       // Extract only the product from each favorite
       const products = data.favorites?.map(fav => fav.product) || [];
+      console.log('products',products)
       setFavorites(products);
     } catch (err) {
       console.error("Failed to fetch favorites", err);
@@ -40,6 +41,8 @@ const [favorites, setFavorites] = useState([]); // store only products
     <NavbarMenu />
     <br/>
     <br/>
+    <br/>
+     <br/>
     <br/>
      <h2 className="text-center my-4">My Wishlist</h2> {/* or "My Wishlist" */}
     <ProductGrid  products={favorites}/>

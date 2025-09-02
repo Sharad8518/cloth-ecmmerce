@@ -17,6 +17,8 @@ export default function Checkout() {
   const [userDetails, setUserDetails] = useState(null);
   const [itemsToCheckout, setItemsToCheckout] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [editingPhone, setEditingPhone] = useState(false);
+
   console.log("itemsToCheckout Address:", itemsToCheckout);
 
 const [paymentMethod, setPaymentMethod] = useState("COD"); 
@@ -93,6 +95,28 @@ const [paymentMethod, setPaymentMethod] = useState("COD");
     }
   };
 
+  
+const handleSavePhone = async () => {
+  if (!userDetails.phone) {
+    alert("Phone number cannot be empty");
+    return;
+  }
+
+  try {
+    // Only send the necessary fields
+    await updateProfile({
+      name: userDetails.name,
+      email: userDetails.email,
+      phone: userDetails.phone,
+      addresses: userDetails.addresses || [],
+    });
+    alert("Phone number updated!");
+    setEditingPhone(false);
+  } catch (err) {
+    console.error(err);
+    alert("Failed to update phone number");
+  }
+};
   const loadRazorpayScript = () => {
   return new Promise((resolve) => {
     const script = document.createElement("script");
@@ -108,6 +132,12 @@ const handlePlaceOrder = async () => {
     alert("Please select a delivery address");
     return;
   }
+  
+ if (!userDetails?.phone) {
+  alert("Please add a phone number before placing the order");
+  return; // Stop execution
+}
+  
   if(!paymentMethod){
     alert("Please select a payment method");  
     return;
@@ -200,7 +230,61 @@ console.log('itemsToCheckout',itemsToCheckout)
         {/* Shipping Details */}
         <div style={{ marginBottom: 40 }}>
           <h4>Shipping Details</h4>
-          <p><b>{userDetails?.name}</b> ({userDetails?.email} | {userDetails?.phone})</p>
+          <p>
+    <b>{userDetails?.name}</b> ({userDetails?.email} |{" "}
+    {editingPhone ? (
+      <input
+        type="text"
+        value={userDetails.phone || ""}
+        onChange={(e) =>
+          setUserDetails({ ...userDetails, phone: e.target.value })
+        }
+        placeholder="Enter phone number"
+        style={{
+          padding: 5,
+          borderRadius: 4,
+          border: "1px solid #ccc",
+          width: 150,
+          marginRight: 10,
+        }}
+      />
+    ) : (
+      userDetails?.phone || "No phone added"
+    )}
+    {editingPhone ? (
+      <button
+        onClick={handleSavePhone}
+        style={{
+          marginLeft: 5,
+          padding: "4px 10px",
+          borderRadius: 4,
+          backgroundColor: "green",
+          color: "#fff",
+          border: "none",
+          cursor: "pointer",
+        }}
+      >
+        Save
+      </button>
+    ) : (
+      <button
+        onClick={() => setEditingPhone(true)}
+        style={{
+          marginLeft: 5,
+          padding: "4px 10px",
+          borderRadius: 4,
+          backgroundColor: "#007bff",
+          color: "#fff",
+          border: "none",
+          cursor: "pointer",
+        }}
+      >
+        {userDetails?.phone ? "Edit" : "Add"}
+      </button>
+    )}
+    
+  </p>
+
 
           {/* Saved addresses */}
           <div>

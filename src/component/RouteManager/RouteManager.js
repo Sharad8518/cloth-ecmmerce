@@ -27,6 +27,7 @@ import Header from "../Admin/Navbar/Header/Header";
 import Category from "../Admin/Navbar/Category/Category";
 import Collection from "../Admin/Navbar/Collection/Collection";
 import Customer from "../Admin/Customer/Customer";
+import PolicyPage from "../Admin/Policy/PolicyPage";
 
 export default function RouteManager() {
   return (
@@ -60,6 +61,7 @@ export default function RouteManager() {
           <Route path="Category" element={<Category />} />
           <Route path="Collection" element={<Collection />} />
           <Route path="Customer" element={<Customer />} />
+          <Route path="Policy" element={<PolicyPage />} />
         </Route>
       </Route>
     </Routes>

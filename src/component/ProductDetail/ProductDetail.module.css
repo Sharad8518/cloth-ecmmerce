@@ -41,6 +41,11 @@
   
 }
 
+.mobileHorizantal{
+  display: none;
+}
+
+
 .paddingButton {
   width: 48%;
     background-color: #353535; /* Primary accent color, change to match theme */
@@ -76,6 +81,7 @@
      font-family: "Inter", sans-serif;
 }
 .detailProductDiscreaption{
+  margin-bottom: 7px;
     font-size: 13px;
      font-family: "Inter", sans-serif;
 }
@@ -90,6 +96,7 @@
     color: #bdbdbd;
 }
 .detailSizeText{
+  margin-top: 7px;
   display: flex;
   font-weight: 700;
    font-family: "Inter", sans-serif;  
@@ -104,6 +111,14 @@
   color: #3d3d3d;
   font-family: "Inter", sans-serif;  
 
+}
+
+.detailButtonBar{
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 20px;
+  flex-wrap: wrap;
 }
 
 .detailMadeToOrderText{
@@ -328,9 +343,37 @@
 
 }
 
+.detailProductTitle{
+    font-size: 30px;
+    font-weight: 650;
+    margin-top: 10px;
+    font-size: 17px;
+     font-family: "Inter", sans-serif;
+}
 
 .vericalImage{
   display: none;
 }
 
+.mobileHorizantal{
+  display: block;
+  margin-top: 10px;
+}
+
+  .detailButtonBar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px;
+    background: #fff; /* keeps it visible */
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+
+  .detailAddCartButton,
+  .detailBuyButton {
+    flex: 1;
+    margin: 0 5px;
+  }
 }

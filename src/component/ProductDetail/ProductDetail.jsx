@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Accordion, Navbar } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Accordion,
+  Navbar,
+  Button,
+  Form,
+} from "react-bootstrap";
 import styles from "./ProductDetail.module.css";
 import VerticalImageSelector from "../layout/VerticalImageSelector/VerticalImageSelector";
+import HorizontalImageSelector from "../layout/HorizontalImageSelector/HorizontalImageSelector";
 import { BiCloset } from "react-icons/bi";
 import { BsClipboard } from "react-icons/bs";
 import { FaRegClipboard } from "react-icons/fa";
@@ -188,11 +197,12 @@ export default function ProductDetail() {
   const [loading, setLoading] = useState(true);
   const [paddingRequired, setPaddingRequired] = useState("No");
   const [isPaddingModalOpen, setIsPaddingModalOpen] = useState(false);
+  const [answer, setAnswer] = useState(null);
   const [paddingDetails, setPaddingDetails] = useState({
     waist: "",
     length: "",
     height: "",
-    unit:"cm"
+    unit: "cm",
   });
   const [savedPaddingDetails, setSavedPaddingDetails] = useState(null);
   useEffect(() => {
@@ -211,7 +221,21 @@ export default function ProductDetail() {
     fetchProduct();
   }, [id]);
 
+  const handleSelectChange = (field, value) => {
+    setPaddingDetails((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
   console.log("product", product);
+
+  const handleSelect = (value) => {
+    setAnswer(value);
+    if (value === "yes") {
+      setIsPaddingModalOpen(true);
+    }
+  };
 
   const toggleKey = (key) => {
     setActiveKeys(
@@ -226,6 +250,17 @@ export default function ProductDetail() {
   console.log("selectedSize", selectedSize);
   if (loading) {
     return <div>Loading...</div>; // or a spinner component
+  }
+
+  function getDateAfterDays(days) {
+    const date = new Date();
+    date.setDate(date.getDate() + days);
+
+    return date.toLocaleDateString("en-US", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
   }
 
   return (
@@ -249,18 +284,27 @@ export default function ProductDetail() {
             <img src={selectedImage} className={styles.productDetailImg} />
           </Col>
           <Col md={6} className={styles.productContentBox}>
+          <div className={styles.mobileHorizantal}>
+             <HorizontalImageSelector
+                images={product?.media?.map((m) => m?.url)} // ✅ use product media URLs
+                onSelect={setSelectedImage}
+              />
+          </div>
+
             <h3 className={styles.detailProductTitle}>{product?.title} </h3>
             <div className={styles.detailProductDiscreaption}>
               {product?.description}
             </div>
-            <div className={styles.detailPrize}>Rs. {product?.mrp}</div>
+            <div className={styles.detailPrize}>Rs. {product?.mrp} /-</div>
             <div className={styles.detailMRP}>MRP Inclusive of all size</div>
             <hr />
 
             <div className={styles.detailMadeToOrderText}>
               <BiCloset size={20} /> Made To Order
             </div>
-            <div className={styles.detailShip}>Ship by 11th November 2025</div>
+            <div className={styles.detailShip}>
+              Ship by {getDateAfterDays(product?.estimatedShippingDays)}
+            </div>
             <div className={styles.detailSizeText}>
               SELECT YOUR SIZE
               <div className={styles.detailSizeGuideText}>Size Guide</div>
@@ -279,22 +323,46 @@ export default function ProductDetail() {
               ))}
             </div>
 
-            <button
+            <div style={{ display: "flex" }}>
+              <span style={{ fontWeight: "700" }}>
+                Additional info for better fit
+              </span>
+
+              <div style={{ marginTop: "-3px", marginLeft: 10 }}>
+                <Button
+                  variant={answer === "yes" ? "primary" : "outline-primary"}
+                  size="sm"
+                  className="me-2"
+                  onClick={() => handleSelect("yes")}
+                >
+                  Yes
+                </Button>
+                <Button
+                  variant={answer === "no" ? "primary" : "outline-primary"}
+                  size="sm"
+                  onClick={() => handleSelect("no")}
+                >
+                  No
+                </Button>
+              </div>
+            </div>
+
+            {/* <button
               className={styles.paddingButton}
               onClick={() => setIsPaddingModalOpen(true)}
             >
               {savedPaddingDetails
-                ? "Edit Padding Details"
-                : "Padding Required For Better Fit"}
-            </button>
+                ? "Edit better fit"
+                : "Additional info for better fit"}
+            </button> */}
 
             {/* Show saved values */}
             {savedPaddingDetails && (
               <div style={{ marginTop: 10 }}>
-                <strong>Padding Details:</strong> Waist:{" "}
-                {savedPaddingDetails.waist} {savedPaddingDetails.unit}, Length:{" "}
-                {savedPaddingDetails.length} {savedPaddingDetails.unit}, Height:{" "}
-                {savedPaddingDetails.height} {savedPaddingDetails.unit}{" "}
+                <strong>Better fit:</strong> Waist: {savedPaddingDetails.waist}{" "}
+                {savedPaddingDetails.unit}, Length: {savedPaddingDetails.length}{" "}
+                {savedPaddingDetails.unit}, Height: {savedPaddingDetails.height}{" "}
+                {savedPaddingDetails.unit}{" "}
                 <button
                   style={{
                     marginLeft: 10,
@@ -310,13 +378,7 @@ export default function ProductDetail() {
             )}
 
             <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                width: "100%",
-                marginTop: 20,
-                flexWrap: "wrap",
-              }}
+              className={styles.detailButtonBar}
             >
               {(cart?.items || []).some(
                 (item) => item.variant?.sku === selectedSize?.sku
@@ -336,7 +398,7 @@ export default function ProductDetail() {
                       return;
                     }
 
-                    if (!selectedSize && !savedPaddingDetails) {
+                    if (!selectedSize) {
                       alert("Please select a size");
                       return;
                     }
@@ -442,46 +504,65 @@ export default function ProductDetail() {
                   </div>
                 </Accordion.Header>
                 <Accordion.Body>
-                  <p>
+                  {/* <p>
                     <strong>Colour:</strong> {product?.colour}
                   </p>
-                  <p>{product?.description}</p>
-                  <hr />
+                  <p>{product?.description}</p> */}
+
+                  {/* <hr /> */}
                   <p>{product?.shortDescription}</p>
-                  <p>
-                    <strong>Pack Contains : </strong>
-                    {product?.packContains}
-                  </p>
-                  <p>
-                    <strong>Fabric : </strong>
-                    {product?.fabric}
-                  </p>
-                  {product?.dupatta.enabled && (
-                    <p>
-                      <strong>Dupatta : </strong>
-                      {product?.dupatta.description}
-                    </p>
-                  )}
+                  <strong style={{ color: "#0984e3" }}>Other Info</strong>
+                  <Row style={{ marginTop: 10 }}>
+                    <Col>
+                      <strong>Pack Contains  </strong>
+                    </Col>
+                    <Col>: {product?.packContains}</Col>
+                  </Row>
+                  <Row style={{ marginTop: 10 }}>
+                    <Col>
+                      <strong>Fabric  </strong>
+                    </Col>
+                    <Col> : {product?.fabric}</Col>
+                  </Row>
+                  <Row style={{ marginTop: 10 }}>
+                    <Col>
+                      <strong>Dupatta  </strong>
+                    </Col>
+                    <Col>
+                      {product?.dupatta.enabled ? (
+                        <div>: Yes</div>
+                      ) : (
+                        <div>: No</div>
+                      )}
+                    </Col>
+                  </Row>
 
-                  <p>
-                    <strong>Work /Craft : </strong>
-                    {product?.work}
-                  </p>
+                  <Row style={{ marginTop: 10 }}>
+                    <Col>
+                      <strong>Work /Craft  </strong>
+                    </Col>
+                    <Col>: {product?.work}</Col>
+                  </Row>
+                  <Row style={{ marginTop: 10 }}>
+                    <Col>
+                      <strong>Care  </strong>
+                    </Col>
+                    <Col>: {product?.care}</Col>
+                  </Row>
 
-                  <p>
-                    <strong>Care : </strong>
-                    {product?.care}
-                  </p>
+                  <Row style={{ marginTop: 10 }}>
+                    <Col>
+                      <strong>Occasion  </strong>
+                    </Col>
+                    <Col>: {product?.occasion}</Col>
+                  </Row>
 
-                  <p>
-                    <strong>Occasion : </strong>
-                    {product?.occasion}
-                  </p>
-
-                  <p>
-                    <strong>Note : </strong>
-                    {product?.note}
-                  </p>
+                  <Row style={{ marginTop: 10 }}>
+                    <Col>
+                      <strong>Note  </strong>
+                    </Col>
+                    <Col>:{product?.Note}</Col>
+                  </Row>
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="1" style={{ border: "none" }}>
@@ -500,10 +581,10 @@ export default function ProductDetail() {
                 </Accordion.Header>
                 <Accordion.Body>
                   {product?.productSpeciality}
-                  <hr />
-                  <br />
-                  <p>
-                    <strong>Style And Fit</strong> : {product?.styleAndFit}
+
+                  <p style={{ marginTop: 10 }}>
+                    <strong style={{ color: "#0984e3" }}>Style And Fit </strong>{" "}
+                    : {product?.styleAndFit}
                   </p>
                 </Accordion.Body>
               </Accordion.Item>
@@ -554,27 +635,28 @@ export default function ProductDetail() {
                 <Accordion.Body>{product?.shippingAndReturns}</Accordion.Body>
               </Accordion.Item>
             </Accordion>
-            <CustomerReviews reviews={reviews} />
           </Col>
         </Row>
       </Container>
-      {/* <div className={styles.customerHeading}>Customer Review</div> */}
       <Frequently items={product?.frequentlyBoughtTogether} />
       <br />
       <div style={{ padding: "2rem", backgroundColor: "#f9f9f9" }}>
         <SimilarProducts products={product?.similarProducts} />
       </div>
+      <br />
+      <div className={styles.customerHeading}>Customer Review</div>
+      <CustomerReviews reviews={reviews} />
       <Footer />
       {isPaddingModalOpen && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
-            <h3>Enter Padding Details</h3>
+            <h3>Enter Additional info Details</h3>
             <p
               style={{ fontSize: "0.9rem", color: "#555", textAlign: "center" }}
             >
               Provide waist, length, and height for a better fit.
             </p>
-
+            {/* 
             {["waist", "length", "height"].map((field) => (
               <label key={field}>
                 {field.charAt(0).toUpperCase() + field.slice(1)}:
@@ -606,8 +688,68 @@ export default function ProductDetail() {
                   </select>
                 </div>
               </label>
-            ))}
+            ))} */}
 
+            <Form.Group className="mb-3">
+              <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                Waist
+              </Form.Label>
+              <Form.Select
+                style={{ fontSize: 14 }}
+                value={paddingDetails.waist || ""}
+                onChange={(e) => handleSelectChange("waist", e.target.value)}
+              >
+                <option value="">Select Waist</option>
+                <option value="25 Inch">25 Inch</option>
+                <option value="26 Inch">26 Inch</option>
+                <option value="27 Inch">27 Inch</option>
+                <option value="28 Inch">28 Inch</option>
+              </Form.Select>
+              <Form.Text className="text-muted">
+                Note: Select from list
+              </Form.Text>
+            </Form.Group>
+
+            {/* Length */}
+            <Form.Group className="mb-3">
+              <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                Length (Waist to Floor including heel)
+              </Form.Label>
+              <Form.Select
+                style={{ fontSize: 14 }}
+                value={paddingDetails.length || ""}
+                onChange={(e) => handleSelectChange("length", e.target.value)}
+              >
+                <option value="">Select Length</option>
+                <option value="36 Inch (91 cm)">36 Inch (91 cm)</option>
+                <option value="38 Inch (96 cm)">38 Inch (96 cm)</option>
+                <option value="40 Inch (102 cm)">40 Inch (102 cm)</option>
+              </Form.Select>
+              <Form.Text className="text-muted">
+                Note: Select from list
+              </Form.Text>
+            </Form.Group>
+
+            {/* Height */}
+            <Form.Group className="mb-3">
+              <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                Your Height (Including heel)
+              </Form.Label>
+              <Form.Select
+                style={{ fontSize: 14 }}
+                value={paddingDetails.height || ""}
+                onChange={(e) => handleSelectChange("height", e.target.value)}
+              >
+                <option value="">Select Height</option>
+                <option value="5 feet 2 Inch">5 feet 2 Inch</option>
+                <option value="5 feet 3 Inch">5 feet 3 Inch</option>
+                <option value="5 feet 4 Inch">5 feet 4 Inch</option>
+                <option value="5 feet 5 Inch">5 feet 5 Inch</option>
+              </Form.Select>
+              <Form.Text className="text-muted">
+                Note: Select from list
+              </Form.Text>
+            </Form.Group>
             <div className={styles.modalActions}>
               <button onClick={() => setIsPaddingModalOpen(false)}>
                 Cancel

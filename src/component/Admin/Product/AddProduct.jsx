@@ -17,6 +17,7 @@ import {
 } from "../../api/admin/hierarchyManagerApi";
 
 import { addProduct } from "../../api/admin/productApi";
+import { getPolicies } from "../../api/admin/policyApi";
 
 import SEOForm from "./SEOForm/SEOForm";
 import ColourDropdown from "./ColourDropdown/ColourDropdown";
@@ -30,7 +31,7 @@ export default function AddProduct() {
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [collections, setCollections] = useState([]);
-
+  const [policies, setPolicies] = useState([]);
   const [selectedHeader, setSelectedHeader] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSubCategory, setSelectedSubCategory] = useState(null);
@@ -63,7 +64,7 @@ export default function AddProduct() {
     fabric: "",
     work: "",
     packContains: "",
-    occasion:"",
+    occasion: "",
     care: "",
     note: "",
     productionDetail: {
@@ -126,38 +127,38 @@ export default function AddProduct() {
     const res = await getHeaders();
     setHeaders(res);
   };
-const loadCategories = async (headerId) => {
-  setSelectedHeader(headerId);
-  const res = await getCategories();
+  const loadCategories = async (headerId) => {
+    setSelectedHeader(headerId);
+    const res = await getCategories();
 
-  // Use optional chaining to avoid null errors
-  const filtered = (res || []).filter((c) => c?.header?._id === headerId);
+    // Use optional chaining to avoid null errors
+    const filtered = (res || []).filter((c) => c?.header?._id === headerId);
 
-  setCategories(filtered);
-  setSubCategories([]);
-  setCollections([]);
-};
+    setCategories(filtered);
+    setSubCategories([]);
+    setCollections([]);
+  };
 
-const loadSubCategories = async (categoryId) => {
-  setSelectedCategory(categoryId);
-  const res = await getSubCategories();
+  const loadSubCategories = async (categoryId) => {
+    setSelectedCategory(categoryId);
+    const res = await getSubCategories();
 
-  const filtered = (res || []).filter((s) => s?.category?._id === categoryId);
+    const filtered = (res || []).filter((s) => s?.category?._id === categoryId);
 
-  setSubCategories(filtered);
-  setCollections([]);
-};
+    setSubCategories(filtered);
+    setCollections([]);
+  };
 
-const loadCollections = async (subCategoryId) => {
-  setSelectedSubCategory(subCategoryId);
-  const res = await getCollections();
+  const loadCollections = async (subCategoryId) => {
+    setSelectedSubCategory(subCategoryId);
+    const res = await getCollections();
 
-  const filtered = (res || []).filter(
-    (c) => c?.subcategory?._id === subCategoryId
-  );
+    const filtered = (res || []).filter(
+      (c) => c?.subcategory?._id === subCategoryId
+    );
 
-  setCollections(filtered);
-};
+    setCollections(filtered);
+  };
   // ✅ Validate file
   const validateFile = (file) => {
     // Case 1: User just uploaded (File object)
@@ -211,6 +212,18 @@ const loadCollections = async (subCategoryId) => {
       media: [...prev.media, ...newMedia],
     }));
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getPolicies();
+        setPolicies(data.data); // [{_id, title, decreption}]
+      } catch (err) {
+        console.error("Failed to load policies:", err.message);
+      }
+    };
+    fetchData();
+  }, []);
 
   // ✅ File input
   const handleChangeImage = (e) => handleFiles(e.target.files);
@@ -357,7 +370,7 @@ const loadCollections = async (subCategoryId) => {
         categories: [], // selected categories
         subCategories: [], // selected subcategories
         collections: [], // selected collections
-        occasion:"",
+        occasion: "",
         estimatedShippingDays: "",
         shippingAndReturns: "",
         productSpeciality: "",
@@ -1128,6 +1141,56 @@ const loadCollections = async (subCategoryId) => {
                 </Row>
               </Card.Body>
             </Card>
+
+            <Card style={{ marginTop: 20 }}>
+              <Card.Header>Shipment Information</Card.Header>
+              <Card.Body>
+                {/* <Form.Group className="mb-3">
+                  <Form.Label>Colour</Form.Label>
+                  <Form.Control
+                    name="colour"
+                    value={product.colour}
+                    onChange={handleChange}
+                  />
+                </Form.Group> */}
+                {/* <ColourDropdown product={product} setProduct={setProduct} /> */}
+                <Form.Group>
+                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                    Fulfillment Type <span style={{ color: "red" }}>*</span>
+                  </Form.Label>
+                  <Form.Select
+                    name="fulfillmentType"
+                    value={product.fulfillmentType}
+                    onChange={(e) =>
+                      handleChange("fulfillmentType", e.target.value)
+                    }
+                  >
+                    <option value="READY_TO_SHIP">Ready to Ship</option>
+                    <option value="MADE_TO_ORDER">Made to Order</option>
+                  </Form.Select>
+                </Form.Group>
+                <br />
+                <Form.Group className="mb-3">
+                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                    Estimated Shipping (in days)
+                  </Form.Label>
+                  <Form.Control
+                    type="number"
+                    name="estimatedShippingDays"
+                    style={{ fontSize: 14 }}
+                    min={1}
+                    value={product.estimatedShippingDays || ""}
+                    onChange={(e) =>
+                      handleChange(
+                        "estimatedShippingDays",
+                        Number(e.target.value)
+                      )
+                    }
+                    // placeholder="Enter number of days (e.g. 5)"
+                  />
+                </Form.Group>
+              </Card.Body>
+            </Card>
           </Col>
 
           {/* Pricing */}
@@ -1383,7 +1446,7 @@ const loadCollections = async (subCategoryId) => {
             </Card>
 
             <Card style={{ marginTop: 20 }}>
-              <Card.Header>Shipment & Return Info</Card.Header>
+              <Card.Header>Return & Exchange Policy</Card.Header>
               <Card.Body>
                 {/* <Form.Group className="mb-3">
                   <Form.Label>Colour</Form.Label>
@@ -1394,41 +1457,6 @@ const loadCollections = async (subCategoryId) => {
                   />
                 </Form.Group> */}
                 {/* <ColourDropdown product={product} setProduct={setProduct} /> */}
-                <Form.Group>
-                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
-                    Fulfillment Type <span style={{ color: "red" }}>*</span>
-                  </Form.Label>
-                  <Form.Select
-                    name="fulfillmentType"
-                    value={product.fulfillmentType}
-                    onChange={(e) =>
-                      handleChange("fulfillmentType", e.target.value)
-                    }
-                  >
-                    <option value="READY_TO_SHIP">Ready to Ship</option>
-                    <option value="MADE_TO_ORDER">Made to Order</option>
-                  </Form.Select>
-                </Form.Group>
-                <br />
-                <Form.Group className="mb-3">
-                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
-                    Estimated Shipping (in days)
-                  </Form.Label>
-                  <Form.Control
-                    type="number"
-                    name="estimatedShippingDays"
-                    style={{ fontSize: 14 }}
-                    min={1}
-                    value={product.estimatedShippingDays || ""}
-                    onChange={(e) =>
-                      handleChange(
-                        "estimatedShippingDays",
-                        Number(e.target.value)
-                      )
-                    }
-                    // placeholder="Enter number of days (e.g. 5)"
-                  />
-                </Form.Group>
 
                 <Form.Group className="mb-3">
                   <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
@@ -1442,11 +1470,11 @@ const loadCollections = async (subCategoryId) => {
                     }
                   >
                     <option value="">Select Policy</option>
-                    <option value="7 Days Return">7 Days Return</option>
-                    <option value="Exchange Only">Exchange Only</option>
-                    <option value="No Return / Exchange">
-                      No Return / Exchange
-                    </option>
+                    {policies?.map((policy) => (
+                      <option key={policy._id} value={policy?.description}>
+                        {policy?.title} 
+                      </option>
+                    ))}
                   </Form.Select>
                 </Form.Group>
               </Card.Body>

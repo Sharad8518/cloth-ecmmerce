@@ -186,6 +186,8 @@ const buildParams = (filters, currentPage = 1, sortBy = "newest") => {
       <NavbarMenu />
       <br />
       <br />
+      <br />
+      <br />
       <div style={{ width: "100%", boxSizing: "border-box" }}>
         <img
           src={banner[0]?.imageUrl}
@@ -199,7 +201,7 @@ const buildParams = (filters, currentPage = 1, sortBy = "newest") => {
         <Row>
           {/* Left Filters */}
           <Col
-            md={3}
+            md={2}
             style={{ background: "#f8f9fa", padding: "20px" }}
             className={styles.filterBox}
           >
@@ -360,7 +362,7 @@ const buildParams = (filters, currentPage = 1, sortBy = "newest") => {
           </Col>
 
           {/* Right Product Section */}
-          <Col md={9}>
+          <Col md={10}>
             {/* Selected filters */}
             {selectedFilters?.length > 0 && (
               <div style={{ marginBottom: 20 }}>

@@ -46,11 +46,12 @@ export const loginWithGoogleAPI = async (idToken) => {
   }
 };
 
-export const updateProfile = async ({ userId, name, email, addresses }) => {
+export const updateProfile = async ({ userId, name, email,phone, addresses }) => {
   try {
     const res = await axios.post("/user/completeProfile", {
       name,
       email,
+      phone,
       addresses
     }, {
       headers: {
