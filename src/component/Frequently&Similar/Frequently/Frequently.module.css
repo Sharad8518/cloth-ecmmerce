@@ -92,6 +92,21 @@
     flex: 0 0 calc(50% - 10px); /* two cards in a row with small gap */
     max-width: calc(50% - 10px);
   }
+
+  .clickadd{
+    text-align: center;
+    color: #777;
+     font-family: "Inter", sans-serif;
+       font-size: 1rem;
+}
+
+  .frequentlyHeaderText{
+    text-align: center;
+    margin-top: 20px;
+    font-size: 1.3rem;
+     font-family: "Inter", sans-serif;
+     font-weight: 600;
+}
 }
 
 

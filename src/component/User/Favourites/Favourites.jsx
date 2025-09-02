@@ -3,6 +3,8 @@ import NavbarMenu from '../../Navbar/NavbarMenu'
 import { getFavorites } from "../../api/user/favoriteApi";
 import { Container, Row, Col, Card, Spinner } from "react-bootstrap";
 import ProductGrid from '../../layout/ProductGrid/ProductGrid';
+import Lottie from "lottie-react";
+import loadingAnimation from "../../../assets/Anim/loading.json";
 
 export default function Favourites() {
 const [favorites, setFavorites] = useState([]); // store only products
@@ -31,9 +33,27 @@ const [favorites, setFavorites] = useState([]); // store only products
 
   if (loading) {
     return (
-      <div className="text-center my-5">
-        <Spinner animation="border" />
-      </div>
+       <div
+          style={{
+            height: "100vh",
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            flexDirection:"column",
+            alignItems: "center",
+            background: "#fff", // optional
+          }}
+        >
+          <Lottie
+            animationData={loadingAnimation}
+            loop={true}
+            autoplay={true}
+            style={{ width: 200, height: 200 }}
+          />
+             <p style={{ marginTop: "1rem", fontSize: "18px", color: "#333" }}>
+            Please wait, loading...
+          </p>
+        </div> // or a spinner component
     );
   }
   return (

@@ -79,11 +79,22 @@
     font-size: 30px;
     font-weight: 650;
      font-family: "Inter", sans-serif;
+       display: -webkit-box;
+  -webkit-line-clamp: 1;   /* Show only 2 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.detailProductDiscreaption{
+.detailProductDiscreaption {
   margin-bottom: 7px;
-    font-size: 13px;
-     font-family: "Inter", sans-serif;
+  font-size: 13px;
+  font-family: "Inter", sans-serif;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;   /* Show only 2 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .detailPrize{
    font-family: "Inter", sans-serif;  

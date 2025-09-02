@@ -4,10 +4,12 @@ import { GoHeart } from "react-icons/go";
 import { IoHeartOutline } from "react-icons/io5";
 import { IoMdHeartEmpty } from "react-icons/io";
 import { HiOutlineShoppingBag } from "react-icons/hi2";
+import { useNavigate } from 'react-router-dom';
 
 export default function CardItem({ image, name, description, price }) {
+  const navigate = useNavigate()
   return (
-     <div className="tshirt-card">
+     <div className="tshirt-card" onClick={()=>navigate("/categoryProduct")}  >
       <div className='card-image'>
       <img src={image} alt={name} className="tshirt-image" />
       {/* <div className='fav-circle-card'>

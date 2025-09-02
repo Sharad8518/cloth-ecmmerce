@@ -1,11 +1,27 @@
 import React, { useState } from "react";
-import { Container, Row, Col, Card, Table, Badge, Button, Pagination } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Table,
+  Badge,
+  Button,
+  Pagination,
+  Form,
+  Modal,
+} from "react-bootstrap";
 import styles from "./OrderList.module.css";
 import { FaShippingFast, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import OrderDetailModal from "../OrderDetailModal";
+import { FaStar } from "react-icons/fa";
 
 // Props: orders = array of orders fetched from API
 const OrderList = ({ orders, totalPages = 1, onPageChange }) => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [reviewItem, setReviewItem] = useState(null);
+const [review, setReview] = useState({ rating: 5, comment: "" });
 
   const handlePageClick = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -25,12 +41,15 @@ const OrderList = ({ orders, totalPages = 1, onPageChange }) => {
         </Pagination.Item>
       );
     }
-    return <Pagination className="justify-content-center mt-3">{items}</Pagination>;
+    return (
+      <Pagination className="justify-content-center mt-3">{items}</Pagination>
+    );
   };
 
   return (
-     <Container className="my-4">
-      <br/><br/>
+    <Container className="my-4">
+      <br />
+      <br />
       <h2 className="mb-4">My Orders</h2>
 
       {orders?.length === 0 ? (
@@ -82,6 +101,17 @@ const OrderList = ({ orders, totalPages = 1, onPageChange }) => {
                           SKU: {item?.variant?.sku}
                           <br />
                           Qty: {item?.quantity}
+                          {order.orderStatus === "delivered" && (
+                            <div className="mt-2">
+                              <Button
+                                size="sm"
+                                variant="outline-success"
+                                onClick={() => setReviewItem(item)}
+                              >
+                                Give Review
+                              </Button>
+                            </div>
+                          )}
                         </td>
                         <td>₹ {item?.subtotal}</td>
                       </tr>
@@ -91,8 +121,10 @@ const OrderList = ({ orders, totalPages = 1, onPageChange }) => {
 
                 <h6>Shipping:</h6>
                 <p className="mb-1">
-                  {order?.shippingAddress?.name}, {order?.shippingAddress?.addressLine1},{" "}
-                  {order?.shippingAddress?.city}, {order?.shippingAddress?.state},{" "}
+                  {order?.shippingAddress?.name},{" "}
+                  {order?.shippingAddress?.addressLine1},{" "}
+                  {order?.shippingAddress?.city},{" "}
+                  {order?.shippingAddress?.state},{" "}
                   {order?.shippingAddress?.postalCode}
                 </p>
                 <p className="mb-1">Phone: {order?.shippingAddress?.phone}</p>
@@ -118,7 +150,11 @@ const OrderList = ({ orders, totalPages = 1, onPageChange }) => {
               </Card.Body>
 
               <Card.Footer className="d-flex justify-content-between align-items-center">
-                <Button variant="outline-primary" size="sm">
+                <Button
+                  variant="outline-primary"
+                  size="sm"
+                  onClick={() => setSelectedOrder(order)}
+                >
                   View Details
                 </Button>
                 {order.orderStatus === "delivered" && (
@@ -138,6 +174,74 @@ const OrderList = ({ orders, totalPages = 1, onPageChange }) => {
           {totalPages > 1 && renderPagination()}
         </>
       )}
+      <OrderDetailModal
+        order={selectedOrder}
+        show={!!selectedOrder}
+        onClose={() => setSelectedOrder(null)}
+      />
+
+      <Modal show={!!reviewItem} onHide={() => setReviewItem(null)} centered>
+  <Modal.Header closeButton>
+    <Modal.Title>
+      Review Product - {reviewItem?.product?.title}
+    </Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+    <Form>
+      <Form.Group className="mb-3">
+        <Form.Label>Rating</Form.Label>
+        <div>
+          {[1, 2, 3, 4, 5].map((star) => (
+            <FaStar
+              key={star}
+              size={22}
+              className="me-1"
+              color={review.rating >= star ? "gold" : "lightgray"}
+              style={{ cursor: "pointer" }}
+              onClick={() => setReview({ ...review, rating: star })}
+            />
+          ))}
+        </div>
+      </Form.Group>
+
+      <Form.Group className="mb-3">
+        <Form.Label>Comment</Form.Label>
+        <Form.Control
+          as="textarea"
+          rows={3}
+          placeholder="Write your review..."
+          value={review.comment}
+          onChange={(e) =>
+            setReview({ ...review, comment: e.target.value })
+          }
+        />
+      </Form.Group>
+    </Form>
+  </Modal.Body>
+  <Modal.Footer>
+    <Button variant="secondary" onClick={() => setReviewItem(null)}>
+      Cancel
+    </Button>
+    <Button
+      variant="success"
+      onClick={() => {
+        // ✅ Save review to backend
+        console.log("Review submitted:", {
+          productId: reviewItem?.product?._id,
+          rating: review.rating,
+          comment: review.comment,
+        });
+
+        // Reset form
+        setReview({ rating: 5, comment: "" });
+        setReviewItem(null);
+      }}
+    >
+      Submit Review
+    </Button>
+  </Modal.Footer>
+</Modal>
+
     </Container>
   );
 };

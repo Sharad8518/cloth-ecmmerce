@@ -21,3 +21,10 @@ export const filterProduct = async (params = {}) => {
   const response = await axios.get(`/user/productsfilter`,{ params });
   return response.data;
 };
+
+
+
+export const getProductsNewIn = async (queryParams = {}) => {
+  const response = await axios.get("/user//products/current-month", { params: queryParams });
+  return response.data;
+};

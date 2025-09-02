@@ -8,6 +8,7 @@ import {
 import CompleteProfile from "../CompleteProfile";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
+import logo from "../../../assets/logo.jpeg"
 
 export default function MobileLoginOTP({ isOpen, closeModal }) {
   const [mobile, setMobile] = useState("");
@@ -390,16 +391,10 @@ export default function MobileLoginOTP({ isOpen, closeModal }) {
           {/* Right side: image - hide on mobile */}
           <div
             className="right-image"
-            style={{
-              flex: 1,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: "#f5f5f5",
-            }}
+            
           >
             <img
-              src="https://i.ibb.co/2kF3Gsm/mobile-login.png"
+              src={logo}
               alt="Mobile Illustration"
               style={{
                 width: "80%",
@@ -410,6 +405,14 @@ export default function MobileLoginOTP({ isOpen, closeModal }) {
 
           <style>
             {`
+            .right-image {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #f7f7f7;
+    }
+
           @keyframes float {
             0% { transform: translateY(0px); }
             50% { transform: translateY(-10px); }

@@ -16,6 +16,8 @@ import Footer from "../../Footer/Footer";
 import styles from "./CategoryProduct.module.css";
 import { filterProduct } from "../../api/user/Productapi";
 import {getBanner} from "../../api/user/bannerApi"
+import Lottie from "lottie-react";
+import loadingAnimation from "../../../assets/Anim/loading.json";
 
 export default function CategoryProduct() {
   // State to track filters
@@ -38,7 +40,7 @@ const [filters, setFilters] = useState({
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState("popularity");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
 useEffect(() => {
   const fetchBanner = async () => {
@@ -181,9 +183,34 @@ const buildParams = (filters, currentPage = 1, sortBy = "newest") => {
   console.log("selectedFilters", selectedFilters);
   console.log("products", products);
 
+  if (loading) {
+    return   <div
+        style={{
+          height: "100vh",
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          flexDirection:"column",
+          alignItems: "center",
+          background: "#fff", // optional
+        }}
+      >
+        <Lottie
+          animationData={loadingAnimation}
+          loop={true}
+          autoplay={true}
+          style={{ width: 200, height: 200 }}
+        />
+           <p style={{ marginTop: "1rem", fontSize: "18px", color: "#333" }}>
+          Please wait, loading...
+        </p>
+      </div> // or a spinner component
+  }
+
   return (
     <div>
       <NavbarMenu />
+      <br />
       <br />
       <br />
       <br />
@@ -467,14 +494,9 @@ const buildParams = (filters, currentPage = 1, sortBy = "newest") => {
               </div>
             </div>
 
-            {/* Product list */}
-            {loading ? (
-              <div style={{ textAlign: "center", padding: 50 }}>
-                <Spinner animation="border" />
-              </div>
-            ) : (
+           
               <ProductList products={products} />
-            )}
+           
           </Col>
         </Row>
       </Container>

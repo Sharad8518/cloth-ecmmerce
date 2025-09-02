@@ -4,7 +4,8 @@ import { Card, ListGroup, Container, Row, Col, Button, Nav } from "react-bootstr
 import { FaBox, FaHeart, FaCog, FaSignOutAlt, FaUser } from "react-icons/fa";
 import { getProfile } from "../../api/user/authApi"; // your API function
 import NavbarMenu from "../../Navbar/NavbarMenu";
-
+import Lottie from "lottie-react";
+import loadingAnimation from "../../../assets/Anim/loading.json";
 const Profile = () => {
   const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState(null);
@@ -46,9 +47,27 @@ const Profile = () => {
 
   if (!userDetails) {
     return (
-      <Container className="d-flex justify-content-center align-items-center vh-100">
-        <p>Loading profile...</p>
-      </Container>
+      <div
+        style={{
+          height: "100vh",
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          flexDirection:"column",
+          alignItems: "center",
+          background: "#fff", // optional
+        }}
+      >
+        <Lottie
+          animationData={loadingAnimation}
+          loop={true}
+          autoplay={true}
+          style={{ width: 200, height: 200 }}
+        />
+           <p style={{ marginTop: "1rem", fontSize: "18px", color: "#333" }}>
+          Please wait, loading...
+        </p>
+      </div> 
     );
   }
 

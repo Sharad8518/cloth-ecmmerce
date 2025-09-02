@@ -28,7 +28,10 @@ import CustomerReviews from "../CustomerReview/CustomerReviews";
 import { FaRegStarHalfStroke } from "react-icons/fa6";
 import { getProductById } from "../api/user/Productapi";
 import { useCart } from "../Context/CartProvider";
-
+import Lottie from "lottie-react";
+import loadingAnimation from "../../assets/Anim/loading.json";
+import CartOffcanvas from "../Cart/CartOffcanvas/CartOffcanvas";
+import MobileLoginOTP from "../User/Auth/MobileLoginOTP";
 const images = [
   "https://img.theloom.in/pwa/catalog/product/cache/e442fb943037550e0d70cca304324ade/v/j/vj304fs25-01kpfuchsiavj30_7_.jpg?tr=c-at_max,w-800,h-1066",
   "https://img.theloom.in/pwa/catalog/product/cache/e442fb943037550e0d70cca304324ade/v/j/vj304fs25-01kpfuchsiavj30_2_.jpg?tr=c-at_max,w-800,h-1066",
@@ -39,8 +42,16 @@ const images = [
 
 export default function ProductDetail() {
   const [selectedImage, setSelectedImage] = useState("");
-  const { cart, handleAddToCart, buyNow } = useCart();
+  const { cart, handleAddToCart, buyNow,addToCart, handleIncrease, handleDecrease, handleRemove } = useCart();
   const navigate = useNavigate();
+    const [cartOpen, setCartOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const openModal = () => setIsOpen(true);
+  const closeModal = () => setIsOpen(false);
+  const handleCloseCart = () => setCartOpen(false);
+   const handleOpenCart = () => setCartOpen(true);
+  
+    
   console.log("selectedImage", selectedImage);
   const sizes = [
     "XS",
@@ -249,7 +260,27 @@ export default function ProductDetail() {
   const token = localStorage.getItem("token");
   console.log("selectedSize", selectedSize);
   if (loading) {
-    return <div>Loading...</div>; // or a spinner component
+    return   <div
+        style={{
+          height: "100vh",
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          flexDirection:"column",
+          alignItems: "center",
+          background: "#fff", // optional
+        }}
+      >
+        <Lottie
+          animationData={loadingAnimation}
+          loop={true}
+          autoplay={true}
+          style={{ width: 200, height: 200 }}
+        />
+           <p style={{ marginTop: "1rem", fontSize: "18px", color: "#333" }}>
+          Please wait, loading...
+        </p>
+      </div> // or a spinner component
   }
 
   function getDateAfterDays(days) {
@@ -385,7 +416,7 @@ export default function ProductDetail() {
               ) ? (
                 <button
                   className={styles.detailAddCartButton}
-                  onClick={() => navigate("/cart")}
+                  onClick={() => handleOpenCart()}
                 >
                   Proceed to Checkout
                 </button>
@@ -394,7 +425,7 @@ export default function ProductDetail() {
                   className={styles.detailAddCartButton}
                   onClick={() => {
                     if (!token) {
-                      alert("Please login to add items to cart");
+                       openModal();
                       return;
                     }
 
@@ -441,7 +472,7 @@ export default function ProductDetail() {
                 className={styles.detailBuyButton}
                 onClick={() => {
                   if (!token) {
-                    alert("Please login to buy this product");
+                    openModal();
                     return;
                   }
 
@@ -766,6 +797,17 @@ export default function ProductDetail() {
           </div>
         </div>
       )}
+
+      <CartOffcanvas
+              show={cartOpen}
+              cart={cart}
+              handleClose={handleCloseCart}
+              addToCart={addToCart}
+              increaseQty={handleIncrease}
+              decreaseQty={handleDecrease}
+              removeFromCart={handleRemove}
+            />
+            <MobileLoginOTP isOpen={isOpen} closeModal={closeModal} />
     </>
   );
 }

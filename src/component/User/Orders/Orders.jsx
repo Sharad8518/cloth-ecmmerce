@@ -3,6 +3,8 @@ import NavbarMenu from "../../Navbar/NavbarMenu";
 import { getUserOrder } from "../../api/user/orderApi";
 import { Container, Spinner, Pagination } from "react-bootstrap";
 import OrderList from "./OrdersList/OrderList";
+import Lottie from "lottie-react";
+import loadingAnimation from "../../../assets/Anim/loading.json";
 
 export default function Orders() {
   const [orderList, setOrderList] = useState([]);
@@ -56,6 +58,32 @@ export default function Orders() {
     return <Pagination>{items}</Pagination>;
   };
 
+  if (loading) {
+      return   <div
+          style={{
+            height: "100vh",
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            flexDirection:"column",
+            alignItems: "center",
+            background: "#fff", // optional
+          }}
+        >
+          <Lottie
+            animationData={loadingAnimation}
+            loop={true}
+            autoplay={true}
+            style={{ width: 200, height: 200 }}
+          />
+             <p style={{ marginTop: "1rem", fontSize: "18px", color: "#333" }}>
+            Please wait, loading...
+          </p>
+        </div> // or a spinner component
+    }
+  
+
+
   return (
     <>
       <NavbarMenu />
@@ -63,18 +91,12 @@ export default function Orders() {
       <br />
       <br />
       <Container className="my-4">
-        {loading ? (
-          <div className="text-center my-5">
-            <Spinner animation="border" />
-          </div>
-        ) : (
-          <>
+       
             <OrderList orders={orderList} />
             <div className="d-flex justify-content-center mt-3">
               {renderPagination()}
             </div>
-          </>
-        )}
+        
       </Container>
     </>
   );
