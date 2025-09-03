@@ -25,6 +25,8 @@ import FAQForm from "./FAQForm/FAQForm";
 import { IoAddCircleOutline } from "react-icons/io5";
 import Swal from "sweetalert2";
 import VariantsCard from "./Variants/VariantsCard";
+import GstApplicationForm from "./GstApplicationForm";
+import { useNavigate } from "react-router-dom";
 
 export default function AddProduct() {
   const [headers, setHeaders] = useState([]);
@@ -138,6 +140,7 @@ export default function AddProduct() {
     setSubCategories([]);
     setCollections([]);
   };
+  const navigate = useNavigate()
 
   const loadSubCategories = async (categoryId) => {
     setSelectedCategory(categoryId);
@@ -1139,6 +1142,44 @@ export default function AddProduct() {
                     </Form.Group>
                   </Col>
                 </Row>
+                <GstApplicationForm
+                  product={product}
+                  handleChange={handleChange}
+                />
+                {/* <Row className="mb-3">
+      <Col md={6}>
+        <Form.Group>
+          <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+            GST (%)
+          </Form.Label>
+          <Form.Control
+            type="number"
+            name="gst"
+            style={{ fontSize: 14 }}
+            value={product.gst || ""}
+            onChange={(e) => handleChange("gst", e.target.value)}
+            min="0"
+            max="100"
+          />
+        </Form.Group>
+      </Col>
+      <Col md={6}>
+        <Form.Group>
+          <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+            Application From Date
+          </Form.Label>
+          <Form.Control
+            type="date"
+            name="applicationFromDate"
+            style={{ fontSize: 14 }}
+            value={product.applicationFromDate || ""}
+            onChange={(e) =>
+              handleChange("applicationFromDate", e.target.value)
+            }
+          />
+        </Form.Group>
+      </Col>
+    </Row> */}
               </Card.Body>
             </Card>
 
@@ -1448,6 +1489,11 @@ export default function AddProduct() {
             <Card style={{ marginTop: 20 }}>
               <Card.Header>Return & Exchange Policy</Card.Header>
               <Card.Body>
+                <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                  <Button variant="outline-primary" onClick={()=>navigate("/dashboard/Policy")} style={{ fontSize: 14 }}>
+                    Manage Policy
+                  </Button>
+                </div>
                 {/* <Form.Group className="mb-3">
                   <Form.Label>Colour</Form.Label>
                   <Form.Control
@@ -1472,7 +1518,7 @@ export default function AddProduct() {
                     <option value="">Select Policy</option>
                     {policies?.map((policy) => (
                       <option key={policy._id} value={policy?.description}>
-                        {policy?.title} 
+                        {policy?.title}
                       </option>
                     ))}
                   </Form.Select>

@@ -46,7 +46,7 @@ useEffect(() => {
   const fetchBanner = async () => {
     try {
       const res = await getBanner();
-      console.log("res", res);
+      console.log("banner", res);
       setBanner(res)
     } catch (err) {
       console.error("Error fetching banner:", err);

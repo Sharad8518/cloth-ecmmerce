@@ -118,7 +118,7 @@ const Sidebar = () => {
             location.pathname === "/dashboard/Policy" ? styles.active : ""
           }`}
         >
-          <MdOutlinePolicy /> <span className={styles.label}>Policy</span>
+          <MdOutlinePolicy /> <span className={styles.label}>Manage Policy</span>
         </Nav.Link>
 
         <Nav.Link

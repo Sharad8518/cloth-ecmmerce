@@ -3,11 +3,11 @@ import { useCart } from "../Context/CartProvider";
 import { useLocation, useNavigate } from "react-router-dom";
 import NavbarMenu from "../Navbar/NavbarMenu";
 import { getProfile, updateProfile } from "../api/user/authApi";
-import {placeOrder,verifyPayment} from "../api/user/orderApi";
+import { placeOrder, verifyPayment } from "../api/user/orderApi";
 import { useRazorpay, RazorpayOrderOptions } from "react-razorpay";
 
 export default function Checkout() {
-    const Razorpay = useRazorpay(); 
+  const Razorpay = useRazorpay();
   const { cart } = useCart();
   const location = useLocation();
 
@@ -21,7 +21,7 @@ export default function Checkout() {
 
   console.log("itemsToCheckout Address:", itemsToCheckout);
 
-const [paymentMethod, setPaymentMethod] = useState("COD"); 
+  const [paymentMethod, setPaymentMethod] = useState("COD");
   // New Address State
   const [addingAddress, setAddingAddress] = useState(false);
   const [newAddress, setNewAddress] = useState({
@@ -95,55 +95,54 @@ const [paymentMethod, setPaymentMethod] = useState("COD");
     }
   };
 
-  
-const handleSavePhone = async () => {
-  if (!userDetails.phone) {
-    alert("Phone number cannot be empty");
-    return;
-  }
+  const handleSavePhone = async () => {
+    if (!userDetails.phone) {
+      alert("Phone number cannot be empty");
+      return;
+    }
 
-  try {
-    // Only send the necessary fields
-    await updateProfile({
-      name: userDetails.name,
-      email: userDetails.email,
-      phone: userDetails.phone,
-      addresses: userDetails.addresses || [],
-    });
-    alert("Phone number updated!");
-    setEditingPhone(false);
-  } catch (err) {
-    console.error(err);
-    alert("Failed to update phone number");
-  }
-};
+    try {
+      // Only send the necessary fields
+      await updateProfile({
+        name: userDetails.name,
+        email: userDetails.email,
+        phone: userDetails.phone,
+        addresses: userDetails.addresses || [],
+      });
+      alert("Phone number updated!");
+      setEditingPhone(false);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update phone number");
+    }
+  };
   const loadRazorpayScript = () => {
-  return new Promise((resolve) => {
-    const script = document.createElement("script");
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
-    script.onload = () => resolve(true);
-    script.onerror = () => resolve(false);
-    document.body.appendChild(script);
-  });
-};
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
 
-const handlePlaceOrder = async () => {
-  if (!selectedAddress) {
-    alert("Please select a delivery address");
-    return;
-  }
-  
- if (!userDetails?.phone) {
-  alert("Please add a phone number before placing the order");
-  return; // Stop execution
-}
-  
-  if(!paymentMethod){
-    alert("Please select a payment method");  
-    return;
-  }
+  const handlePlaceOrder = async () => {
+    if (!selectedAddress) {
+      alert("Please select a delivery address");
+      return;
+    }
 
-try {
+    if (!userDetails?.phone) {
+      alert("Please add a phone number before placing the order");
+      return; // Stop execution
+    }
+
+    if (!paymentMethod) {
+      alert("Please select a payment method");
+      return;
+    }
+
+    try {
       const orderPayload = {
         buyNow: !!location.state?.buyNowItem,
         shippingAddress: {
@@ -172,11 +171,11 @@ try {
       }
 
       if (paymentMethod === "ONLINE" && res.razorpayOrder) {
-         const isLoaded = await loadRazorpayScript();
-  if (!isLoaded) {
-    alert("Failed to load Razorpay SDK");
-    return;
-  }
+        const isLoaded = await loadRazorpayScript();
+        if (!isLoaded) {
+          alert("Failed to load Razorpay SDK");
+          return;
+        }
         const options = {
           key: "rzp_test_RBrvv86oXQyKgx",
           amount: res.razorpayOrder.amount,
@@ -204,8 +203,8 @@ try {
           },
         };
 
-         const rzp = new window.Razorpay(options);
-  rzp.open();
+        const rzp = new window.Razorpay(options);
+        rzp.open();
       } else {
         alert("✅ Order placed successfully (COD)");
         // navigator("/");
@@ -214,16 +213,33 @@ try {
       console.error(err);
       alert(err.message || "Something went wrong");
     }
-};
+  };
 
-console.log('itemsToCheckout',itemsToCheckout)
+  console.log("itemsToCheckout", itemsToCheckout);
 
   return (
     <>
       <NavbarMenu />
-      <br/>
-      <div style={{ maxWidth: 900, margin: "0 auto", padding: 20, paddingBottom: 100 }}>
-        <h2 style={{ borderBottom: "2px solid #eee", paddingBottom: 10, marginBottom: 30 }}>
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <div
+        style={{
+          maxWidth: 900,
+          margin: "0 auto",
+          padding: 20,
+          paddingBottom: 100,
+        }}
+      >
+        <h2
+          style={{
+            borderBottom: "2px solid #eee",
+            paddingBottom: 10,
+            marginBottom: 30,
+          }}
+        >
           Checkout
         </h2>
 
@@ -231,60 +247,58 @@ console.log('itemsToCheckout',itemsToCheckout)
         <div style={{ marginBottom: 40 }}>
           <h4>Shipping Details</h4>
           <p>
-    <b>{userDetails?.name}</b> ({userDetails?.email} |{" "}
-    {editingPhone ? (
-      <input
-        type="text"
-        value={userDetails.phone || ""}
-        onChange={(e) =>
-          setUserDetails({ ...userDetails, phone: e.target.value })
-        }
-        placeholder="Enter phone number"
-        style={{
-          padding: 5,
-          borderRadius: 4,
-          border: "1px solid #ccc",
-          width: 150,
-          marginRight: 10,
-        }}
-      />
-    ) : (
-      userDetails?.phone || "No phone added"
-    )}
-    {editingPhone ? (
-      <button
-        onClick={handleSavePhone}
-        style={{
-          marginLeft: 5,
-          padding: "4px 10px",
-          borderRadius: 4,
-          backgroundColor: "green",
-          color: "#fff",
-          border: "none",
-          cursor: "pointer",
-        }}
-      >
-        Save
-      </button>
-    ) : (
-      <button
-        onClick={() => setEditingPhone(true)}
-        style={{
-          marginLeft: 5,
-          padding: "4px 10px",
-          borderRadius: 4,
-          backgroundColor: "#007bff",
-          color: "#fff",
-          border: "none",
-          cursor: "pointer",
-        }}
-      >
-        {userDetails?.phone ? "Edit" : "Add"}
-      </button>
-    )}
-    
-  </p>
-
+            <b>{userDetails?.name}</b> ({userDetails?.email} |{" "}
+            {editingPhone ? (
+              <input
+                type="text"
+                value={userDetails.phone || ""}
+                onChange={(e) =>
+                  setUserDetails({ ...userDetails, phone: e.target.value })
+                }
+                placeholder="Enter phone number"
+                style={{
+                  padding: 5,
+                  borderRadius: 4,
+                  border: "1px solid #ccc",
+                  width: 150,
+                  marginRight: 10,
+                }}
+              />
+            ) : (
+              userDetails?.phone || "No phone added"
+            )}
+            {editingPhone ? (
+              <button
+                onClick={handleSavePhone}
+                style={{
+                  marginLeft: 5,
+                  padding: "4px 10px",
+                  borderRadius: 4,
+                  backgroundColor: "green",
+                  color: "#fff",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
+                Save
+              </button>
+            ) : (
+              <button
+                onClick={() => setEditingPhone(true)}
+                style={{
+                  marginLeft: 5,
+                  padding: "4px 10px",
+                  borderRadius: 4,
+                  backgroundColor: "#007bff",
+                  color: "#fff",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
+                {userDetails?.phone ? "Edit" : "Add"}
+              </button>
+            )}
+          </p>
 
           {/* Saved addresses */}
           <div>
@@ -299,7 +313,8 @@ console.log('itemsToCheckout',itemsToCheckout)
                     borderRadius: "8px",
                     marginBottom: "8px",
                     cursor: "pointer",
-                    backgroundColor: selectedAddress === addr ? "#e6f7ff" : "#fff",
+                    backgroundColor:
+                      selectedAddress === addr ? "#e6f7ff" : "#fff",
                   }}
                 >
                   <input
@@ -309,16 +324,18 @@ console.log('itemsToCheckout',itemsToCheckout)
                     onChange={() => setSelectedAddress(addr)}
                     style={{ marginRight: "10px" }}
                   />
-                  <b>{addr.label}</b> — {addr.street}, {addr.city}, {addr.state},{" "}
-                  {addr.postalCode}, {addr.country}
-                  {addr.isDefault && <span style={{ color: "green", marginLeft: 8 }}>(Default)</span>}
+                  <b>{addr.label}</b> — {addr.street}, {addr.city}, {addr.state}
+                  , {addr.postalCode}, {addr.country}
+                  {addr.isDefault && (
+                    <span style={{ color: "green", marginLeft: 8 }}>
+                      (Default)
+                    </span>
+                  )}
                 </label>
               ))
             ) : (
               <p>No saved addresses. Please add one below.</p>
             )}
-
-           
 
             {/* Add new address */}
             {!addingAddress ? (
@@ -346,7 +363,14 @@ console.log('itemsToCheckout',itemsToCheckout)
                   backgroundColor: "#fafafa",
                 }}
               >
-                {["label", "street", "city", "state", "postalCode", "country"].map((field) => (
+                {[
+                  "label",
+                  "street",
+                  "city",
+                  "state",
+                  "postalCode",
+                  "country",
+                ].map((field) => (
                   <input
                     key={field}
                     type="text"
@@ -364,12 +388,22 @@ console.log('itemsToCheckout',itemsToCheckout)
                     }}
                   />
                 ))}
-                <label style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                <label
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    marginBottom: 10,
+                  }}
+                >
                   <input
                     type="checkbox"
                     checked={newAddress.isDefault}
                     onChange={(e) =>
-                      setNewAddress({ ...newAddress, isDefault: e.target.checked })
+                      setNewAddress({
+                        ...newAddress,
+                        isDefault: e.target.checked,
+                      })
                     }
                   />
                   Set as Default Address
@@ -407,36 +441,34 @@ console.log('itemsToCheckout',itemsToCheckout)
           </div>
         </div>
 
-        
-  <h4>Payment Method</h4>
-  <label style={{ display: "block", marginBottom: "8px" }}>
-    <input
-      type="radio"
-      name="paymentMethod"
-      value="COD"
-      checked={paymentMethod === "COD"}
-      onChange={() => setPaymentMethod("COD")}
-      style={{ marginRight: "10px" }}
-    />
-    Cash on Delivery (COD)
-  </label>
+        <h4>Payment Method</h4>
+        <label style={{ display: "block", marginBottom: "8px" }}>
+          <input
+            type="radio"
+            name="paymentMethod"
+            value="COD"
+            checked={paymentMethod === "COD"}
+            onChange={() => setPaymentMethod("COD")}
+            style={{ marginRight: "10px" }}
+          />
+          Cash on Delivery (COD)
+        </label>
 
-  <label style={{ display: "block", marginBottom: "8px" }}>
-    <input
-      type="radio"
-      name="paymentMethod"
-      value="ONLINE "
-      checked={paymentMethod === "ONLINE"}
-      onChange={() => setPaymentMethod("ONLINE")}
-      style={{ marginRight: "10px" }}
-    />
-    Online Payment
-  </label>
-<br/>
+        <label style={{ display: "block", marginBottom: "8px" }}>
+          <input
+            type="radio"
+            name="paymentMethod"
+            value="ONLINE "
+            checked={paymentMethod === "ONLINE"}
+            onChange={() => setPaymentMethod("ONLINE")}
+            style={{ marginRight: "10px" }}
+          />
+          Online Payment
+        </label>
+        <br />
 
+        {/* 📦 Place Order Button */}
 
-  {/* 📦 Place Order Button */}
-  
         {/* Order Summary */}
         <div
           style={{
@@ -447,7 +479,9 @@ console.log('itemsToCheckout',itemsToCheckout)
             backgroundColor: "#f9f9f9",
           }}
         >
-          <h4 style={{ marginBottom: 20 }}>Order Summary ({itemsToCheckout.length} items)</h4>
+          <h4 style={{ marginBottom: 20 }}>
+            Order Summary ({itemsToCheckout.length} items)
+          </h4>
           {itemsToCheckout.map((item) => (
             <div
               key={item.productId || item._id}
@@ -479,7 +513,9 @@ console.log('itemsToCheckout',itemsToCheckout)
                 </div>
               </div>
               <span style={{ fontWeight: 600 }}>
-                ₹{(item.product?.salePrice || item.variant.price) * item.quantity}
+                ₹
+                {(item.product?.salePrice || item.variant.price) *
+                  item.quantity}
               </span>
             </div>
           ))}

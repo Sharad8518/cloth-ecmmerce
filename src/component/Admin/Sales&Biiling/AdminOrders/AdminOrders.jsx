@@ -142,6 +142,8 @@ export default function AdminOrders() {
                 <option value="">All Status</option>
                 <option value="pending">Pending</option>
                 <option value="processing">Processing</option>
+                <option value="Handcraft In Progress">Handcraft In Progress</option>
+                <option value="Being Tailored For You">Being Tailored For You </option>
                 <option value="shipped">Shipped</option>
                 <option value="delivered">Delivered</option>
                 <option value="cancelled">Cancelled</option>
@@ -168,8 +170,10 @@ export default function AdminOrders() {
               <thead>
                 <tr>
                   <th>#</th>
+                  <th>Date</th>
                   <th>Order ID</th>
                   <th>Customer</th>
+                  <th>State</th>
                   <th>Items</th>
                   <th>Total</th>
                   <th>Payment Method</th>
@@ -189,10 +193,14 @@ export default function AdminOrders() {
                   orders.map((order, idx) => (
                     <tr key={order._id}>
                       <td>{idx + 1 + (page - 1) * limit}</td>
+                      <td>{new Date(order.createdAt).toLocaleDateString()}</td>
                       <td>{order.invoiceNumber || order._id}</td>
                       <td>
                         {order.user?.name} <br />
                         <small>{order.user?.email}</small>
+                      </td>
+                       <td>
+                        <small>{order.shippingAddress?.state}</small>
                       </td>
                       <td>{order.items?.length}</td>
                       <td>₹ {order.totalAmount}</td>
@@ -246,6 +254,8 @@ export default function AdminOrders() {
                         >
                           Update
                         </Button>
+
+                        
                       </td>
                     </tr>
                   ))
@@ -452,6 +462,8 @@ export default function AdminOrders() {
                 >
                   <option value="pending">Pending</option>
                   <option value="processing">Processing</option>
+                  <option value="Handcraft In Progress">Handcraft In Progress</option>
+                  <option value="Being Tailored For You">Being Tailored For You </option>
                   <option value="shipped">Shipped</option>
                   <option value="delivered">Delivered</option>
                   <option value="cancelled">Cancelled</option>
