@@ -364,6 +364,72 @@ const toggleNavbar = async (headerId) => {
                 }
               />
             </Form.Group>
+             <Form.Group className="mb-3">
+                          <Form.Label>Upload Image</Form.Label>
+            
+                          <div
+                            onDragEnter={(e) => e.preventDefault()}
+                            onDragOver={(e) => e.preventDefault()}
+                            onDrop={(e) => {
+                              e.preventDefault();
+                              const file = e.dataTransfer.files[0];
+                              if (file) {
+                                setModal((prev) => ({
+                                  ...prev,
+                                  data: {
+                                    ...prev.data,
+                                    imageFile: file,
+                                    imagePreview: URL.createObjectURL(file),
+                                  },
+                                }));
+                              }
+                            }}
+                            onClick={() => document.getElementById("fileInput").click()}
+                            style={{
+                              border: "2px dashed #ccc",
+                              padding: "20px",
+                              textAlign: "center",
+                              cursor: "pointer",
+                              borderRadius: "8px",
+                              backgroundColor: "#f9f9f9",
+                            }}
+                          >
+                            <input
+                              type="file"
+                              id="fileInput"
+                              accept="image/*"
+                              style={{ display: "none" }}
+                              onChange={(e) => {
+                                const file = e.target.files[0];
+                                if (file) {
+                                  setModal((prev) => ({
+                                    ...prev,
+                                    data: {
+                                      ...prev.data,
+                                      imageFile: file,
+                                      imagePreview: URL.createObjectURL(file),
+                                    },
+                                  }));
+                                }
+                              }}
+                            />
+            
+                            {modal.data.imagePreview ? (
+                              <img
+                                src={modal.data.imagePreview}
+                                alt="Preview"
+                                style={{
+                                  maxWidth: "100%",
+                                  maxHeight: "150px",
+                                  marginTop: "10px",
+                                  borderRadius: "4px",
+                                }}
+                              />
+                            ) : (
+                              <p>Drag & drop an image here, or click to select</p>
+                            )}
+                          </div>
+                        </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Slug</Form.Label>
               <Form.Control

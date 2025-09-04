@@ -191,7 +191,6 @@ export default function NavbarMenu() {
                 position: "sticky",
                 top: 0,
                 zIndex: 999,
-               
               }}
             >
               {promo.topBannerText}{" "}
@@ -229,7 +228,7 @@ export default function NavbarMenu() {
                   }}
                   // onMouseLeave={() => {
                   //   setActiveHeader(null);
-                    
+
                   // }}
                   style={{ position: "relative" }}
                 >
@@ -378,6 +377,26 @@ export default function NavbarMenu() {
                       </ul>
                     </Col>
                   ))}
+                  <Col
+                    style={{
+                      minWidth: "200px",
+                      marginRight: "20px",
+                      padding:10,
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <img
+                      src="https://prisho.in/wp-content/uploads/2023/10/prisho-blog-3.png" // replace with your image URL
+                      alt="Promo"
+                      style={{
+                        maxWidth: "100%",
+                        height: "auto",
+                        borderRadius: "4px",
+                      }}
+                    />
+                  </Col>
                 </Row>
               </Container>
             </div>

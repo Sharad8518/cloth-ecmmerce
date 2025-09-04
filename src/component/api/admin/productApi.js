@@ -13,15 +13,26 @@ export const addProduct = async (productData) => {
   // Append media files separately (use the actual File object)
   if (productData.media && productData.media.length > 0) {
     productData.media.forEach((m) => {
-      formData.append("images", m.file); // ✅ use the File object, not the preview object
+      formData.append("images", m.file); // ✅ actual File
     });
   }
 
-  // Append the rest of the productData
+  // Normalize array fields before appending
+  const arrayFields = ["categories", "subCategories", "collections"];
+
   Object.keys(productData).forEach((key) => {
     if (key !== "media") {
-      const value = productData[key];
-      if (value && typeof value === "object") {
+      let value = productData[key];
+
+      // ✅ Ensure array fields are properly stringified
+      if (arrayFields.includes(key)) {
+        if (Array.isArray(value)) {
+          formData.append(key, JSON.stringify(value));
+        } else if (typeof value === "string") {
+          // if coming as single string like "Kurta"
+          formData.append(key, JSON.stringify([value]));
+        }
+      } else if (value && typeof value === "object") {
         formData.append(key, JSON.stringify(value));
       } else if (value !== undefined && value !== null) {
         formData.append(key, value);

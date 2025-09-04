@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Container,
   Row,
@@ -32,6 +32,9 @@ import Lottie from "lottie-react";
 import loadingAnimation from "../../assets/Anim/loading.json";
 import CartOffcanvas from "../Cart/CartOffcanvas/CartOffcanvas";
 import MobileLoginOTP from "../User/Auth/MobileLoginOTP";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 const images = [
   "https://img.theloom.in/pwa/catalog/product/cache/e442fb943037550e0d70cca304324ade/v/j/vj304fs25-01kpfuchsiavj30_7_.jpg?tr=c-at_max,w-800,h-1066",
   "https://img.theloom.in/pwa/catalog/product/cache/e442fb943037550e0d70cca304324ade/v/j/vj304fs25-01kpfuchsiavj30_2_.jpg?tr=c-at_max,w-800,h-1066",
@@ -42,16 +45,29 @@ const images = [
 
 export default function ProductDetail() {
   const [selectedImage, setSelectedImage] = useState("");
-  const { cart, handleAddToCart, buyNow,addToCart, handleIncrease, handleDecrease, handleRemove } = useCart();
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const {
+    cart,
+    handleAddToCart,
+    buyNow,
+    addToCart,
+    handleIncrease,
+    handleDecrease,
+    handleRemove,
+  } = useCart();
   const navigate = useNavigate();
-    const [cartOpen, setCartOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
   const handleCloseCart = () => setCartOpen(false);
-   const handleOpenCart = () => setCartOpen(true);
-  
-    
+  const handleOpenCart = () => setCartOpen(true);
+  const sliderRef = useRef(null);
+  const handleSelectImage = (index) => {
+    setSelectedIndex(index);
+    sliderRef.current?.slickGoTo(index); // ✅ correct usage
+  };
+
   console.log("selectedImage", selectedImage);
   const sizes = [
     "XS",
@@ -210,7 +226,9 @@ export default function ProductDetail() {
   const [isPaddingModalOpen, setIsPaddingModalOpen] = useState(false);
   const [answer, setAnswer] = useState(null);
   const [paddingDetails, setPaddingDetails] = useState({
+    bust: "",
     waist: "",
+    hip: "",
     length: "",
     height: "",
     unit: "cm",
@@ -260,13 +278,14 @@ export default function ProductDetail() {
   const token = localStorage.getItem("token");
   console.log("selectedSize", selectedSize);
   if (loading) {
-    return   <div
+    return (
+      <div
         style={{
           height: "100vh",
           width: "100%",
           display: "flex",
           justifyContent: "center",
-          flexDirection:"column",
+          flexDirection: "column",
           alignItems: "center",
           background: "#fff", // optional
         }}
@@ -277,10 +296,11 @@ export default function ProductDetail() {
           autoplay={true}
           style={{ width: 200, height: 200 }}
         />
-           <p style={{ marginTop: "1rem", fontSize: "18px", color: "#333" }}>
+        <p style={{ marginTop: "1rem", fontSize: "18px", color: "#333" }}>
           Please wait, loading...
         </p>
-      </div> // or a spinner component
+      </div>
+    ); // or a spinner component
   }
 
   function getDateAfterDays(days) {
@@ -298,29 +318,50 @@ export default function ProductDetail() {
     <>
       <NavbarMenu />
       <br /> <br />
-      <br />
-      <br />
-      <br />
+     
       <Container className={styles.ProductDetailContainer}>
         <Row style={{ height: "100%" }}>
           <Col md={1} className={styles.vericalImage}>
             {product?.media?.length > 0 && ( // ✅ check if media exists
               <VerticalImageSelector
                 images={product?.media?.map((m) => m?.url)} // ✅ use product media URLs
-                onSelect={setSelectedImage}
+                onSelect={handleSelectImage}
+                selectedIndex={selectedIndex}
               />
             )}
           </Col>
-          <Col md={5} style={{ height: "100%" }}>
-            <img src={selectedImage} className={styles.productDetailImg} />
+          <Col md={5}>
+            <Slider
+              ref={sliderRef}
+              dots={true} // show navigation dots
+              infinite={true} // loop infinitely
+              speed={500} // transition speed
+              slidesToShow={1} // show 1 slide at a time
+              slidesToScroll={1} // scroll 1 slide at a time
+              swipeToSlide={true} // enable swipe
+              arrows={false} // hide arrows if you want swipe only
+              afterChange={(current) => setSelectedIndex(current)} // sync selectedIndex
+            >
+              {product?.media?.map((m, index) => (
+                <div key={index} style={{ height: 300 }}>
+                  <img
+                    src={m.url}
+                    alt={m.alt || `Product image ${index + 1}`}
+                    className={styles.productDetailImg}
+                  />
+                </div>
+              ))}
+            </Slider>
           </Col>
           <Col md={6} className={styles.productContentBox}>
-          <div className={styles.mobileHorizantal}>
-             <HorizontalImageSelector
+            <br />
+            <div className={styles.mobileHorizantal}>
+              <HorizontalImageSelector
                 images={product?.media?.map((m) => m?.url)} // ✅ use product media URLs
-                onSelect={setSelectedImage}
+                onSelect={handleSelectImage}
+                selectedIndex={selectedIndex}
               />
-          </div>
+            </div>
 
             <h3 className={styles.detailProductTitle}>{product?.title} </h3>
             <div className={styles.detailProductDiscreaption}>
@@ -408,9 +449,7 @@ export default function ProductDetail() {
               </div>
             )}
 
-            <div
-              className={styles.detailButtonBar}
-            >
+            <div className={styles.detailButtonBar}>
               {(cart?.items || []).some(
                 (item) => item.variant?.sku === selectedSize?.sku
               ) ? (
@@ -425,7 +464,7 @@ export default function ProductDetail() {
                   className={styles.detailAddCartButton}
                   onClick={() => {
                     if (!token) {
-                       openModal();
+                      openModal();
                       return;
                     }
 
@@ -545,19 +584,19 @@ export default function ProductDetail() {
                   <strong style={{ color: "#0984e3" }}>Other Info</strong>
                   <Row style={{ marginTop: 10 }}>
                     <Col>
-                      <strong>Pack Contains  </strong>
+                      <strong>Pack Contains </strong>
                     </Col>
                     <Col>: {product?.packContains}</Col>
                   </Row>
                   <Row style={{ marginTop: 10 }}>
                     <Col>
-                      <strong>Fabric  </strong>
+                      <strong>Fabric </strong>
                     </Col>
                     <Col> : {product?.fabric}</Col>
                   </Row>
                   <Row style={{ marginTop: 10 }}>
                     <Col>
-                      <strong>Dupatta  </strong>
+                      <strong>Dupatta </strong>
                     </Col>
                     <Col>
                       {product?.dupatta.enabled ? (
@@ -570,27 +609,27 @@ export default function ProductDetail() {
 
                   <Row style={{ marginTop: 10 }}>
                     <Col>
-                      <strong>Work /Craft  </strong>
+                      <strong>Work /Craft </strong>
                     </Col>
                     <Col>: {product?.work}</Col>
                   </Row>
                   <Row style={{ marginTop: 10 }}>
                     <Col>
-                      <strong>Care  </strong>
+                      <strong>Care </strong>
                     </Col>
                     <Col>: {product?.care}</Col>
                   </Row>
 
                   <Row style={{ marginTop: 10 }}>
                     <Col>
-                      <strong>Occasion  </strong>
+                      <strong>Occasion </strong>
                     </Col>
                     <Col>: {product?.occasion}</Col>
                   </Row>
 
                   <Row style={{ marginTop: 10 }}>
                     <Col>
-                      <strong>Note  </strong>
+                      <strong>Note </strong>
                     </Col>
                     <Col>:{product?.Note}</Col>
                   </Row>
@@ -681,46 +720,32 @@ export default function ProductDetail() {
       {isPaddingModalOpen && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
-            <h3>Enter Additional info Details</h3>
+            <h3>Enter Additional Info Details</h3>
             <p
               style={{ fontSize: "0.9rem", color: "#555", textAlign: "center" }}
             >
-              Provide waist, length, and height for a better fit.
+              Provide waist, length, height, bust, and hip for a better fit.
             </p>
-            {/* 
-            {["waist", "length", "height"].map((field) => (
-              <label key={field}>
-                {field.charAt(0).toUpperCase() + field.slice(1)}:
-                <div
-                  style={{ display: "flex", gap: "10px", alignItems: "center" }}
-                >
-                  <input
-                    type="number"
-                    min="0"
-                    value={paddingDetails[field]}
-                    onChange={(e) =>
-                      setPaddingDetails({
-                        ...paddingDetails,
-                        [field]: e.target.value,
-                      })
-                    }
-                  />
-                  <select
-                    value={paddingDetails.unit}
-                    onChange={(e) =>
-                      setPaddingDetails({
-                        ...paddingDetails,
-                        unit: e.target.value,
-                      })
-                    }
-                  >
-                    <option value="cm">cm</option>
-                    <option value="inch">inch</option>
-                  </select>
-                </div>
-              </label>
-            ))} */}
+            <p>Select Your Nearest Size : {selectedSize?.size} </p>
+            {/* Bust Size */}
+            <Form.Group className="mb-3">
+              <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                Bust Size
+              </Form.Label>
+              <Form.Select
+                style={{ fontSize: 14 }}
+                value={paddingDetails.bust || ""}
+                onChange={(e) => handleSelectChange("bust", e.target.value)}
+              >
+                <option value="">Select Bust</option>
+                <option value="32 Inch">32 Inch</option>
+                <option value="34 Inch">34 Inch</option>
+                <option value="36 Inch">36 Inch</option>
+                <option value="38 Inch">38 Inch</option>
+              </Form.Select>
+            </Form.Group>
 
+            {/* Waist */}
             <Form.Group className="mb-3">
               <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
                 Waist
@@ -736,9 +761,23 @@ export default function ProductDetail() {
                 <option value="27 Inch">27 Inch</option>
                 <option value="28 Inch">28 Inch</option>
               </Form.Select>
-              <Form.Text className="text-muted">
-                Note: Select from list
-              </Form.Text>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                Hip Size
+              </Form.Label>
+              <Form.Select
+                style={{ fontSize: 14 }}
+                value={paddingDetails.hip || ""}
+                onChange={(e) => handleSelectChange("hip", e.target.value)}
+              >
+                <option value="">Select Hip</option>
+                <option value="34 Inch">34 Inch</option>
+                <option value="36 Inch">36 Inch</option>
+                <option value="38 Inch">38 Inch</option>
+                <option value="40 Inch">40 Inch</option>
+              </Form.Select>
             </Form.Group>
 
             {/* Length */}
@@ -756,9 +795,6 @@ export default function ProductDetail() {
                 <option value="38 Inch (96 cm)">38 Inch (96 cm)</option>
                 <option value="40 Inch (102 cm)">40 Inch (102 cm)</option>
               </Form.Select>
-              <Form.Text className="text-muted">
-                Note: Select from list
-              </Form.Text>
             </Form.Group>
 
             {/* Height */}
@@ -777,10 +813,32 @@ export default function ProductDetail() {
                 <option value="5 feet 4 Inch">5 feet 4 Inch</option>
                 <option value="5 feet 5 Inch">5 feet 5 Inch</option>
               </Form.Select>
-              <Form.Text className="text-muted">
-                Note: Select from list
-              </Form.Text>
             </Form.Group>
+
+            {/* Hip Size */}
+            <div style={{ margin: "5px 0" }}>
+              <button
+                style={{
+                  backgroundColor: "#e9e8e8ff",
+                  color: "#0e0e0eff",
+                  border: "none",
+                  height: 40,
+                  padding: "10px 20px",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                  fontSize: 12,
+                  fontWeight: 500,
+                }}
+                onClick={() => {
+                  // Example: Open chat, navigate, or show alert
+                  alert("Redirecting to Stylist Chat...");
+                  // You can replace this with navigation or modal logic
+                }}
+              >
+                Need Help? Talk to Stylist
+              </button>
+            </div>
+
             <div className={styles.modalActions}>
               <button onClick={() => setIsPaddingModalOpen(false)}>
                 Cancel
@@ -797,17 +855,16 @@ export default function ProductDetail() {
           </div>
         </div>
       )}
-
       <CartOffcanvas
-              show={cartOpen}
-              cart={cart}
-              handleClose={handleCloseCart}
-              addToCart={addToCart}
-              increaseQty={handleIncrease}
-              decreaseQty={handleDecrease}
-              removeFromCart={handleRemove}
-            />
-            <MobileLoginOTP isOpen={isOpen} closeModal={closeModal} />
+        show={cartOpen}
+        cart={cart}
+        handleClose={handleCloseCart}
+        addToCart={addToCart}
+        increaseQty={handleIncrease}
+        decreaseQty={handleDecrease}
+        removeFromCart={handleRemove}
+      />
+      <MobileLoginOTP isOpen={isOpen} closeModal={closeModal} />
     </>
   );
 }

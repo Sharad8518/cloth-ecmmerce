@@ -407,6 +407,8 @@ export default function AddProduct() {
     }
   };
 
+  console.log('product',product)
+
   return (
     <Container className="my-4">
       <h2 style={{ fontWeight: "700", fontSize: 20 }}>Add New Product</h2>
