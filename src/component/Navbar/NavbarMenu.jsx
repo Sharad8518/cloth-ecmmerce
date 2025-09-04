@@ -18,6 +18,8 @@ import CartOffcanvas from "../Cart/CartOffcanvas/CartOffcanvas";
 import MobileLoginOTP from "../User/Auth/MobileLoginOTP";
 import CompleteProfile from "../User/CompleteProfile";
 import { getPromotion } from "../api/user/PromotionApi";
+import { LuUser } from "react-icons/lu";
+import { LuCircleUser } from "react-icons/lu";
 import axios from "axios";
 
 const collectionMenu = [
@@ -435,58 +437,68 @@ export default function NavbarMenu() {
       </nav>
 
       <Offcanvas
-        show={show}
-        onHide={handleClose}
-        placement="start"
-        className="custom-offcanvas shadow-lg"
-      >
-        <Offcanvas.Header closeButton>
-          <Offcanvas.Title className="text-lg font-semibold text-gray-800">
-            Collections
-          </Offcanvas.Title>
-        </Offcanvas.Header>
+  show={show}
+  onHide={handleClose}
+  placement="start"
+  className="custom-offcanvas shadow-lg"
+>
+  <Offcanvas.Header closeButton>
+    <Offcanvas.Title className="text-lg font-semibold text-gray-800">
+      House of Ziba
+    </Offcanvas.Title>
+  </Offcanvas.Header>
+  <img  src={"https://prisho.in/wp-content/uploads/2023/10/prisho-blog-3.png"} style={{width:"100%"}}/>
 
-        <Offcanvas.Body className="p-0">
-          <Accordion flush alwaysOpen>
-            {collectionMenu.map((header) => (
-              <Accordion.Item eventKey={header._id} key={header._id}>
-                <Accordion.Header>
-                  <span className="font-medium text-gray-700">
-                    {header.title}
-                  </span>
-                </Accordion.Header>
-                <Accordion.Body className="bg-gray-50">
-                  {header.categories.map((cat) => (
-                    <div key={cat._id} className="mb-4" style={{ color: "" }}>
-                      <p className="text-sm font-semibold text-orange-500 mb-2">
-                        {cat.name}
-                      </p>
-                      {cat.subCategories.length > 0 && (
-                        <ul className="space-y-1" style={{ listStyle: "none" }}>
-                          {cat.subCategories.map((sub) => (
-                            <li key={sub._id}>
-                              <Link
-                                to={`/categoryProduct`}
-                                className="block text-gray-700 hover:text-orange-500 text-sm transition-colors duration-200"
-                                style={{
-                                  textDecoration: "none",
-                                  color: "#000",
-                                }}
-                              >
-                                {sub.name}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  ))}
-                </Accordion.Body>
-              </Accordion.Item>
-            ))}
-          </Accordion>
-        </Offcanvas.Body>
-      </Offcanvas>
+  <Offcanvas.Body className="p-0">
+    <Accordion flush alwaysOpen>
+      {collectionMenu.map((header) => {
+        // Categories that have subcategories
+        const availableCategories = header.categories.filter(
+          (cat) => cat.subCategories && cat.subCategories.length > 0
+        );
+
+        return (
+          <Accordion.Item eventKey={header._id} key={header._id}>
+            <Accordion.Header>
+              <span className="font-medium text-gray-700">{header.title}</span>
+            </Accordion.Header>
+
+            {/* Only show body if categories exist */}
+            {availableCategories.length > 0 && (
+              <Accordion.Body className="bg-gray-50">
+                {availableCategories.map((cat) => (
+                  <div key={cat._id} className="mb-4">
+                    <p className="text-sm font-semibold text-orange-500 mb-2">
+                      {cat.name}
+                    </p>
+                    <ul className="space-y-1" style={{ listStyle: "none" }}>
+                      {cat.subCategories.map((sub) => (
+                        <li key={sub._id}>
+                          <Link
+                            to={`/categoryProduct`}
+                            className="block text-gray-700 hover:text-orange-500 text-sm transition-colors duration-200"
+                            style={{ textDecoration: "none", color: "#000" }}
+                          >
+                            {sub.name}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </Accordion.Body>
+            )}
+          </Accordion.Item>
+        );
+      })}
+    </Accordion>
+  </Offcanvas.Body>
+  <div style={{position:"absolute",height:50,backgroundColor:"#eaeaeaff",bottom:0,width:"100%",display:"flex",justifyContent:"center",alignItems:"center"}}>
+ <h6 style={{marginTop:5}}><LuCircleUser/> Sign In</h6>  
+  </div>
+</Offcanvas>
+
+
       <CartOffcanvas
         show={cartOpen}
         cart={cart}
