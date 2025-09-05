@@ -218,14 +218,13 @@ export default function ProductDetail() {
     }-${padding.unit || "cm"}`;
   };
   const generateJewellerySku = (productName) => {
-  const namePart = productName
-    .toUpperCase()
-    .replace(/[^A-Z0-9]/g, "")
-    .slice(0, 5); // first 5 chars
-  const randomNum = Math.floor(1000 + Math.random() * 9000);
-  return `${namePart}-${randomNum}`;
-};
-
+    const namePart = productName
+      .toUpperCase()
+      .replace(/[^A-Z0-9]/g, "")
+      .slice(0, 5); // first 5 chars
+    const randomNum = Math.floor(1000 + Math.random() * 9000);
+    return `${namePart}-${randomNum}`;
+  };
 
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
@@ -514,10 +513,10 @@ export default function ProductDetail() {
                         padding.length || "0"
                       }-H${padding.height || "0"}-${padding.unit || "cm"}`;
                     };
-                     const sku =
-                    product.productType === "Jewellery"
-                     ? generateJewellerySku(product.title)
-                    : variant.sku;
+                    const sku =
+                      product.productType === "Jewellery"
+                        ? generateJewellerySku(product.title)
+                        : variant.sku;
                     const skuWithPadding = generatePaddingSku(
                       sku,
                       savedPaddingDetails
@@ -525,7 +524,10 @@ export default function ProductDetail() {
                     handleAddToCart({
                       productId: product._id,
                       sku: skuWithPadding,
-                      size: product.productType !== "Jewellery"? selectedSize.size : "N/A",
+                      size:
+                        product.productType !== "Jewellery"
+                          ? selectedSize.size
+                          : "N/A",
                       color: selectedColor || "N/A",
                       quantity: 1,
                       paddingDetails: savedPaddingDetails,
@@ -559,8 +561,8 @@ export default function ProductDetail() {
                   }
                   const sku =
                     product.productType === "Jewellery"
-                     ? generateJewellerySku(product.title)
-                    : variant.sku;
+                      ? generateJewellerySku(product.title)
+                      : variant.sku;
                   const skuWithPadding = generatePaddingSku(
                     sku,
                     savedPaddingDetails
@@ -572,7 +574,10 @@ export default function ProductDetail() {
                     quantity: 1,
                     variant: {
                       sku: skuWithPadding,
-                      size: product.productType !== "Jewellery"? selectedSize.size : "N/A",
+                      size:
+                        product.productType !== "Jewellery"
+                          ? selectedSize.size
+                          : "N/A",
                       color: selectedColor || "N/A",
                       price: product.mrp,
                       paddingDetails: savedPaddingDetails,
@@ -632,14 +637,17 @@ export default function ProductDetail() {
                       <Col>: {product.fabric}</Col>
                     </Row>
                   )}
-
-                  {product?.dupatta && (
-                    <Row style={{ marginTop: 10 }}>
-                      <Col>
-                        <strong>Dupatta</strong>
-                      </Col>
-                      <Col>: {product.dupatta.enabled ? "Yes" : "No"}</Col>
-                    </Row>
+                  {product?.productType === "Cloths" && (
+                    <>
+                      {product?.dupatta && (
+                        <Row style={{ marginTop: 10 }}>
+                          <Col>
+                            <strong>Dupatta</strong>
+                          </Col>
+                          <Col>: {product.dupatta.enabled ? "Yes" : "No"}</Col>
+                        </Row>
+                      )}
+                    </>
                   )}
 
                   {product?.work && (
