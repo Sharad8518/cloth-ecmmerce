@@ -394,7 +394,7 @@ export default function ProductDetail() {
             <div className={styles.detailShip}>
               Ship by {getDateAfterDays(product?.estimatedShippingDays)}
             </div>
-            {product?.productType === "Cloths" && (
+            {product?.productType !== "Jewellery" && (
               <>
                 <div className={styles.detailSizeText}>
                   SELECT YOUR SIZE
@@ -429,7 +429,13 @@ export default function ProductDetail() {
                     variant={answer === "yes" ? "primary" : "outline-primary"}
                     size="sm"
                     className="me-2"
-                    onClick={() => handleSelect("yes")}
+                    onClick={() =>{
+                      if(!selectedSize){
+                         alert("Please select a size");
+                      return;
+                      }
+                      handleSelect("yes")
+                    }}
                   >
                     Yes
                   </Button>
@@ -905,7 +911,7 @@ export default function ProductDetail() {
             </Form.Group>
 
             {/* Hip Size */}
-            <div style={{ margin: "5px 0" }}>
+            {/* <div style={{ margin: "5px 0" }}>
               <button
                 style={{
                   backgroundColor: "#e9e8e8ff",
@@ -926,9 +932,32 @@ export default function ProductDetail() {
               >
                 Need Help? Talk to Stylist
               </button>
-            </div>
+            </div> */}
 
             <div className={styles.modalActions}>
+              <div>
+              <button
+                style={{
+                  backgroundColor: "#e9e8e8ff",
+                  color: "#0e0e0eff",
+                  border: "none",
+                  height: 40,
+                  padding: "10px 20px",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                  fontSize: 12,
+                  fontWeight: 500,
+                }}
+                onClick={() => {
+                  // Example: Open chat, navigate, or show alert
+                  alert("Redirecting to Stylist Chat...");
+                  // You can replace this with navigation or modal logic
+                }}
+              >
+                Need Help? Talk to Stylist
+              </button>
+              </div>
+              <div style={{display:"flex"}}>
               <button onClick={() => setIsPaddingModalOpen(false)}>
                 Cancel
               </button>
@@ -937,9 +966,11 @@ export default function ProductDetail() {
                   setSavedPaddingDetails(paddingDetails);
                   setIsPaddingModalOpen(false);
                 }}
+                style={{marginLeft:10}}
               >
                 Save
               </button>
+              </div>
             </div>
           </div>
         </div>
