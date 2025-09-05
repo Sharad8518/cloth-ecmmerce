@@ -9,7 +9,9 @@ import { useNavigate } from 'react-router-dom';
 export default function CardItem({ image, name, description, price }) {
   const navigate = useNavigate()
   return (
-     <div className="tshirt-card" onClick={()=>navigate("/categoryProduct")}  >
+     <div className="tshirt-card" onClick={()=>navigate("/collections",{
+      state: { filter: [name] }
+    })}  >
       <div className='card-image'>
       <img src={image} alt={name} className="tshirt-image" />
       {/* <div className='fav-circle-card'>

@@ -3,8 +3,8 @@ import React from "react";
 export default function BreadcrumbSinglePage() {
   const breadcrumbPaths = [
     { label: "Home", link: "/" },
-    { label: "Buy", link: "/buy" },
-    { label: "Flash-sale-discount" }, // Current page - no link
+    
+    // Current page - no link
   ];
 
   return (

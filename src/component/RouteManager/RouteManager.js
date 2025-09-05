@@ -28,6 +28,7 @@ import Category from "../Admin/Navbar/Category/Category";
 import Collection from "../Admin/Navbar/Collection/Collection";
 import Customer from "../Admin/Customer/Customer";
 import PolicyPage from "../Admin/Policy/PolicyPage";
+import Collections from "../Collections/Collections";
 
 export default function RouteManager() {
   return (
@@ -42,6 +43,7 @@ export default function RouteManager() {
       <Route path="/profile" element={<Profile />} />
       <Route path="/orders" element={<Orders />} />
       <Route path="/favourites" element={<Favourites />} />
+      <Route path="/collections" element={<Collections />} />
 
       {/* Protected Admin Routes */}
       <Route element={<ProtectedRoute />}>

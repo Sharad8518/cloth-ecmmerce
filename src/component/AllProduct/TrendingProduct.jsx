@@ -147,7 +147,6 @@ if (loading) {
             flexWrap: "wrap",
             gap: "10px",
             justifyContent: "center",
-
             backgroundColor: "#f7f7f7",
           }}
         >
