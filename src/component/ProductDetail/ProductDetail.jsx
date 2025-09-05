@@ -331,7 +331,8 @@ export default function ProductDetail() {
       <br /> <br />
       <Container className={styles.ProductDetailContainer}>
         <MobileBackButton />
-        <Row style={{ height: "100%" }}>
+      
+        <Row  className={styles.productDetailRow}>
           <Col md={1} className={styles.vericalImage}>
             {product?.media?.length > 0 && ( // ✅ check if media exists
               <VerticalImageSelector
@@ -341,7 +342,7 @@ export default function ProductDetail() {
               />
             )}
           </Col>
-          <Col md={5}>
+          <Col md={5} style={{height:"100%",boxSizing:"border-box"}}>
             <Slider
               ref={sliderRef}
               dots={true} // show navigation dots
@@ -352,9 +353,10 @@ export default function ProductDetail() {
               swipeToSlide={true} // enable swipe
               arrows={false} // hide arrows if you want swipe only
               afterChange={(current) => setSelectedIndex(current)} // sync selectedIndex
+              
             >
               {product?.media?.map((m, index) => (
-                <div key={index} style={{ height: 300 }}>
+                <div key={index}   >
                   <img
                     src={m.url}
                     alt={m.alt || `Product image ${index + 1}`}
@@ -803,6 +805,8 @@ export default function ProductDetail() {
           </Col>
         </Row>
       </Container>
+      <br/>
+       <br/>
       <Frequently items={product?.frequentlyBoughtTogether} />
       <br />
       <div style={{ padding: "2rem", backgroundColor: "#f9f9f9" }}>
