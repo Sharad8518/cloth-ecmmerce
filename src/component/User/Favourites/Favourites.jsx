@@ -5,6 +5,8 @@ import { Container, Row, Col, Card, Spinner } from "react-bootstrap";
 import ProductGrid from '../../layout/ProductGrid/ProductGrid';
 import Lottie from "lottie-react";
 import loadingAnimation from "../../../assets/Anim/loading.json";
+import MobileBackButton from '../../layout/BackButton/MobileBackButton';
+import styles from "./Favourite.module.css"
 
 export default function Favourites() {
 const [favorites, setFavorites] = useState([]); // store only products
@@ -61,10 +63,10 @@ const [favorites, setFavorites] = useState([]); // store only products
     <NavbarMenu />
     <br/>
     <br/>
-    <br/>
-     <br/>
-    <br/>
-     <h2 className="text-center my-4">My Wishlist</h2> {/* or "My Wishlist" */}
+    <div className={styles.headerwishlist}>
+      <MobileBackButton/>
+     <h2 className={styles.wishlist}>My Wishlist</h2> {/* or "My Wishlist" */}
+     </div>
     <ProductGrid  products={favorites}/>
     </>
   )

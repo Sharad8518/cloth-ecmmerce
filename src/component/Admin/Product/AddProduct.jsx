@@ -57,8 +57,12 @@ export default function AddProduct() {
     collections: [], // selected collections
 
     shortDescription: "",
+    productType: "",
     estimatedShippingDays: "",
-    shippingAndReturns: "",
+    shippingAndReturns: {
+      title: "",
+      description: "",
+    },
     productSpeciality: "",
     faq: [],
     styleNo: "",
@@ -124,6 +128,7 @@ export default function AddProduct() {
   // Load hierarchy
   useEffect(() => {
     fetchHeaders();
+    loadCollections()
   }, []);
   const fetchHeaders = async () => {
     const res = await getHeaders();
@@ -140,7 +145,7 @@ export default function AddProduct() {
     setSubCategories([]);
     setCollections([]);
   };
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const loadSubCategories = async (categoryId) => {
     setSelectedCategory(categoryId);
@@ -152,15 +157,9 @@ export default function AddProduct() {
     setCollections([]);
   };
 
-  const loadCollections = async (subCategoryId) => {
-    setSelectedSubCategory(subCategoryId);
+  const loadCollections = async () => {
     const res = await getCollections();
-
-    const filtered = (res || []).filter(
-      (c) => c?.subcategory?._id === subCategoryId
-    );
-
-    setCollections(filtered);
+    setCollections(res);
   };
   // ✅ Validate file
   const validateFile = (file) => {
@@ -365,6 +364,7 @@ export default function AddProduct() {
         salePrice: "",
         colour: "",
         fulfillmentType: "",
+        productType: "",
         keywords: [],
         media: [],
 
@@ -375,7 +375,10 @@ export default function AddProduct() {
         collections: [], // selected collections
         occasion: "",
         estimatedShippingDays: "",
-        shippingAndReturns: "",
+        shippingAndReturns: {
+          title: "",
+          description: "",
+        },
         productSpeciality: "",
         faq: [],
         styleNo: "",
@@ -407,7 +410,7 @@ export default function AddProduct() {
     }
   };
 
-  console.log('product',product)
+  console.log("product", product);
 
   return (
     <Container className="my-4">
@@ -663,7 +666,7 @@ export default function AddProduct() {
                       padding: "8px",
                     }}
                   >
-                    {collections.map((col) => (
+                    {collections?.map((col) => (
                       <Form.Check
                         key={col._id}
                         type="checkbox"
@@ -1208,6 +1211,7 @@ export default function AddProduct() {
                       handleChange("fulfillmentType", e.target.value)
                     }
                   >
+                    <option value="" disabled>Fulfillment Select</option>
                     <option value="READY_TO_SHIP">Ready to Ship</option>
                     <option value="MADE_TO_ORDER">Made to Order</option>
                   </Form.Select>
@@ -1231,6 +1235,29 @@ export default function AddProduct() {
                     }
                     // placeholder="Enter number of days (e.g. 5)"
                   />
+                </Form.Group>
+              </Card.Body>
+            </Card>
+            <Card style={{ marginTop: "20px" }}>
+              <Card.Header>Product Type</Card.Header>
+              <Card.Body>
+                <Form.Group>
+                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                    Product Type <span style={{ color: "red" }}>*</span>
+                  </Form.Label>
+                  <Form.Select
+                    name="productType"
+                    required
+                    style={{ fontSize: 14 }}
+                    value={product.productType}
+                    onChange={(e) =>
+                      handleChange("productType", e.target.value)
+                    }
+                  >
+                     <option value="" disabled>Product Select</option>
+                    <option value="Cloths">Cloths</option>
+                    <option value="Jewellery">Jewellery</option>
+                  </Form.Select>
                 </Form.Group>
               </Card.Body>
             </Card>
@@ -1492,7 +1519,11 @@ export default function AddProduct() {
               <Card.Header>Return & Exchange Policy</Card.Header>
               <Card.Body>
                 <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                  <Button variant="outline-primary" onClick={()=>navigate("/dashboard/Policy")} style={{ fontSize: 14 }}>
+                  <Button
+                    variant="outline-primary"
+                    onClick={() => navigate("/dashboard/Policy")}
+                    style={{ fontSize: 14 }}
+                  >
                     Manage Policy
                   </Button>
                 </div>
@@ -1512,15 +1543,36 @@ export default function AddProduct() {
                   </Form.Label>
                   <Form.Select
                     style={{ fontSize: 14 }}
-                    value={product.shippingAndReturns || ""}
-                    onChange={(e) =>
-                      handleChange("shippingAndReturns", e.target.value)
+                    value={
+                      // find the _id of the selected policy
+                      policies.find(
+                        (p) => p.title === product.shippingAndReturns.title
+                      )?._id || ""
                     }
+                    onChange={(e) => {
+                      const selectedPolicy = policies.find(
+                        (p) => p._id === e.target.value
+                      );
+                      if (selectedPolicy) {
+                        setProduct((prev) => ({
+                          ...prev,
+                          shippingAndReturns: {
+                            title: selectedPolicy.title,
+                            description: selectedPolicy.description,
+                          },
+                        }));
+                      } else {
+                        setProduct((prev) => ({
+                          ...prev,
+                          shippingAndReturns: { title: "", description: "" },
+                        }));
+                      }
+                    }}
                   >
                     <option value="">Select Policy</option>
                     {policies?.map((policy) => (
-                      <option key={policy._id} value={policy?.description}>
-                        {policy?.title}
+                      <option key={policy._id} value={policy._id}>
+                        {policy.title}
                       </option>
                     ))}
                   </Form.Select>

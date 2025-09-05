@@ -12,8 +12,29 @@
   border-radius: 5px;
 }
 
+.headerOrder{
+  margin-top: 80px;
+  display: flex;
+  margin-bottom: 10px;
+}
+.myoders{
+  font-size: 30px;
+}
+
 @media (max-width: 576px) {
   .orderCard {
     font-size: 0.9rem;
   }
+
+  .headerOrder{
+  margin-top: 0px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.myoders{
+  font-size: 20px;
+}
+
 }

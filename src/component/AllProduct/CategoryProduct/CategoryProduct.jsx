@@ -15,122 +15,122 @@ import BreadcrumbSinglePage from "../../layout/BreadcrumbSinglePage";
 import Footer from "../../Footer/Footer";
 import styles from "./CategoryProduct.module.css";
 import { filterProduct } from "../../api/user/Productapi";
-import {getBanner} from "../../api/user/bannerApi"
+import { getBanner } from "../../api/user/bannerApi";
 import Lottie from "lottie-react";
 import loadingAnimation from "../../../assets/Anim/loading.json";
 
 export default function CategoryProduct() {
   // State to track filters
-const [filters, setFilters] = useState({
-  price: [],
-  collection: [],
-  size: [],
-  color: [],
-  fabric: [],
-  craft: [],
-  occasion: [],
-  dupatta: [],
-  discount: [],   // example: [10, 50] → between 10% and 50%
-});
-
+  const [filters, setFilters] = useState({
+    price: [],
+    collection: [],
+    size: [],
+    color: [],
+    fabric: [],
+    craft: [],
+    occasion: [],
+    dupatta: [],
+    discount: [], // example: [10, 50] → between 10% and 50%
+  });
 
   // Data from API
   const [products, setProducts] = useState([]);
-  const [banner,setBanner] =useState([])
+  const [banner, setBanner] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState("popularity");
   const [loading, setLoading] = useState(true);
 
-useEffect(() => {
-  const fetchBanner = async () => {
-    try {
-      const res = await getBanner();
-      console.log("banner", res);
-      setBanner(res)
-    } catch (err) {
-      console.error("Error fetching banner:", err);
-    }
-  };
+  useEffect(() => {
+    const fetchBanner = async () => {
+      try {
+        const res = await getBanner();
+        console.log("banner", res);
+        setBanner(res);
+      } catch (err) {
+        console.error("Error fetching banner:", err);
+      }
+    };
 
-  fetchBanner();
-}, []);
+    fetchBanner();
+  }, []);
   // 🔹 Convert filter state into params object for API
-// 🛠 Convert filters state into query params
-const buildParams = (filters, currentPage = 1, sortBy = "newest") => {
-  const params = {
-    page: currentPage,
-    limit: 12,
-    sortBy, // backend expects "sortBy", not "sort"
-  };
+  // 🛠 Convert filters state into query params
+  const buildParams = (filters, currentPage = 1, sortBy = "newest") => {
+    const params = {
+      page: currentPage,
+      limit: 12,
+      sortBy, // backend expects "sortBy", not "sort"
+    };
 
     const normalize = (arr) =>
-    Array.isArray(arr) && arr.length ? arr.join(",") : undefined;
-  // 🎨 Color → backend expects `colour`
-  if (filters.color.length) {
-    params.colour = normalize(filters.color); // Express will handle ?colour=Red&colour=Blue
-  }
+      Array.isArray(arr) && arr.length ? arr.join(",") : undefined;
+    // 🎨 Color → backend expects `colour`
+    if (filters.color.length) {
+      params.colour = normalize(filters.color); // Express will handle ?colour=Red&colour=Blue
+    }
 
-  // 📏 Size
-  if (filters.size.length) {
-     params.size = normalize(filters.size); // backend supports ?size=M&size=XL
-  }
+    // 📏 Size
+    if (filters.size.length) {
+      params.size = normalize(filters.size); // backend supports ?size=M&size=XL
+    }
 
-  // 🧵 Fabric
-  if (filters.fabric.length) {
-    params.fabric = filters.fabric;
-  }
+    // 🧵 Fabric
+    if (filters.fabric.length) {
+      params.fabric = filters.fabric;
+    }
 
-  // 🎨 Craft → backend expects `work`
-  if (filters.craft.length) {
-    params.work = filters.craft;
-  }
+    // 🎨 Craft → backend expects `work`
+    if (filters.craft.length) {
+      params.work = filters.craft;
+    }
 
-  // 🎉 Occasion → backend expects `collections`
-  if (filters.occasion.length) {
-    params.collections = filters.occasion;
-  }
+    // 🎉 Occasion → backend expects `collections`
+    if (filters.occasion.length) {
+      params.collections = filters.occasion;
+    }
 
-  // 👗 Collection → backend expects `categories`
-  if (filters.collection.length) {
-    params.categories = filters.collection;
-  }
+    // 👗 Collection → backend expects `categories`
+    if (filters.collection.length) {
+      params.categories = filters.collection;
+    }
 
-  // 🧣 Dupatta (⚠️ not in backend code — you may need to add)
-  if (filters.dupatta.length) {
-    params.dupatta = filters.dupatta;
-  }
+    // 🧣 Dupatta (⚠️ not in backend code — you may need to add)
+    if (filters.dupatta.length) {
+      params.dupatta = filters.dupatta;
+    }
 
-  // 💰 Price buckets → map labels to minPrice / maxPrice
-  if (filters.price.length) {
-    filters.price.forEach((range) => {
-      if (range === "Under ₹500") {
-        params.minPrice = 0;
-        params.maxPrice = 500;
-      } else if (range === "₹500 - ₹1000") {
-        params.minPrice = 500;
-        params.maxPrice = 1000;
-      } else if (range === "₹1000 - ₹2000") {
-        params.minPrice = 1000;
-        params.maxPrice = 2000;
-      } else if (range === "Above ₹2000") {
-        params.minPrice = 2000;
-      }
-    });
-  }
+    // 💰 Price buckets → map labels to minPrice / maxPrice
+    if (filters.price.length) {
+      filters.price.forEach((range) => {
+        if (range === "Under ₹500") {
+          params.minPrice = 0;
+          params.maxPrice = 500;
+        } else if (range === "₹500 - ₹1000") {
+          params.minPrice = 500;
+          params.maxPrice = 1000;
+        } else if (range === "₹1000 - ₹2000") {
+          params.minPrice = 1000;
+          params.maxPrice = 2000;
+        } else if (range === "Above ₹2000") {
+          params.minPrice = 2000;
+        }
+      });
+    }
 
-  // 🔖 Discount
-  if (filters.discount.length) {
-    params.minDiscount = filters.discount[0];
-  }
+    // 🔖 Discount
+    if (filters.discount.length) {
+      params.minDiscount = filters.discount[0];
+    }
 
-  return params;
-};
+    return params;
+  };
   // 🔹 Fetch products from API
   const fetchProducts = async () => {
-  
     try {
-      const data = await filterProduct(buildParams(filters, currentPage, sortBy));
+      const data = await filterProduct(
+        buildParams(filters, currentPage, sortBy)
+      );
       setProducts(data.products || []);
       setTotalPages(data.pages || 1);
     } catch (error) {
@@ -140,7 +140,7 @@ const buildParams = (filters, currentPage = 1, sortBy = "newest") => {
     }
   };
 
-  console.log("filters",filters)
+  console.log("filters", filters);
   console.log("Final Params 👉", buildParams(filters));
   // Run whenever filters, page, or sort change
   useEffect(() => {
@@ -184,13 +184,14 @@ const buildParams = (filters, currentPage = 1, sortBy = "newest") => {
   console.log("products", products);
 
   if (loading) {
-    return   <div
+    return (
+      <div
         style={{
           height: "100vh",
           width: "100%",
           display: "flex",
           justifyContent: "center",
-          flexDirection:"column",
+          flexDirection: "column",
           alignItems: "center",
           background: "#fff", // optional
         }}
@@ -201,21 +202,21 @@ const buildParams = (filters, currentPage = 1, sortBy = "newest") => {
           autoplay={true}
           style={{ width: 200, height: 200 }}
         />
-           <p style={{ marginTop: "1rem", fontSize: "18px", color: "#333" }}>
+        <p style={{ marginTop: "1rem", fontSize: "18px", color: "#333" }}>
           Please wait, loading...
         </p>
-      </div> // or a spinner component
+      </div>
+    ); // or a spinner component
   }
 
   return (
     <div>
       <NavbarMenu />
       <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <div style={{ width: "100%", boxSizing: "border-box" }}>
+      <div
+        style={{ width: "100%", boxSizing: "border-box" }}
+        className={styles.CategoryProductBanner}
+      >
         <img
           src={banner[0]?.imageUrl}
           style={{ width: "100%", height: "100%" }}
@@ -223,7 +224,7 @@ const buildParams = (filters, currentPage = 1, sortBy = "newest") => {
         />
       </div>
       <br />
-      <Container fluid style={{width:"90%"}}>
+      <Container fluid  className={styles.categoryProductContainer}>
         <BreadcrumbSinglePage />
         <Row>
           {/* Left Filters */}
@@ -367,25 +368,28 @@ const buildParams = (filters, currentPage = 1, sortBy = "newest") => {
                   ))}
                 </Accordion.Body>
               </Accordion.Item>
-              
-            <Accordion.Item eventKey="8">
-  <Accordion.Header>Discount</Accordion.Header>
-  <Accordion.Body>
-    {["10% or more", "20% or more", "30% or more", "40% or more", "50% or more"].map(
-      (val, idx) => (
-        <Form.Check
-          key={idx}
-          type="checkbox"
-          label={val}
-          checked={filters.discount.includes(val)}
-          onChange={() => handleFilterChange("discount", val)}
-        />
-      )
-    )}
-  </Accordion.Body>
-</Accordion.Item>
-            </Accordion>
 
+              <Accordion.Item eventKey="8">
+                <Accordion.Header>Discount</Accordion.Header>
+                <Accordion.Body>
+                  {[
+                    "10% or more",
+                    "20% or more",
+                    "30% or more",
+                    "40% or more",
+                    "50% or more",
+                  ].map((val, idx) => (
+                    <Form.Check
+                      key={idx}
+                      type="checkbox"
+                      label={val}
+                      checked={filters.discount.includes(val)}
+                      onChange={() => handleFilterChange("discount", val)}
+                    />
+                  ))}
+                </Accordion.Body>
+              </Accordion.Item>
+            </Accordion>
           </Col>
 
           {/* Right Product Section */}
@@ -494,9 +498,7 @@ const buildParams = (filters, currentPage = 1, sortBy = "newest") => {
               </div>
             </div>
 
-           
-              <ProductList products={products} />
-           
+            <ProductList products={products} />
           </Col>
         </Row>
       </Container>

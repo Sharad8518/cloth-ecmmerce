@@ -27,13 +27,45 @@ export const getHeader = async (id) => {
 
 /* Add Header */
 export const createHeader = async (data) => {
-  const response = await axios.post("/admin/headers", data);
+  const formData = new FormData();
+
+  // Append text fields
+  if (data.title) formData.append("title", data.title);
+  if (data.slug) formData.append("slug", data.slug);
+  if (data.status) formData.append("status", data.status);
+  if (data.showNavbar) formData.append("showNavbar", data.showNavbar);
+  if (data.addCategory) formData.append("addCategory", data.addCategory);
+
+  // Append file if exists
+  if (data.imageFile) {
+    formData.append("image", data.imageFile); // name must match multer field
+  }
+
+  const response = await axios.post("/admin/headers", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return response.data;
 };
 
 /* Update Header */
 export const updateHeader = async (id, data) => {
-  const response = await axios.put(`/admin/headers/${id}`, data);
+  const formData = new FormData();
+
+  // Append text fields
+  if (data.title) formData.append("title", data.title);
+  if (data.slug) formData.append("slug", data.slug);
+  if (data.status) formData.append("status", data.status);
+  if (data.showNavbar) formData.append("showNavbar", data.showNavbar);
+  if (data.addCategory) formData.append("addCategory", data.addCategory);
+
+  // Append file if new one selected
+  if (data.imageFile) {
+    formData.append("image", data.imageFile);
+  }
+
+  const response = await axios.put(`/admin/headers/${id}`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return response.data;
 };
 

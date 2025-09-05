@@ -6,6 +6,8 @@ import { getProfile } from "../../api/user/authApi"; // your API function
 import NavbarMenu from "../../Navbar/NavbarMenu";
 import Lottie from "lottie-react";
 import loadingAnimation from "../../../assets/Anim/loading.json";
+import MobileBackButton from "../../layout/BackButton/MobileBackButton";
+import styles from "./Profile.module.css"
 const Profile = () => {
   const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState(null);
@@ -74,12 +76,10 @@ const Profile = () => {
   return (
     <>
     <NavbarMenu/>
-    <br />
-    <br />
-     <br />
-      <br />
-     <br />
-    <Container fluid className="py-4">
+   <br/>
+    <Container fluid  className={styles.profileContainer}>
+      <MobileBackButton/>
+      <br/>
       <Row>
         {/* Sidebar */}
         <Col md={3}>

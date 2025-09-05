@@ -35,6 +35,9 @@ import MobileLoginOTP from "../User/Auth/MobileLoginOTP";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import MobileBackButton from "../layout/BackButton/MobileBackButton";
+import { FaQuestion } from "react-icons/fa6";
+
 const images = [
   "https://img.theloom.in/pwa/catalog/product/cache/e442fb943037550e0d70cca304324ade/v/j/vj304fs25-01kpfuchsiavj30_7_.jpg?tr=c-at_max,w-800,h-1066",
   "https://img.theloom.in/pwa/catalog/product/cache/e442fb943037550e0d70cca304324ade/v/j/vj304fs25-01kpfuchsiavj30_2_.jpg?tr=c-at_max,w-800,h-1066",
@@ -214,6 +217,15 @@ export default function ProductDetail() {
       padding.height || "0"
     }-${padding.unit || "cm"}`;
   };
+  const generateJewellerySku = (productName) => {
+  const namePart = productName
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, "")
+    .slice(0, 5); // first 5 chars
+  const randomNum = Math.floor(1000 + Math.random() * 9000);
+  return `${namePart}-${randomNum}`;
+};
+
 
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
@@ -318,8 +330,8 @@ export default function ProductDetail() {
     <>
       <NavbarMenu />
       <br /> <br />
-     
       <Container className={styles.ProductDetailContainer}>
+        <MobileBackButton />
         <Row style={{ height: "100%" }}>
           <Col md={1} className={styles.vericalImage}>
             {product?.media?.length > 0 && ( // ✅ check if media exists
@@ -370,54 +382,68 @@ export default function ProductDetail() {
             <div className={styles.detailPrize}>Rs. {product?.mrp} /-</div>
             <div className={styles.detailMRP}>MRP Inclusive of all size</div>
             <hr />
+            {product?.fulfillmentType === "MADE_TO_ORDER" ? (
+              <div className={styles.detailMadeToOrderText}>
+                <BiCloset size={20} /> Made To Order
+              </div>
+            ) : (
+              <div className={styles.detailMadeToOrderText}>
+                <BiCloset size={20} /> Ready To Shipment
+              </div>
+            )}
 
-            <div className={styles.detailMadeToOrderText}>
-              <BiCloset size={20} /> Made To Order
-            </div>
             <div className={styles.detailShip}>
               Ship by {getDateAfterDays(product?.estimatedShippingDays)}
             </div>
-            <div className={styles.detailSizeText}>
-              SELECT YOUR SIZE
-              <div className={styles.detailSizeGuideText}>Size Guide</div>
-            </div>
-            <div className={styles.container}>
-              {product?.variants?.map((variant) => (
-                <button
-                  key={variant?.size}
-                  className={`${styles.sizeButton} ${
-                    selectedSize?.size === variant?.size ? styles.active : ""
-                  }`}
-                  onClick={() => setSelectedSize(variant)}
-                >
-                  {variant.size}
-                </button>
-              ))}
-            </div>
+            {product?.productType === "Cloths" && (
+              <>
+                <div className={styles.detailSizeText}>
+                  SELECT YOUR SIZE
+                  <div className={styles.detailSizeGuideText}>Size Guide</div>
+                </div>
+                <div className={styles.container}>
+                  {product?.variants?.map((variant) => (
+                    <button
+                      key={variant?.size}
+                      className={`${styles.sizeButton} ${
+                        selectedSize?.size === variant?.size
+                          ? styles.active
+                          : ""
+                      }`}
+                      onClick={() => setSelectedSize(variant)}
+                    >
+                      {variant.size}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
 
-            <div style={{ display: "flex" }}>
-              <span style={{ fontWeight: "700" }}>
-                Additional info for better fit
-              </span>
+            {product?.fulfillmentType === "MADE_TO_ORDER" && (
+              <div style={{ display: "flex" }}>
+                <span style={{ fontWeight: "700" }}>
+                  Additional info for better fit
+                </span>
 
-              <div style={{ marginTop: "-3px", marginLeft: 10 }}>
-                <Button
-                  variant={answer === "yes" ? "primary" : "outline-primary"}
-                  size="sm"
-                  className="me-2"
-                  onClick={() => handleSelect("yes")}
-                >
-                  Yes
-                </Button>
-                <Button
-                  variant={answer === "no" ? "primary" : "outline-primary"}
-                  size="sm"
-                  onClick={() => handleSelect("no")}
-                >
-                  No
-                </Button>
+                <div style={{ marginTop: "-3px", marginLeft: 10 }}>
+                  <Button
+                    variant={answer === "yes" ? "primary" : "outline-primary"}
+                    size="sm"
+                    className="me-2"
+                    onClick={() => handleSelect("yes")}
+                  >
+                    Yes
+                  </Button>
+                  <Button
+                    variant={answer === "no" ? "primary" : "outline-primary"}
+                    size="sm"
+                    onClick={() => handleSelect("no")}
+                  >
+                    No
+                  </Button>
+                </div>
               </div>
-            </div>
+            )}
 
             {/* <button
               className={styles.paddingButton}
@@ -468,7 +494,7 @@ export default function ProductDetail() {
                       return;
                     }
 
-                    if (!selectedSize) {
+                    if (product.productType !== "Jewellery" && !selectedSize) {
                       alert("Please select a size");
                       return;
                     }
@@ -478,7 +504,7 @@ export default function ProductDetail() {
                       (v) => v.size === selectedSize.size
                     );
 
-                    if (!variant) {
+                    if (product.productType !== "Jewellery" && !variant) {
                       alert("This size is not available");
                       return;
                     }
@@ -488,15 +514,18 @@ export default function ProductDetail() {
                         padding.length || "0"
                       }-H${padding.height || "0"}-${padding.unit || "cm"}`;
                     };
-
+                     const sku =
+                    product.productType === "Jewellery"
+                     ? generateJewellerySku(product.title)
+                    : variant.sku;
                     const skuWithPadding = generatePaddingSku(
-                      variant.sku,
+                      sku,
                       savedPaddingDetails
                     );
                     handleAddToCart({
                       productId: product._id,
                       sku: skuWithPadding,
-                      size: selectedSize.size || null,
+                      size: product.productType !== "Jewellery"? selectedSize.size : "N/A",
                       color: selectedColor || "N/A",
                       quantity: 1,
                       paddingDetails: savedPaddingDetails,
@@ -515,7 +544,7 @@ export default function ProductDetail() {
                     return;
                   }
 
-                  if (!selectedSize) {
+                  if (product.productType !== "Jewellery" && !selectedSize) {
                     alert("Please select a size");
                     return;
                   }
@@ -524,12 +553,16 @@ export default function ProductDetail() {
                     (v) => v.size === selectedSize.size
                   );
 
-                  if (!variant) {
+                  if (product.productType !== "Jewellery" && !variant) {
                     alert("This size is not available");
                     return;
                   }
+                  const sku =
+                    product.productType === "Jewellery"
+                     ? generateJewellerySku(product.title)
+                    : variant.sku;
                   const skuWithPadding = generatePaddingSku(
-                    variant.sku,
+                    sku,
                     savedPaddingDetails
                   );
                   const buyNowItem = {
@@ -539,7 +572,7 @@ export default function ProductDetail() {
                     quantity: 1,
                     variant: {
                       sku: skuWithPadding,
-                      size: selectedSize.size,
+                      size: product.productType !== "Jewellery"? selectedSize.size : "N/A",
                       color: selectedColor || "N/A",
                       price: product.mrp,
                       paddingDetails: savedPaddingDetails,
@@ -582,57 +615,68 @@ export default function ProductDetail() {
                   {/* <hr /> */}
                   <p>{product?.shortDescription}</p>
                   <strong style={{ color: "#0984e3" }}>Other Info</strong>
-                  <Row style={{ marginTop: 10 }}>
-                    <Col>
-                      <strong>Pack Contains </strong>
-                    </Col>
-                    <Col>: {product?.packContains}</Col>
-                  </Row>
-                  <Row style={{ marginTop: 10 }}>
-                    <Col>
-                      <strong>Fabric </strong>
-                    </Col>
-                    <Col> : {product?.fabric}</Col>
-                  </Row>
-                  <Row style={{ marginTop: 10 }}>
-                    <Col>
-                      <strong>Dupatta </strong>
-                    </Col>
-                    <Col>
-                      {product?.dupatta.enabled ? (
-                        <div>: Yes</div>
-                      ) : (
-                        <div>: No</div>
-                      )}
-                    </Col>
-                  </Row>
+                  {product?.packContains && (
+                    <Row style={{ marginTop: 10 }}>
+                      <Col>
+                        <strong>Pack Contains</strong>
+                      </Col>
+                      <Col>: {product.packContains}</Col>
+                    </Row>
+                  )}
 
-                  <Row style={{ marginTop: 10 }}>
-                    <Col>
-                      <strong>Work /Craft </strong>
-                    </Col>
-                    <Col>: {product?.work}</Col>
-                  </Row>
-                  <Row style={{ marginTop: 10 }}>
-                    <Col>
-                      <strong>Care </strong>
-                    </Col>
-                    <Col>: {product?.care}</Col>
-                  </Row>
+                  {product?.fabric && (
+                    <Row style={{ marginTop: 10 }}>
+                      <Col>
+                        <strong>Fabric</strong>
+                      </Col>
+                      <Col>: {product.fabric}</Col>
+                    </Row>
+                  )}
 
-                  <Row style={{ marginTop: 10 }}>
-                    <Col>
-                      <strong>Occasion </strong>
-                    </Col>
-                    <Col>: {product?.occasion}</Col>
-                  </Row>
+                  {product?.dupatta && (
+                    <Row style={{ marginTop: 10 }}>
+                      <Col>
+                        <strong>Dupatta</strong>
+                      </Col>
+                      <Col>: {product.dupatta.enabled ? "Yes" : "No"}</Col>
+                    </Row>
+                  )}
 
-                  <Row style={{ marginTop: 10 }}>
-                    <Col>
-                      <strong>Note </strong>
-                    </Col>
-                    <Col>:{product?.Note}</Col>
-                  </Row>
+                  {product?.work && (
+                    <Row style={{ marginTop: 10 }}>
+                      <Col>
+                        <strong>Work / Craft</strong>
+                      </Col>
+                      <Col>: {product.work}</Col>
+                    </Row>
+                  )}
+
+                  {product?.care && (
+                    <Row style={{ marginTop: 10 }}>
+                      <Col>
+                        <strong>Care</strong>
+                      </Col>
+                      <Col>: {product.care}</Col>
+                    </Row>
+                  )}
+
+                  {product?.occasion && (
+                    <Row style={{ marginTop: 10 }}>
+                      <Col>
+                        <strong>Occasion</strong>
+                      </Col>
+                      <Col>: {product.occasion}</Col>
+                    </Row>
+                  )}
+
+                  {product?.Note && (
+                    <Row style={{ marginTop: 10 }}>
+                      <Col>
+                        <strong>Note</strong>
+                      </Col>
+                      <Col>: {product.Note}</Col>
+                    </Row>
+                  )}
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="1" style={{ border: "none" }}>
@@ -651,11 +695,14 @@ export default function ProductDetail() {
                 </Accordion.Header>
                 <Accordion.Body>
                   {product?.productSpeciality}
-
-                  <p style={{ marginTop: 10 }}>
-                    <strong style={{ color: "#0984e3" }}>Style And Fit </strong>{" "}
-                    : {product?.styleAndFit}
-                  </p>
+                  {product?.styleAndFit && (
+                    <p style={{ marginTop: 10 }}>
+                      <strong style={{ color: "#0984e3" }}>
+                        Style And Fit{" "}
+                      </strong>{" "}
+                      : {product?.styleAndFit}
+                    </p>
+                  )}
                 </Accordion.Body>
               </Accordion.Item>
               {/* <Accordion.Item eventKey="2" style={{ border: "none" }}>
@@ -702,8 +749,42 @@ export default function ProductDetail() {
                     Return and exchanges policy
                   </div>
                 </Accordion.Header>
-                <Accordion.Body>{product?.shippingAndReturns}</Accordion.Body>
+                <Accordion.Body>
+                  <strong>{product?.shippingAndReturns?.title}</strong>
+                  <br />
+                  {product?.shippingAndReturns?.description}
+                </Accordion.Body>
               </Accordion.Item>
+              {product?.faq?.length > 0 && (
+                <Accordion.Item eventKey="4" style={{ border: "none" }}>
+                  <Accordion.Header onClick={() => toggleKey("4")}>
+                    <FaQuestion
+                      size={20}
+                      style={{
+                        fontWeight: "bold",
+                        marginTop: -3,
+                        marginRight: 10,
+                      }}
+                    />
+                    <div className={styles.productDetailHeading}>FAQ </div>
+                  </Accordion.Header>
+                  <Accordion.Body>
+                    {product.faq.map((item) => (
+                      <div
+                        key={item._id}
+                        style={{ marginTop: 5, paddingLeft: 10 }}
+                      >
+                        <p style={{ marginBottom: 2 }}>
+                          <strong>Q:</strong> {item.question}
+                        </p>
+                        <p style={{ marginBottom: 5 }}>
+                          <strong>A:</strong> {item.answer}
+                        </p>
+                      </div>
+                    ))}
+                  </Accordion.Body>
+                </Accordion.Item>
+              )}
             </Accordion>
           </Col>
         </Row>

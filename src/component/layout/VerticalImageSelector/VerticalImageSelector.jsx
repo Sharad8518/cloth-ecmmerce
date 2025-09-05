@@ -17,6 +17,8 @@ export default function VerticalImageSelector({ images, onSelect,selectedIndex  
           <img src={img} alt={`Image ${i + 1}`} />
         </div>
       ))}
+
+      
     </div>
   );
 }

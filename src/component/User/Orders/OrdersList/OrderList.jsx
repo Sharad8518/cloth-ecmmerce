@@ -15,6 +15,7 @@ import styles from "./OrderList.module.css";
 import { FaShippingFast, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import OrderDetailModal from "../OrderDetailModal";
 import { FaStar } from "react-icons/fa";
+import MobileBackButton from "../../../layout/BackButton/MobileBackButton";
 
 // Props: orders = array of orders fetched from API
 const OrderList = ({ orders, totalPages = 1, onPageChange }) => {
@@ -48,9 +49,10 @@ const [review, setReview] = useState({ rating: 5, comment: "" });
 
   return (
     <Container className="my-4">
-      <br />
-      <br />
-      <h2 className="mb-4">My Orders</h2>
+      <div className={styles.headerOrder}>
+      <MobileBackButton/>
+      <h2 className={styles.myoders}>My Orders</h2>
+      </div>
 
       {orders?.length === 0 ? (
         <p>No orders found.</p>

@@ -1,0 +1,31 @@
+.headerwishlist{
+    margin-top: 80px;
+    width:100%;
+    padding-left: 50px;
+    margin-bottom: 20px;
+    display:flex ;
+    justify-content: center;
+    align-items:center;
+}
+
+.wishlist{
+    margin-right: 0px;
+}
+
+@media (max-width: 750px) {
+.headerwishlist{
+    margin-top: 10px;
+    width:100%;
+    padding-left: 0px;
+    margin-bottom: 20px;
+    display:flex ;
+    justify-content:space-between;
+    align-items:center;
+}
+.wishlist{
+    margin-right: 10px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+}

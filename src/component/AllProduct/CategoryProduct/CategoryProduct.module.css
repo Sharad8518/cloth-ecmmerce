@@ -6,6 +6,13 @@
 display: none;
 }
 
+.CategoryProductBanner{
+  margin-top: 94px;
+}
+
+.categoryProductContainer{
+    width: 90%;
+}
 
 @media (max-width: 768px) {
 .filterBox{
@@ -21,4 +28,12 @@ background-color: #fff;
 position: fixed;
 bottom: 0px;
 }
+
+.CategoryProductBanner{
+  margin-top: 15px;
+}
+.categoryProductContainer{
+    width: 99%;
+}
+
 }

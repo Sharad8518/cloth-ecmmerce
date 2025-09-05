@@ -108,9 +108,7 @@ export default function NavbarMenu() {
   useEffect(() => {
     const fetchNavbar = async () => {
       try {
-        const res = await axios.get(
-          "https://houseofziba-nodejs.onrender.com/api/user/navbar"
-        );
+        const res = await axios.get("http://localhost:4000/api/user/navbar");
         const menu = res.data.map((header) => ({
           ...header,
           categories: header?.categories?.map((cat) => ({
@@ -119,6 +117,7 @@ export default function NavbarMenu() {
           })),
         }));
         setCollectionMenu(menu);
+        console.log('menu',menu)
       } catch (err) {
         console.error("Failed to fetch navbar data:", err);
       }
@@ -169,6 +168,7 @@ export default function NavbarMenu() {
     };
     fetch();
   }, []);
+  console.log('activeHeader',activeHeader)
 
   return (
     <>
@@ -221,6 +221,9 @@ export default function NavbarMenu() {
 
           <div className="navbar-center">
             <ul className="nav-links" style={{ marginTop: 10 }}>
+              <li style={{ position: "relative" }}>
+                <Link to={`/`}>Home</Link>
+              </li>
               {collectionMenu.map((header) => (
                 <li
                   key={header._id}
@@ -267,13 +270,13 @@ export default function NavbarMenu() {
                 )} */}
                 </li>
               ))}
-
+              {/* 
               <li>
                 <a href="/about">About Us</a>
               </li>
               <li>
                 <a href="/contact">Contact</a>
-              </li>
+              </li> */}
             </ul>
           </div>
 
@@ -383,18 +386,19 @@ export default function NavbarMenu() {
                     style={{
                       minWidth: "200px",
                       marginRight: "20px",
-                      padding:10,
+                      padding: 10,
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
                     }}
                   >
                     <img
-                      src="https://prisho.in/wp-content/uploads/2023/10/prisho-blog-3.png" // replace with your image URL
+                      src={activeHeader.image} // replace with your image URL
                       alt="Promo"
                       style={{
                         maxWidth: "100%",
-                        height: "auto",
+                        height: "300px",
+                        objectFit:"contain",
                         borderRadius: "4px",
                       }}
                     />
@@ -437,67 +441,90 @@ export default function NavbarMenu() {
       </nav>
 
       <Offcanvas
-  show={show}
-  onHide={handleClose}
-  placement="start"
-  className="custom-offcanvas shadow-lg"
->
-  <Offcanvas.Header closeButton>
-    <Offcanvas.Title className="text-lg font-semibold text-gray-800">
-      House of Ziba
-    </Offcanvas.Title>
-  </Offcanvas.Header>
-  <img  src={"https://prisho.in/wp-content/uploads/2023/10/prisho-blog-3.png"} style={{width:"100%"}}/>
+        show={show}
+        onHide={handleClose}
+        placement="start"
+        className="custom-offcanvas shadow-lg"
+      >
+        <Offcanvas.Header closeButton>
+          <Offcanvas.Title className="text-lg font-semibold text-gray-800">
+            House of Ziba
+          </Offcanvas.Title>
+        </Offcanvas.Header>
+        <img
+          src={"https://prisho.in/wp-content/uploads/2023/10/prisho-blog-3.png"}
+          style={{ width: "100%" }}
+        />
 
-  <Offcanvas.Body className="p-0">
-    <Accordion flush alwaysOpen>
-      {collectionMenu.map((header) => {
-        // Categories that have subcategories
-        const availableCategories = header.categories.filter(
-          (cat) => cat.subCategories && cat.subCategories.length > 0
-        );
+        <Offcanvas.Body className="p-0">
+          <Accordion flush alwaysOpen>
+            {collectionMenu.map((header) => {
+              // Categories that have subcategories
+              const availableCategories = header.categories.filter(
+                (cat) => cat.subCategories && cat.subCategories.length > 0
+              );
 
-        return (
-          <Accordion.Item eventKey={header._id} key={header._id}>
-            <Accordion.Header>
-              <span className="font-medium text-gray-700">{header.title}</span>
-            </Accordion.Header>
+              return (
+                <Accordion.Item eventKey={header._id} key={header._id}>
+                  <Accordion.Header>
+                    <span className="font-medium text-gray-700">
+                      {header.title}
+                    </span>
+                  </Accordion.Header>
 
-            {/* Only show body if categories exist */}
-            {availableCategories.length > 0 && (
-              <Accordion.Body className="bg-gray-50">
-                {availableCategories.map((cat) => (
-                  <div key={cat._id} className="mb-4">
-                    <p className="text-sm font-semibold text-orange-500 mb-2">
-                      {cat.name}
-                    </p>
-                    <ul className="space-y-1" style={{ listStyle: "none" }}>
-                      {cat.subCategories.map((sub) => (
-                        <li key={sub._id}>
-                          <Link
-                            to={`/categoryProduct`}
-                            className="block text-gray-700 hover:text-orange-500 text-sm transition-colors duration-200"
-                            style={{ textDecoration: "none", color: "#000" }}
+                  {/* Only show body if categories exist */}
+                  {availableCategories.length > 0 && (
+                    <Accordion.Body className="bg-gray-50">
+                      {availableCategories.map((cat) => (
+                        <div key={cat._id} className="mb-4">
+                          <p className="text-sm font-semibold text-orange-500 mb-2">
+                            {cat.name}
+                          </p>
+                          <ul
+                            className="space-y-1"
+                            style={{ listStyle: "none" }}
                           >
-                            {sub.name}
-                          </Link>
-                        </li>
+                            {cat.subCategories.map((sub) => (
+                              <li key={sub._id}>
+                                <Link
+                                  to={`/categoryProduct`}
+                                  className="block text-gray-700 hover:text-orange-500 text-sm transition-colors duration-200"
+                                  style={{
+                                    textDecoration: "none",
+                                    color: "#000",
+                                  }}
+                                >
+                                  {sub.name}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
                       ))}
-                    </ul>
-                  </div>
-                ))}
-              </Accordion.Body>
-            )}
-          </Accordion.Item>
-        );
-      })}
-    </Accordion>
-  </Offcanvas.Body>
-  <div style={{position:"absolute",height:50,backgroundColor:"#eaeaeaff",bottom:0,width:"100%",display:"flex",justifyContent:"center",alignItems:"center"}}>
- <h6 style={{marginTop:5}}><LuCircleUser/> Sign In</h6>  
-  </div>
-</Offcanvas>
-
+                    </Accordion.Body>
+                  )}
+                </Accordion.Item>
+              );
+            })}
+          </Accordion>
+        </Offcanvas.Body>
+        <div
+          style={{
+            position: "absolute",
+            height: 50,
+            backgroundColor: "#eaeaeaff",
+            bottom: 0,
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <h6 style={{ marginTop: 5 }}>
+            <LuCircleUser /> Sign In
+          </h6>
+        </div>
+      </Offcanvas>
 
       <CartOffcanvas
         show={cartOpen}

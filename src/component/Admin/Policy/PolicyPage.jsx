@@ -18,7 +18,7 @@ import {
 export default function PolicyPage() {
 const [policies, setPolicies] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [form, setForm] = useState({ title: "", decreption: "" });
+  const [form, setForm] = useState({ title: "", description: "" });
   const [editId, setEditId] = useState(null);
   const [show, setShow] = useState(false);
 
@@ -44,7 +44,7 @@ const [policies, setPolicies] = useState([]);
       } else {
         await addPolicy(form);
       }
-      setForm({ title: "", decreption: "" });
+      setForm({ title: "", description: "" });
       setEditId(null);
       setShow(false);
       fetchPolicies();
@@ -90,14 +90,14 @@ const [policies, setPolicies] = useState([]);
             {policies?.map((p) => (
               <tr key={p._id}>
                 <td>{p?.title}</td>
-                <td>{p?.decreption}</td>
+                <td>{p?.description}</td>
                 <td>
                   <Button
                     variant="warning"
                     size="sm"
                     className="me-2"
                     onClick={() => {
-                      setForm({ title: p.title, decreption: p.decreption });
+                      setForm({ title: p.title, description: p.description });
                       setEditId(p._id);
                       setShow(true);
                     }}
@@ -140,9 +140,9 @@ const [policies, setPolicies] = useState([]);
                 as="textarea"
                 rows={3}
                 placeholder="Enter description"
-                value={form.decreption}
+                value={form.description}
                 onChange={(e) =>
-                  setForm({ ...form, decreption: e.target.value })
+                  setForm({ ...form, description: e.target.value })
                 }
               />
             </Form.Group>
