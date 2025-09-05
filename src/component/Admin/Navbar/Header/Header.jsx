@@ -93,6 +93,7 @@ export default function Header() {
             <thead className="table-light">
               <tr>
                 <th style={{ width: "25%" }}>Name</th>
+                <th>Image</th>
                 <th>Edit</th>
                 <th>Status</th>
                 <th>Show in Navbar</th>
@@ -101,9 +102,17 @@ export default function Header() {
               </tr>
             </thead>
             <tbody>
-              {headers.map((h) => (
+              {headers?.map((h) => (
                 <tr key={h._id}>
                   <td style={{ fontWeight: "bold" }}>{h.title}</td>
+                  <td>
+                    {
+                       h.image && (
+                     <img src={h.image} style={{width:100,height:100}}/>
+                       )
+
+                    }
+                   </td>
                   <td>
                     <Button
                       size="sm"
