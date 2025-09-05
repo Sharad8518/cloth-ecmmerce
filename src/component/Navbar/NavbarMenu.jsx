@@ -108,7 +108,7 @@ export default function NavbarMenu() {
   useEffect(() => {
     const fetchNavbar = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/api/user/navbar");
+        const res = await axios.get("https://houseofziba-nodejs.onrender.com/api/user/navbar");
         const menu = res.data.map((header) => ({
           ...header,
           categories: header?.categories?.map((cat) => ({
