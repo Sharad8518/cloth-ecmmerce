@@ -24,8 +24,6 @@ import { useParams } from "react-router-dom";
 
 export default function Jewellery() {
   const { category,subName } = useParams();
-  
-
   // State to track filters
   const [filters, setFilters] = useState({
    header: ["Jwellery"],

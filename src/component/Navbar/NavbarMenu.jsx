@@ -298,7 +298,7 @@ export default function NavbarMenu() {
             height={2}
             ref={loadingRef}
             shadow={false}
-            style={{ position: "absolute", top: 115 }}
+            style={{ position: "absolute",top:115}}
           />
         </nav>
 

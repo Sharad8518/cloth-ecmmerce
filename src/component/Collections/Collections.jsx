@@ -21,9 +21,9 @@ import loadingAnimation from "../../assets/Anim/loading.json";
 import { useLocation } from "react-router-dom";
 
 export default function Collections() {
-    const location = useLocation()
-     const { filter } = location.state || {};
-     console.log("filter",filter)
+  const location = useLocation();
+  const { filter } = location.state || {};
+  console.log("filter", filter);
   // State to track filters
   const [filters, setFilters] = useState({
     collections: Array.isArray(filter) ? filter : filter ? [filter] : [],
@@ -86,7 +86,7 @@ export default function Collections() {
 
     // 🎨 Craft → backend expects `work`
     if (filters.craft.length) {
-      params.work = normalize(filters.craft)
+      params.work = normalize(filters.craft);
     }
 
     // 🎉 Occasion → backend expects `occasion`
@@ -96,7 +96,7 @@ export default function Collections() {
 
     // 👗 Collection → backend expects `categories`
     if (filters.collections.length) {
-      params.collections = normalize(filters.collections)
+      params.collections = normalize(filters.collections);
     }
 
     // 🧣 Dupatta (⚠️ not in backend code — you may need to add)
@@ -228,9 +228,10 @@ export default function Collections() {
         />
       </div>
       <br />
-      <Container fluid  className={styles.categoryProductContainer}>
-        <div style={{display:"flex"}}>
-        <BreadcrumbSinglePage /><span style={{marginTop:10,marginLeft:5}}>/ {filter}</span>
+      <Container fluid className={styles.categoryProductContainer}>
+        <div style={{ display: "flex" }}>
+          <BreadcrumbSinglePage />
+          <span style={{ marginTop: 10, marginLeft: 5 }}>/ {filter}</span>
         </div>
         <Row>
           {/* Left Filters */}
