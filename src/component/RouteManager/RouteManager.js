@@ -29,6 +29,11 @@ import Collection from "../Admin/Navbar/Collection/Collection";
 import Customer from "../Admin/Customer/Customer";
 import PolicyPage from "../Admin/Policy/PolicyPage";
 import Collections from "../Collections/Collections";
+import IndoWestern from "../IndoWestern/IndoWestern";
+import Jewellery from "../Jewellery/Jewellery";
+import KurtaSet from "../KurtaSet/KurtaSet";
+import Potilis from "../Potilis/Potilis";
+import DesignerSuit from "../DesignerSuit/DesignerSuit";
 
 export default function RouteManager() {
   return (
@@ -44,7 +49,11 @@ export default function RouteManager() {
       <Route path="/orders" element={<Orders />} />
       <Route path="/favourites" element={<Favourites />} />
       <Route path="/collections" element={<Collections />} />
-
+      <Route path="/indoWestern/:category/:subName" element={<IndoWestern />} />
+      <Route path="/jewellery/:category/:subName" element={<Jewellery />} />
+      <Route path="/kurtaSet/:category/:subName" element={<KurtaSet />} />
+      <Route path="/potilis/:category/:subName" element={<Potilis />} />
+      <Route path="/designerSuit/:category/:subName" element={<DesignerSuit />} />
       {/* Protected Admin Routes */}
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<AdminDashboard />}>

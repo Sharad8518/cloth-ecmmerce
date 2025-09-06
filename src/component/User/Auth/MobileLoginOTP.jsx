@@ -8,7 +8,7 @@ import {
 import CompleteProfile from "../CompleteProfile";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
-import logo from "../../../assets/logo.jpeg"
+import logo from "../../../assets/logo.jpeg";
 
 export default function MobileLoginOTP({ isOpen, closeModal }) {
   const [mobile, setMobile] = useState("");
@@ -18,15 +18,22 @@ export default function MobileLoginOTP({ isOpen, closeModal }) {
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(false);
   const [isLogin, setIsLogin] = useState(false); // toggle between login & signup
+  const[sendLoading,setSendLoading] = useState(false)
+  const[verifyLoading,setVerifyLoading] =useState(false)
+  const[googleAuthloading,setGoogleAuthLoading] =useState(false)
+  const[updateProfileLoading,setUpdateProfileLoading] =useState(false)
 
   const handleSendOTP = async () => {
     if (mobile.length === 10) {
       try {
+        setSendLoading(true)
         const res = await sendOTP(mobile); // call API
         setIsOTPSent(true);
         setMessage(res.message); // show server message
       } catch (err) {
         setMessage(err.message); // show error message if failed
+      }finally{
+        setSendLoading(false)
       }
     } else {
       setMessage("Please enter a valid 10-digit mobile number");
@@ -53,6 +60,7 @@ export default function MobileLoginOTP({ isOpen, closeModal }) {
     const otpValue = otp.join("");
     if (otpValue.length === 6) {
       try {
+        setVerifyLoading(true)
         const res = await verifyOTP(mobile, otpValue); // call API
         console.log("OTP verification response:", res);
         setMessage(res.message); // "Login successful"
@@ -71,6 +79,8 @@ export default function MobileLoginOTP({ isOpen, closeModal }) {
         }
       } catch (err) {
         setMessage(err.response?.data?.message || "OTP verification failed");
+      }finally{
+         setVerifyLoading(false)
       }
     } else {
       setMessage("Please enter 6-digit OTP");
@@ -124,11 +134,14 @@ export default function MobileLoginOTP({ isOpen, closeModal }) {
       return;
     }
     try {
+      setUpdateProfileLoading(true)
       const res = await updateProfile({ name, email, addresses });
       setMessage(res.message);
       closeModal();
     } catch (err) {
       setMessage(err.message);
+    }finally{
+      setUpdateProfileLoading(false)
     }
   };
 
@@ -232,8 +245,10 @@ export default function MobileLoginOTP({ isOpen, closeModal }) {
                     fontSize: 16,
                   }}
                 />
+               
                 <button
                   onClick={handleSendOTP}
+                   disabled={sendLoading}
                   style={{
                     width: "100%",
                     padding: 12,
@@ -242,10 +257,11 @@ export default function MobileLoginOTP({ isOpen, closeModal }) {
                     color: "#fff",
                     border: "none",
                     fontSize: 16,
-                    cursor: "pointer",
+                    cursor: sendLoading ? "not-allowed" : "pointer",
+                    opacity: sendLoading ? 0.6 : 1,
                   }}
                 >
-                  Send OTP
+                 {sendLoading ? "Sending..." : "Send OTP"}
                 </button>
 
                 <p style={{ marginTop: 15 }}>
@@ -303,6 +319,7 @@ export default function MobileLoginOTP({ isOpen, closeModal }) {
                       if (!credentialResponse.credential) return;
                       try {
                         // Call your API helper with the Google ID token
+                        setGoogleAuthLoading(true)
                         const data = await loginWithGoogleAPI(
                           credentialResponse.credential
                         );
@@ -313,10 +330,12 @@ export default function MobileLoginOTP({ isOpen, closeModal }) {
                             "user",
                             JSON.stringify(data.user)
                           );
-                          closeModal()
+                          closeModal();
                         }
                       } catch (err) {
                         console.error("Google login failed:", err.message);
+                      }finally{
+                        setGoogleAuthLoading(false)
                       }
                     }}
                     onError={() => {
@@ -369,16 +388,18 @@ export default function MobileLoginOTP({ isOpen, closeModal }) {
                   </span>
                   <button
                     onClick={handleVerifyOTP}
+                    disabled={verifyLoading}
                     style={{
                       padding: "10px 20px",
                       backgroundColor: "green",
                       color: "#fff",
                       border: "none",
                       borderRadius: 6,
-                      cursor: "pointer",
+                      cursor: verifyLoading ? "not-allowed" : "pointer",
+                      opacity: verifyLoading ? 0.6 : 1,
                     }}
                   >
-                    Verify
+                  {verifyLoading ? "Verify..." : "Verify"}
                   </button>
                 </div>
                 {message && (
@@ -389,10 +410,7 @@ export default function MobileLoginOTP({ isOpen, closeModal }) {
           </div>
 
           {/* Right side: image - hide on mobile */}
-          <div
-            className="right-image"
-            
-          >
+          <div className="right-image">
             <img
               src={logo}
               alt="Mobile Illustration"
@@ -550,6 +568,7 @@ export default function MobileLoginOTP({ isOpen, closeModal }) {
 
           <button
             onClick={handleSubmit}
+             disabled={updateProfileLoading}
             style={{
               width: "100%",
               padding: 14,
@@ -560,9 +579,11 @@ export default function MobileLoginOTP({ isOpen, closeModal }) {
               border: "none",
               fontSize: "1.1rem",
               boxSizing: "border-box",
+               cursor: updateProfileLoading ? "not-allowed" : "pointer",
+               opacity: updateProfileLoading ? 0.6 : 1,
             }}
           >
-            Save Profile
+            {updateProfileLoading ? "Saving...":"Save Profile"}
           </button>
 
           {message && (

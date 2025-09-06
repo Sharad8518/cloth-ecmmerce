@@ -18,6 +18,7 @@ export default function Checkout() {
   const [itemsToCheckout, setItemsToCheckout] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [editingPhone, setEditingPhone] = useState(false);
+  const [placeloading,setPlaceLoading] =useState(false)
 
   console.log("itemsToCheckout Address:", itemsToCheckout);
 
@@ -143,6 +144,7 @@ export default function Checkout() {
     }
 
     try {
+      setPlaceLoading(true)
       const orderPayload = {
         buyNow: !!location.state?.buyNowItem,
         shippingAddress: {
@@ -212,6 +214,8 @@ export default function Checkout() {
     } catch (err) {
       console.error(err);
       alert(err.message || "Something went wrong");
+    }finally{
+     setPlaceLoading(false)
     }
   };
 
@@ -541,18 +545,20 @@ export default function Checkout() {
           <h3 style={{ margin: 0 }}>Total: ₹{subtotal}</h3>
           <button
             onClick={handlePlaceOrder}
+            disabled={placeloading}
             style={{
               padding: "12px 25px",
               borderRadius: 8,
               backgroundColor: "green",
               color: "#fff",
               border: "none",
-              cursor: "pointer",
               fontSize: 16,
               fontWeight: 600,
+              cursor: placeloading ? "not-allowed" : "pointer",
+              opacity: placeloading ? 0.6 : 1,
             }}
           >
-            Place Order
+            {placeloading ? "Placing Order..." : "Place Order"}
           </button>
         </div>
       </div>

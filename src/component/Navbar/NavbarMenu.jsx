@@ -237,7 +237,7 @@ export default function NavbarMenu() {
                   // }}
                   style={{ position: "relative" }}
                 >
-                  <Link to={`/categoryProduct`}>{header.title}</Link>
+                  <Link >{header.title}</Link>
 
                   {/* Submenu for categories & subcategories */}
                   {/* {activeHeader === header && header.categories.length > 0 && (
@@ -376,7 +376,7 @@ export default function NavbarMenu() {
                       >
                         {category.subCategories.map((sub) => (
                           <li key={sub._id}>
-                            <Link to={`/${sub.slug}`}>{sub.name}</Link>
+                            <Link to={`${activeHeader.slug}/${category.name}/${sub.name}`}>{sub.name}</Link>
                           </li>
                         ))}
                       </ul>
@@ -392,6 +392,8 @@ export default function NavbarMenu() {
                       alignItems: "center",
                     }}
                   >
+                  {
+                    activeHeader.image && (
                     <img
                       src={activeHeader.image} // replace with your image URL
                       alt="Promo"
@@ -402,6 +404,9 @@ export default function NavbarMenu() {
                         borderRadius: "4px",
                       }}
                     />
+                    )
+                  }
+                   
                   </Col>
                 </Row>
               </Container>
