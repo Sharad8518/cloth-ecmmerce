@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import "./swiper-vertical.css"; // custom css
 
-export default function VerticalImageSelector({ images, onSelect,selectedIndex  }) {
-   const handleSelect = (index) => {
+export default function VerticalImageSelector({
+  images,
+  onSelect,
+  selectedIndex,
+}) {
+  const handleSelect = (index) => {
     onSelect(index); // send index to parent
   };
 
@@ -17,8 +21,6 @@ export default function VerticalImageSelector({ images, onSelect,selectedIndex  
           <img src={img} alt={`Image ${i + 1}`} />
         </div>
       ))}
-
-      
     </div>
   );
 }

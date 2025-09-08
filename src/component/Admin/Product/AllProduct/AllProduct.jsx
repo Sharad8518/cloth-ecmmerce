@@ -7,12 +7,19 @@ import {
   Spinner,
   Pagination,
   Modal,
-  Form, Row, Col,
-  Card
+  Form,
+  Row,
+  Col,
+  Card,
+  Dropdown,
+  ButtonGroup,
+OverlayTrigger,
+Tooltip 
 } from "react-bootstrap";
 import { getProducts } from "../../../api/admin/productApi";
 import { useNavigate } from "react-router-dom";
 import SaleModal from "../../Navbar/SaleModal/SaleModal";
+import { FaEdit, FaTrash, FaEllipsisV, FaEye, FaTags, FaCopy, FaRandom } from "react-icons/fa";
 
 const ProductRow = ({
   product,
@@ -35,82 +42,109 @@ const ProductRow = ({
         <td>₹{product.mrp || "-"}</td>
         <td>
           {product.onSale ? (
-            <Badge bg="danger" style={{ padding: 10 }}>
-              Yes
-            </Badge>
+            <Badge bg="danger" pill>Yes</Badge>
           ) : (
-            <Badge bg="secondary" style={{ padding: 10 }}>
-              No
-            </Badge>
+            <Badge bg="secondary" pill>No</Badge>
           )}
         </td>
         <td>
-          <Badge
-            style={{ padding: 10 }}
-            bg={product.status === "ACTIVE" ? "success" : "warning"}
-          >
+          <Badge pill bg={product.status === "ACTIVE" ? "success" : "warning"}>
             {product.status || "-"}
           </Badge>
         </td>
-        <td>
-          <Badge
-            style={{ padding: 10 }}
-            bg={product.inStock ? "success" : "secondary"}
-          >
+        {/* <td>
+          <Badge pill bg={product.inStock ? "success" : "secondary"}>
             {product.inStock ? "Yes" : "No"}
           </Badge>
-        </td>
-        <td className="d-flex flex-wrap gap-1">
-          <Button variant="info" size="sm" onClick={() => onEdit(product._id)}>
-            Edit
-          </Button>
-          <Button
-            variant="danger"
-            size="sm"
-            onClick={() => onDelete(product._id)}
-          >
-            Delete
-          </Button>
-          <Button
-            variant="secondary"
-            size="sm"
-              onClick={() =>
-             navigate("/dashboard/FrequentlyBought", { state: { productId: product._id,productDetails:product } })
-         }
-          >
-            Frequently Bought
-          </Button>
-          <Button
-            variant="warning"
-            size="sm"
-            onClick={() => navigate("/dashboard/SimilarProduct",{ state: { productId: product._id,productDetails:product } })}
-          >
-            Similar Products
-          </Button>
-          <Button
-            variant="dark"
-            size="sm"
-            onClick={() => {
-              setSaleProduct(product);
-              setShowSaleModal(true);
-            }}
-          >
-            Sale on Products
-          </Button>
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={() => onViewMore(product)}
-          >
-            View More
-          </Button>
+        </td> */}
+
+        {/* ✅ Professional Actions Dropdown */}
+        <td>
+          <Dropdown as={ButtonGroup}>
+            {/* Quick actions visible */}
+            <OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
+              <Button
+                variant="outline-primary"
+                size="sm"
+                onClick={() => onEdit(product._id)}
+              >
+                <FaEdit />
+              </Button>
+            </OverlayTrigger>
+
+            <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
+              <Button
+                variant="outline-danger"
+                size="sm"
+                onClick={() => onDelete(product._id)}
+              >
+                <FaTrash />
+              </Button>
+            </OverlayTrigger>
+
+            {/* Dropdown for more actions */}
+            <Dropdown.Toggle
+              split
+              variant="light"
+              id={`dropdown-actions-${product._id}`}
+              className="border"
+              size="sm"
+            >
+              <FaEllipsisV />
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu align="end">
+              <Dropdown.Item
+                onClick={() =>
+                  navigate("/dashboard/FrequentlyBought", {
+                    state: { productId: product._id, productDetails: product },
+                  })
+                }
+              >
+                <FaCopy className="me-2 text-secondary" />
+                Frequently Bought
+              </Dropdown.Item>
+
+              <Dropdown.Item
+                onClick={() =>
+                  navigate("/dashboard/SimilarProduct", {
+                    state: { productId: product._id, productDetails: product },
+                  })
+                }
+              >
+                <FaRandom className="me-2 text-secondary" />
+                Similar Products
+              </Dropdown.Item>
+
+              <Dropdown.Item
+                onClick={() => {
+                  setSaleProduct(product);
+                  setShowSaleModal(true);
+                }}
+              >
+                <FaTags className="me-2 text-secondary" />
+                Sale on Product
+              </Dropdown.Item>
+
+              <Dropdown.Divider />
+
+              <Dropdown.Item onClick={() => onViewMore(product)}>
+                <FaEye className="me-2 text-secondary" />
+                View More
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
         </td>
       </tr>
+
+      {/* Sale Modal */}
       <SaleModal
         product={saleProduct}
         show={showSaleModal}
         onHide={() => setShowSaleModal(false)}
-        onSave={(data) => console.log("Save sale data:", saleProduct._id, data)}
+        onSave={(data) =>
+          console.log("Save sale data:", saleProduct._id, data)
+        }
       />
     </>
   );
@@ -139,9 +173,9 @@ const ProductModal = ({ product, show, onHide }) => (
           <p>
             <strong>Status:</strong> {product.status}
           </p>
-          <p>
+          {/* <p>
             <strong>In Stock:</strong> {product.inStock ? "Yes" : "No"}
-          </p>
+          </p> */}
           <p>
             <strong>Fabric:</strong> {product.productDetail?.fabric || "-"}
           </p>
@@ -175,7 +209,7 @@ export default function AllProductAdmin() {
   const [loading, setLoading] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showModal, setShowModal] = useState(false);
-   const [search, setSearch] = useState("");
+  const [search, setSearch] = useState("");
   const [title, setTitle] = useState("");
   const [itemNumber, setItemNumber] = useState("");
   const [status, setStatus] = useState("");
@@ -185,7 +219,14 @@ export default function AllProductAdmin() {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const data = await getProducts({ page, limit,search, title, itemNumber, status });
+        const data = await getProducts({
+          page,
+          limit,
+          search,
+          title,
+          itemNumber,
+          status,
+        });
         setProducts(data.products || []);
         setPages(data.pages || 1);
       } catch (err) {
@@ -195,7 +236,7 @@ export default function AllProductAdmin() {
       }
     };
     fetchProducts();
-  }, [page,search, title, itemNumber, status]);
+  }, [page, search, title, itemNumber, status]);
 
   const handleEdit = (id) => console.log("Edit product:", id);
   const handleDelete = (id) => console.log("Delete product:", id);
@@ -208,56 +249,58 @@ export default function AllProductAdmin() {
     <Container className="my-5">
       <h2 className="mb-4">Products</h2>
       <Card className="mb-4 shadow-sm">
-  <Card.Body>
-    <Form>
-      <Row className="g-3 align-items-center">
-        <Col md={3}>
-          <Form.Control
-            placeholder="Search (text)"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </Col>
-        <Col md={3}>
-          <Form.Control
-            placeholder="Title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-        </Col>
-        <Col md={2}>
-          <Form.Control
-            placeholder="Item Number"
-            value={itemNumber}
-            onChange={(e) => setItemNumber(e.target.value)}
-          />
-        </Col>
-        <Col md={2}>
-          <Form.Select value={status} onChange={(e) => setStatus(e.target.value)}>
-            <option value="">All Status</option>
-            <option value="ACTIVE">Active</option>
-            <option value="Draft">Draft</option>
-          </Form.Select>
-        </Col>
-        <Col md={2} className="d-flex">
-          <Button
-            variant="secondary"
-            className="w-100"
-            onClick={() => {
-              setSearch("");
-              setTitle("");
-              setItemNumber("");
-              setStatus("");
-            }}
-          >
-            Reset
-          </Button>
-        </Col>
-      </Row>
-    </Form>
-  </Card.Body>
-</Card>
-
+        <Card.Body>
+          <Form>
+            <Row className="g-3 align-items-center">
+              <Col md={3}>
+                <Form.Control
+                  placeholder="Search (text)"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </Col>
+              <Col md={3}>
+                <Form.Control
+                  placeholder="Title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+              </Col>
+              <Col md={2}>
+                <Form.Control
+                  placeholder="Item Number"
+                  value={itemNumber}
+                  onChange={(e) => setItemNumber(e.target.value)}
+                />
+              </Col>
+              <Col md={2}>
+                <Form.Select
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value)}
+                >
+                  <option value="">All Status</option>
+                  <option value="ACTIVE">Active</option>
+                  <option value="Draft">Draft</option>
+                </Form.Select>
+              </Col>
+              <Col md={2} className="d-flex">
+                <Button
+                  variant="secondary"
+                  className="w-100"
+                  onClick={() => {
+                    setSearch("");
+                    setTitle("");
+                    setItemNumber("");
+                    setStatus("");
+                  }}
+                >
+                  Reset
+                </Button>
+              </Col>
+            </Row>
+          </Form>
+        </Card.Body>
+      </Card>
       {loading ? (
         <div className="d-flex justify-content-center my-5">
           <Spinner animation="border" />
@@ -280,7 +323,7 @@ export default function AllProductAdmin() {
                 <th>Price</th>
                 <th>On Sale</th>
                 <th>Status</th>
-                <th>In Stock</th>
+                {/* <th>In Stock</th> */}
                 <th>Actions</th>
               </tr>
             </thead>

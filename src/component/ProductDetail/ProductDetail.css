@@ -1,0 +1,30 @@
+.slick-slide {
+  height:100vh; /* Or your desired fixed height */
+
+}
+
+.slick-slide img {
+  height: 100%; /* Ensures the image fills the slide height */
+  object-fit: cover; /* Prevents image stretching and maintains aspect ratio */
+}
+
+@media (max-width: 768px) {
+  .slick-slide {
+    height: 75vh; 
+          
+  }
+}
+
+@media (max-width: 480px) {
+  .slick-slide {
+    height: 65vh;  
+               
+  }
+}
+
+@media (max-width: 380px) {
+  .slick-slide {
+    height: 73vh;   /* adjust as needed */
+   
+  }
+}

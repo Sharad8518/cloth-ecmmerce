@@ -1,34 +1,40 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-
-.productDetailRow{
+.productDetailRow {
   height: 100%;
 }
 
-.ProductDetailContainer{
-   padding: 40px; 
-   height: 90vh;
-
-   margin-top: 60px;
+.imagevericaldesktop{
+  height: 100vh;
+  width: 15%;
+  display: block;
+}
+.imageBigSection{
+  width: 83%;
+  
 }
 
-.vericalImage{
-  display:flex;
+.ProductDetailContainer {
+  padding: 40px;
   height: 100%;
+  margin-top: 60px;
+}
 
+.vericalImage {
+  display: flex;
+  height: 100%;
 }
 .slick-slide > div {
   height: 100%;
 }
 
-
-.productDetailImg{
+.productDetailImg {
   width: 100%;
-    height: 520px;
-  object-fit: contain;   /* no crop, full image */
+  max-height: 100%;
+  object-fit: cover; /* no crop, full image */
   object-position: center;
   background: #f8f8f8;
-    display: block;
+  display: block;
 }
 
 .imageWrapper {
@@ -38,28 +44,25 @@
 
 .productContentBox {
   overflow-y: scroll;
-  height: 100%;
-
-  scrollbar-width: none;     /* Firefox */
-  -ms-overflow-style: none;  /* IE 10+ */
+  height: 100vh;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
 }
 
-.customerHeading{
+.customerHeading {
   text-align: center;
   margin-bottom: 20px;
   font-size: 1.8rem;
   font-weight: 600;
-  
 }
 
-.mobileHorizantal{
+.mobileHorizantal {
   display: none;
 }
 
-
 .paddingButton {
   width: 48%;
-    background-color: #353535; /* Primary accent color, change to match theme */
+  background-color: #353535; /* Primary accent color, change to match theme */
   color: #ffffff; /* White text */
   font-size: 1rem;
   font-weight: 600;
@@ -84,14 +87,14 @@
 }
 
 .productContentBox::-webkit-scrollbar {
-  display: none;             /* Chrome, Safari, Opera */
+  display: none; /* Chrome, Safari, Opera */
 }
-.detailProductTitle{
-    font-size: 30px;
-    font-weight: 650;
-     font-family: "Inter", sans-serif;
-       display: -webkit-box;
-  -webkit-line-clamp: 1;   /* Show only 2 lines */
+.detailProductTitle {
+  font-size: 30px;
+  font-weight: 650;
+  font-family: "Inter", sans-serif;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* Show only 2 lines */
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -102,28 +105,28 @@
   font-family: "Inter", sans-serif;
 
   display: -webkit-box;
-  -webkit-line-clamp: 2;   /* Show only 2 lines */
+  -webkit-line-clamp: 2; /* Show only 2 lines */
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.detailPrize{
-   font-family: "Inter", sans-serif;  
-   font-size: 15px;
-   font-weight: 700;
+.detailPrize {
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
+  font-weight: 700;
 }
-.detailMRP{
-    font-size: 12px;
-    margin-top: 5px;
-    color: #bdbdbd;
+.detailMRP {
+  font-size: 12px;
+  margin-top: 5px;
+  color: #bdbdbd;
 }
-.detailSizeText{
+.detailSizeText {
   margin-top: 7px;
   display: flex;
   font-weight: 700;
-   font-family: "Inter", sans-serif;  
+  font-family: "Inter", sans-serif;
 }
-.detailSizeGuideText{
+.detailSizeGuideText {
   margin-left: 10px;
   background-color: #f0f0f0;
   font-size: 13px;
@@ -131,11 +134,10 @@
   margin-top: -3px;
   border-radius: 100px;
   color: #3d3d3d;
-  font-family: "Inter", sans-serif;  
-
+  font-family: "Inter", sans-serif;
 }
 
-.detailButtonBar{
+.detailButtonBar {
   display: flex;
   justify-content: space-between;
   width: 100%;
@@ -143,18 +145,18 @@
   flex-wrap: wrap;
 }
 
-.detailMadeToOrderText{
+.detailMadeToOrderText {
   font-weight: 700;
-  font-family: "Inter", sans-serif; 
+  font-family: "Inter", sans-serif;
   margin-top: 10px;
 }
-.detailShip{
+.detailShip {
   font-size: 13px;
   margin-top: 5px;
   color: #777;
 }
 
-.container{
+.container {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
@@ -186,38 +188,35 @@
   color: #fff;
 }
 
-
-.detailAddCartButton{
+.detailAddCartButton {
   width: 48%;
   padding: 10px;
   font-family: "Inter", sans-serif;
-  background-color: transparent; 
+  background-color: transparent;
   border: 2px solid #000;
   font-weight: 500;
 }
 
-.detailBuyButton{
+.detailBuyButton {
   width: 48%;
-   padding: 10px;
-   font-family: "Inter", sans-serif; 
-   background-color:#000; 
-   color: #fff;
-     font-weight: 500;
+  padding: 10px;
+  font-family: "Inter", sans-serif;
+  background-color: #000;
+  color: #fff;
+  font-weight: 500;
 }
 
-.detailProductInfo{
-   font-family: "Inter", sans-serif; 
-    font-weight: 700;
-    font-size: 20px;
-    margin-top: 25px;
-    
+.detailProductInfo {
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  margin-top: 25px;
 }
 
 .productDetailHeading {
   font-size: 17px;
   font-weight: 700;
-  font-family: "Inter", sans-serif; 
- 
+  font-family: "Inter", sans-serif;
 }
 
 /* Overlay background */
@@ -305,7 +304,7 @@
 /* Modal actions buttons */
 .modalActions {
   display: flex;
-  justify-content:space-between;
+  justify-content: space-between;
   gap: 10px;
   margin-top: 20px;
 }
@@ -356,44 +355,41 @@
   }
 }
 
-
-
 @media (max-width: 768px) {
-  .productDetailRow{
-  height: 100%;
-  margin-top: 20px;
-}
+  .productDetailRow {
+    height: 100%;
+    margin-top: 20px;
+  }
 
-.ProductDetailContainer{
-   padding: 10px; 
-   height: 100%;
-   margin-top: 0px;
+  .ProductDetailContainer {
+    padding: 10px;
+    height: 100%;
+    margin-top: 0px;
+  }
 
-}
-
-.productDetailImg{
-  width: 100%;
-  height:400px;
-  object-fit: contain;   /* no crop, full image */
-  object-position: center;
-  background: #f8f8f8;
-}
-.detailProductTitle{
+  .productDetailImg {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* no crop, full image */
+    object-position: center;
+    background: #f8f8f8;
+  }
+  .detailProductTitle {
     font-size: 30px;
     font-weight: 650;
     margin-top: 10px;
     font-size: 17px;
-     font-family: "Inter", sans-serif;
-}
+    font-family: "Inter", sans-serif;
+  }
 
-.vericalImage{
-  display: none;
-}
+  .vericalImage {
+    display: none;
+  }
 
-.mobileHorizantal{
-  display: block;
-  margin-top: 10px;
-}
+  .mobileHorizantal {
+    display: block;
+    margin-top: 10px;
+  }
 
   .detailButtonBar {
     position: fixed;
@@ -405,12 +401,19 @@
     box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
     z-index: 1000;
   }
+  .imagevericaldesktop{
+  height: 100vh;
+  width: 15%;
+  display: none;
+}
+.imageBigSection{
+  width: 100%;
+  
+}
 
   .detailAddCartButton,
   .detailBuyButton {
     flex: 1;
     margin: 0 5px;
   }
-
-
 }

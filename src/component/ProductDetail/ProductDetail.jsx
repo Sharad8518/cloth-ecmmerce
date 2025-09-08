@@ -37,6 +37,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import MobileBackButton from "../layout/BackButton/MobileBackButton";
 import { FaQuestion } from "react-icons/fa6";
+import "./ProductDetail.css";
 
 const images = [
   "https://img.theloom.in/pwa/catalog/product/cache/e442fb943037550e0d70cca304324ade/v/j/vj304fs25-01kpfuchsiavj30_7_.jpg?tr=c-at_max,w-800,h-1066",
@@ -331,9 +332,9 @@ export default function ProductDetail() {
       <br /> <br />
       <Container className={styles.ProductDetailContainer}>
         <MobileBackButton />
-      
-        <Row  className={styles.productDetailRow}>
-          <Col md={1} className={styles.vericalImage}>
+
+        <Row className={styles.productDetailRow}>
+          {/* <Col md={1} className={styles.vericalImage}>
             {product?.media?.length > 0 && ( // ✅ check if media exists
               <VerticalImageSelector
                 images={product?.media?.map((m) => m?.url)} // ✅ use product media URLs
@@ -341,30 +342,44 @@ export default function ProductDetail() {
                 selectedIndex={selectedIndex}
               />
             )}
-          </Col>
-          <Col md={5} style={{height:"100%",boxSizing:"border-box"}}>
-            <Slider
-              ref={sliderRef}
-              dots={true} // show navigation dots
-              infinite={true} // loop infinitely
-              speed={500} // transition speed
-              slidesToShow={1} // show 1 slide at a time
-              slidesToScroll={1} // scroll 1 slide at a time
-              swipeToSlide={true} // enable swipe
-              arrows={false} // hide arrows if you want swipe only
-              afterChange={(current) => setSelectedIndex(current)} // sync selectedIndex
-              
-            >
-              {product?.media?.map((m, index) => (
-                <div key={index}   >
-                  <img
-                    src={m.url}
-                    alt={m.alt || `Product image ${index + 1}`}
-                    className={styles.productDetailImg}
-                  />
-                </div>
-              ))}
-            </Slider>
+          </Col> */}
+          <Col md={6} style={{ height: "100%", boxSizing: "border-box",display:"flex",justifyContent:"space-between" }}>
+          <div  className={styles.imagevericaldesktop}>
+  {product?.media?.length > 0 && ( // ✅ check if media exists
+              <VerticalImageSelector
+                images={product?.media?.map((m) => m?.url)} // ✅ use product media URLs
+                onSelect={handleSelectImage}
+                selectedIndex={selectedIndex}
+              />
+            )}
+          </div>
+          <div  className={styles.imageBigSection}>
+           
+              <Slider
+                ref={sliderRef}
+                dots={true} // show navigation dots
+                infinite={true} // loop infinitely
+                speed={500} // transition speed
+                slidesToShow={1} // show 1 slide at a time
+                slidesToScroll={1} // scroll 1 slide at a time
+                swipeToSlide={true} // enable swipe
+                arrows={false} // hide arrows if you want swipe only
+                adaptiveHeight={true}
+                afterChange={(current) => setSelectedIndex(current)} // sync selectedIndex
+              >
+                {product?.media?.map((m, index) => (
+                  <div key={index} style={{ height: "100%" }}>
+                    <img
+                      src={m.url}
+                      alt={m.alt || `Product image ${index + 1}`}
+                      className={styles.productDetailImg}
+                    />
+                  </div>
+                ))}
+              </Slider>
+          </div>
+
+            
           </Col>
           <Col md={6} className={styles.productContentBox}>
             <br />
@@ -431,12 +446,12 @@ export default function ProductDetail() {
                     variant={answer === "yes" ? "primary" : "outline-primary"}
                     size="sm"
                     className="me-2"
-                    onClick={() =>{
-                      if(!selectedSize){
-                         alert("Please select a size");
-                      return;
+                    onClick={() => {
+                      if (!selectedSize) {
+                        alert("Please select a size");
+                        return;
                       }
-                      handleSelect("yes")
+                      handleSelect("yes");
                     }}
                   >
                     Yes
@@ -805,8 +820,8 @@ export default function ProductDetail() {
           </Col>
         </Row>
       </Container>
-      <br/>
-       <br/>
+      <br />
+      <br />
       <Frequently items={product?.frequentlyBoughtTogether} />
       <br />
       <div style={{ padding: "2rem", backgroundColor: "#f9f9f9" }}>
@@ -940,40 +955,40 @@ export default function ProductDetail() {
 
             <div className={styles.modalActions}>
               <div>
-              <button
-                style={{
-                  backgroundColor: "#e9e8e8ff",
-                  color: "#0e0e0eff",
-                  border: "none",
-                  height: 40,
-                  padding: "10px 20px",
-                  borderRadius: "5px",
-                  cursor: "pointer",
-                  fontSize: 12,
-                  fontWeight: 500,
-                }}
-                onClick={() => {
-                  // Example: Open chat, navigate, or show alert
-                  alert("Redirecting to Stylist Chat...");
-                  // You can replace this with navigation or modal logic
-                }}
-              >
-                Need Help? Talk to Stylist
-              </button>
+                <button
+                  style={{
+                    backgroundColor: "#e9e8e8ff",
+                    color: "#0e0e0eff",
+                    border: "none",
+                    height: 40,
+                    padding: "10px 20px",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                    fontSize: 12,
+                    fontWeight: 500,
+                  }}
+                  onClick={() => {
+                    // Example: Open chat, navigate, or show alert
+                    alert("Redirecting to Stylist Chat...");
+                    // You can replace this with navigation or modal logic
+                  }}
+                >
+                  Need Help? Talk to Stylist
+                </button>
               </div>
-              <div style={{display:"flex"}}>
-              <button onClick={() => setIsPaddingModalOpen(false)}>
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  setSavedPaddingDetails(paddingDetails);
-                  setIsPaddingModalOpen(false);
-                }}
-                style={{marginLeft:10}}
-              >
-                Save
-              </button>
+              <div style={{ display: "flex" }}>
+                <button onClick={() => setIsPaddingModalOpen(false)}>
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    setSavedPaddingDetails(paddingDetails);
+                    setIsPaddingModalOpen(false);
+                  }}
+                  style={{ marginLeft: 10 }}
+                >
+                  Save
+                </button>
               </div>
             </div>
           </div>
