@@ -34,6 +34,7 @@ import Jewellery from "../Jewellery/Jewellery";
 import KurtaSet from "../KurtaSet/KurtaSet";
 import Potilis from "../Potilis/Potilis";
 import DesignerSuit from "../DesignerSuit/DesignerSuit";
+import EditProduct from "../Admin/Product/EditProduct/EditProduct";
 
 export default function RouteManager() {
   return (
@@ -73,6 +74,7 @@ export default function RouteManager() {
           <Route path="Collection" element={<Collection />} />
           <Route path="Customer" element={<Customer />} />
           <Route path="Policy" element={<PolicyPage />} />
+          <Route path="EditProduct" element={<EditProduct />} />
         </Route>
       </Route>
     </Routes>

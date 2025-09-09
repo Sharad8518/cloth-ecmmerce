@@ -36,14 +36,9 @@ export const createHeader = async (data) => {
   if (data.showNavbar) formData.append("showNavbar", data.showNavbar);
   if (data.addCategory) formData.append("addCategory", data.addCategory);
 
-  // Append file if exists
-  if (data.imageFile) {
-    formData.append("image", data.imageFile); // name must match multer field
-  }
 
-  const response = await axios.post("/admin/headers", formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
+
+  const response = await axios.post("/admin/headers", formData);
   return response.data;
 };
 
@@ -58,14 +53,7 @@ export const updateHeader = async (id, data) => {
   if (data.showNavbar) formData.append("showNavbar", data.showNavbar);
   if (data.addCategory) formData.append("addCategory", data.addCategory);
 
-  // Append file if new one selected
-  if (data.imageFile) {
-    formData.append("image", data.imageFile);
-  }
-
-  const response = await axios.put(`/admin/headers/${id}`, formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
+  const response = await axios.put(`/admin/headers/${id}`, formData);
   return response.data;
 };
 
@@ -91,16 +79,48 @@ export const getCategory = async (id) => {
 };
 
 /* Add Category */
+/* Create Category */
 export const createCategory = async (data) => {
-  const response = await axios.post("/admin/categorys", data);
+  const formData = new FormData();
+
+  // Text fields
+  if (data.header) formData.append("header", data.header);
+  if (data.name) formData.append("name", data.name);
+  if (data.slug) formData.append("slug", data.slug);
+  
+  // ✅ Upload image if provided
+  if (data.imageFile) {
+    formData.append("image", data.imageFile);
+  }
+
+  const response = await axios.post("/admin/categorys", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return response.data;
 };
 
 /* Update Category */
 export const updateCategory = async (id, data) => {
-  const response = await axios.put(`/admin/categorys/${id}`, data);
+  const formData = new FormData();
+  if (data.name) formData.append("name", data.name);
+  if (data.slug) formData.append("slug", data.slug);
+  
+  // ✅ Replace with new image
+  if (data.imageFile) {
+    formData.append("image", data.imageFile);
+  }
+
+  // ✅ Remove image explicitly
+  if (data.removeImage) {
+    formData.append("removeImage", "true");
+  }
+
+  const response = await axios.put(`/admin/categorys/${id}`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return response.data;
 };
+
 
 /* Delete Category */
 export const deleteCategory = async (id) => {

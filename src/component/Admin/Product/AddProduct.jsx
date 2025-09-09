@@ -44,6 +44,7 @@ export default function AddProduct() {
     mrp: "",
     costPrice: "",
     marginPercent: "",
+    quantity: "",
     salePrice: "",
     colour: "",
     fulfillmentType: "",
@@ -128,7 +129,7 @@ export default function AddProduct() {
   // Load hierarchy
   useEffect(() => {
     fetchHeaders();
-    loadCollections()
+    loadCollections();
   }, []);
   const fetchHeaders = async () => {
     const res = await getHeaders();
@@ -361,6 +362,7 @@ export default function AddProduct() {
         mrp: "",
         costPrice: "",
         marginPercent: "",
+        quantity: "",
         salePrice: "",
         colour: "",
         fulfillmentType: "",
@@ -953,15 +955,64 @@ export default function AddProduct() {
               </Card.Body>
             </Card>
 
-            <Card className="mt-3" style={{ padding: "20px" }}>
-              <VariantsCard
-                product={product}
-                setProduct={setProduct}
-                addVariant={addVariant}
-                updateVariant={updateVariant}
-                removeVariant={removeVariant}
-              />
+            <Card style={{ marginTop: "20px" }}>
+              <Card.Header>Product Type</Card.Header>
+              <Card.Body>
+                <Form.Group>
+                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                    Product Type <span style={{ color: "red" }}>*</span>
+                  </Form.Label>
+                  <Form.Select
+                    name="productType"
+                    required
+                    style={{ fontSize: 14 }}
+                    value={product.productType}
+                    onChange={(e) =>
+                      handleChange("productType", e.target.value)
+                    }
+                  >
+                    <option value="" disabled>
+                      Product Select
+                    </option>
+                    <option value="Cloths">Cloths</option>
+                    <option value="Jewellery">Jewellery</option>
+                  </Form.Select>
+                </Form.Group>
+              </Card.Body>
             </Card>
+            {product.productType === "Cloths" ? (
+              <Card className="mt-3" style={{ padding: "20px" }}>
+                <VariantsCard
+                  product={product}
+                  setProduct={setProduct}
+                  addVariant={addVariant}
+                  updateVariant={updateVariant}
+                  removeVariant={removeVariant}
+                />
+              </Card>
+            ) : (
+              <>
+                {product?.productType === "Jewellery" && (
+                  <Card className="mt-3" style={{ padding: "20px" }}>
+                    <Form.Group className="mb-3">
+                      <Form.Label style={{ fontWeight: "600", fontSize: 15 }}>
+                        Quantity <span style={{ color: "red" }}>*</span>
+                      </Form.Label>
+                      <Form.Control
+                        type="number"
+                        name="quantity"
+                        value={product?.quantity || ""}
+                        style={{ fontSize: 14 }}
+                        onChange={(e) =>
+                          handleChange("quantity", e.target.value)
+                        }
+                        required={product?.productType === "Jewellery"} // ✅ required only for Jewellery
+                      />
+                    </Form.Group>
+                  </Card>
+                )}
+              </>
+            )}
 
             <Card className="mt-3">
               <Card.Header>Additional Info For Better Fit</Card.Header>
@@ -1211,7 +1262,9 @@ export default function AddProduct() {
                       handleChange("fulfillmentType", e.target.value)
                     }
                   >
-                    <option value="" disabled>Fulfillment Select</option>
+                    <option value="" disabled>
+                      Fulfillment Select
+                    </option>
                     <option value="READY_TO_SHIP">Ready to Ship</option>
                     <option value="MADE_TO_ORDER">Made to Order</option>
                   </Form.Select>
@@ -1235,29 +1288,6 @@ export default function AddProduct() {
                     }
                     // placeholder="Enter number of days (e.g. 5)"
                   />
-                </Form.Group>
-              </Card.Body>
-            </Card>
-            <Card style={{ marginTop: "20px" }}>
-              <Card.Header>Product Type</Card.Header>
-              <Card.Body>
-                <Form.Group>
-                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
-                    Product Type <span style={{ color: "red" }}>*</span>
-                  </Form.Label>
-                  <Form.Select
-                    name="productType"
-                    required
-                    style={{ fontSize: 14 }}
-                    value={product.productType}
-                    onChange={(e) =>
-                      handleChange("productType", e.target.value)
-                    }
-                  >
-                     <option value="" disabled>Product Select</option>
-                    <option value="Cloths">Cloths</option>
-                    <option value="Jewellery">Jewellery</option>
-                  </Form.Select>
                 </Form.Group>
               </Card.Body>
             </Card>

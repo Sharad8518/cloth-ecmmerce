@@ -5,7 +5,6 @@ if (token) {
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 }
 
-
 /* ---------------- Add Product ---------------- */
 export const addProduct = async (productData) => {
   const formData = new FormData();
@@ -49,6 +48,86 @@ export const addProduct = async (productData) => {
   return response.data;
 };
 
+export const editProduct = async (productId, productData) => {
+  const formData = new FormData();
+
+  // Append media files separately (use the actual File object)
+  if (productData.media && productData.media.length > 0) {
+    productData.media.forEach((m) => {
+      formData.append("images", m.file); // ✅ actual File
+    });
+  }
+
+  // Normalize array fields before appending
+  const arrayFields = ["categories", "subCategories", "collections"];
+
+  Object.keys(productData).forEach((key) => {
+    if (key !== "media") {
+      let value = productData[key];
+
+      // ✅ Ensure array fields are properly stringified
+      if (arrayFields.includes(key)) {
+        if (Array.isArray(value)) {
+          formData.append(key, JSON.stringify(value));
+        } else if (typeof value === "string") {
+          // if coming as single string like "Kurta"
+          formData.append(key, JSON.stringify([value]));
+        }
+      } else if (value && typeof value === "object") {
+        formData.append(key, JSON.stringify(value));
+      } else if (value !== undefined && value !== null) {
+        formData.append(key, value);
+      }
+    }
+  });
+
+  const response = await axios.put(`/admin/products/${productId}`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data;
+};
+
+/**
+ * Edit product media
+ * @param {string} productId - ID of the product
+ * @param {File[]} newFiles - Array of new files to upload
+ * @param {string[]} deleteUrls - Array of media URLs to delete
+ * @returns {Promise<Object>} - Updated media array
+ */
+export const editProductMedia = async ({
+  productId,
+  newFiles = [],
+  deleteUrls = [],
+}) => {
+  try {
+    const formData = new FormData();
+
+    // Append new files
+    newFiles.forEach((file) => {
+      formData.append("file", file);
+    });
+
+    // Append delete URLs as JSON string
+    formData.append("deleteUrls", JSON.stringify(deleteUrls));
+
+    const response = await axios.put(
+      `/admin/products/${productId}/media`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    return response.data.media; // return updated media
+  } catch (error) {
+    console.error("Error updating product media:", error);
+    throw error;
+  }
+};
 
 /* ---------------- Get All Products ---------------- */
 export const getProducts = async (queryParams = {}) => {

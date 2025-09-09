@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useRef } from "react";
 import {
   Container,
   Table,
@@ -13,26 +13,28 @@ import {
   Card,
   Dropdown,
   ButtonGroup,
-OverlayTrigger,
-Tooltip 
+  OverlayTrigger,
+  Tooltip,
 } from "react-bootstrap";
-import { getProducts } from "../../../api/admin/productApi";
+import { editProductMedia, getProducts } from "../../../api/admin/productApi";
 import { useNavigate } from "react-router-dom";
 import SaleModal from "../../Navbar/SaleModal/SaleModal";
-import { FaEdit, FaTrash, FaEllipsisV, FaEye, FaTags, FaCopy, FaRandom } from "react-icons/fa";
+import {
+  FaEdit,
+  FaTrash,
+  FaEllipsisV,
+  FaEye,
+  FaTags,
+  FaCopy,
+  FaRandom,
+} from "react-icons/fa";
 
-const ProductRow = ({
-  product,
-  index,
-  page,
-  limit,
-  onEdit,
-  onDelete,
-  onViewMore,
-}) => {
-  const navigate = useNavigate(); // <-- add this
+// -------------------- Product Row --------------------
+const ProductRow = ({ product, index, page, limit, onDelete, onViewMore, onEditMedia }) => {
+  const navigate = useNavigate();
   const [saleProduct, setSaleProduct] = useState(null);
   const [showSaleModal, setShowSaleModal] = useState(false);
+
   return (
     <>
       <tr>
@@ -52,85 +54,53 @@ const ProductRow = ({
             {product.status || "-"}
           </Badge>
         </td>
-        {/* <td>
-          <Badge pill bg={product.inStock ? "success" : "secondary"}>
-            {product.inStock ? "Yes" : "No"}
-          </Badge>
-        </td> */}
-
-        {/* ✅ Professional Actions Dropdown */}
         <td>
           <Dropdown as={ButtonGroup}>
-            {/* Quick actions visible */}
             <OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
               <Button
                 variant="outline-primary"
                 size="sm"
-                onClick={() => onEdit(product._id)}
+                onClick={() => navigate("/dashboard/EditProduct", { state: { getProduct: product } })}
               >
                 <FaEdit />
               </Button>
             </OverlayTrigger>
 
             <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
-              <Button
-                variant="outline-danger"
-                size="sm"
-                onClick={() => onDelete(product._id)}
-              >
+              <Button variant="outline-danger" size="sm" onClick={() => onDelete(product._id)}>
                 <FaTrash />
               </Button>
             </OverlayTrigger>
 
-            {/* Dropdown for more actions */}
-            <Dropdown.Toggle
-              split
-              variant="light"
-              id={`dropdown-actions-${product._id}`}
-              className="border"
-              size="sm"
-            >
+            <Dropdown.Toggle split variant="light" id={`dropdown-actions-${product._id}`} className="border" size="sm">
               <FaEllipsisV />
             </Dropdown.Toggle>
 
             <Dropdown.Menu align="end">
               <Dropdown.Item
-                onClick={() =>
-                  navigate("/dashboard/FrequentlyBought", {
-                    state: { productId: product._id, productDetails: product },
-                  })
-                }
+                onClick={() => navigate("/dashboard/FrequentlyBought", { state: { productId: product._id, productDetails: product } })}
               >
-                <FaCopy className="me-2 text-secondary" />
-                Frequently Bought
+                <FaCopy className="me-2 text-secondary" /> Frequently Bought
               </Dropdown.Item>
 
               <Dropdown.Item
-                onClick={() =>
-                  navigate("/dashboard/SimilarProduct", {
-                    state: { productId: product._id, productDetails: product },
-                  })
-                }
+                onClick={() => navigate("/dashboard/SimilarProduct", { state: { productId: product._id, productDetails: product } })}
               >
-                <FaRandom className="me-2 text-secondary" />
-                Similar Products
+                <FaRandom className="me-2 text-secondary" /> Similar Products
               </Dropdown.Item>
 
-              <Dropdown.Item
-                onClick={() => {
-                  setSaleProduct(product);
-                  setShowSaleModal(true);
-                }}
-              >
-                <FaTags className="me-2 text-secondary" />
-                Sale on Product
+              <Dropdown.Item onClick={() => setSaleProduct(product) && setShowSaleModal(true)}>
+                <FaTags className="me-2 text-secondary" /> Sale on Product
+              </Dropdown.Item>
+
+              <Dropdown.Item onClick={() => onEditMedia(product)}>
+                <FaEdit className="me-2 text-secondary" /> Edit Media
               </Dropdown.Item>
 
               <Dropdown.Divider />
 
               <Dropdown.Item onClick={() => onViewMore(product)}>
-                <FaEye className="me-2 text-secondary" />
-                View More
+                <FaEye className="me-2 text-secondary" /> View More
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -142,14 +112,13 @@ const ProductRow = ({
         product={saleProduct}
         show={showSaleModal}
         onHide={() => setShowSaleModal(false)}
-        onSave={(data) =>
-          console.log("Save sale data:", saleProduct._id, data)
-        }
+        onSave={(data) => console.log("Save sale data:", saleProduct._id, data)}
       />
     </>
   );
 };
 
+// -------------------- Product Details Modal --------------------
 const ProductModal = ({ product, show, onHide }) => (
   <Modal show={show} onHide={onHide} size="lg" centered>
     <Modal.Header closeButton>
@@ -158,50 +127,206 @@ const ProductModal = ({ product, show, onHide }) => (
     <Modal.Body>
       {product ? (
         <div>
-          <p>
-            <strong>Item Number:</strong> {product.itemNumber}
-          </p>
-          <p>
-            <strong>Description:</strong> {product.description || "-"}
-          </p>
-          <p>
-            <strong>Price:</strong> ₹{product.mrp}
-          </p>
-          <p>
-            <strong>On Sale:</strong> {product.onSale ? "Yes" : "No"}
-          </p>
-          <p>
-            <strong>Status:</strong> {product.status}
-          </p>
-          {/* <p>
-            <strong>In Stock:</strong> {product.inStock ? "Yes" : "No"}
-          </p> */}
-          <p>
-            <strong>Fabric:</strong> {product.productDetail?.fabric || "-"}
-          </p>
-          <p>
-            <strong>Work:</strong> {product.productDetail?.work || "-"}
-          </p>
-          <p>
-            <strong>Care:</strong> {product.productDetail?.care || "-"}
-          </p>
-          <p>
-            <strong>Pack Contains:</strong>{" "}
-            {product.productDetail?.packContains || "-"}
-          </p>
+          <p><strong>Item Number:</strong> {product.itemNumber}</p>
+          <p><strong>Description:</strong> {product.description || "-"}</p>
+          <p><strong>Price:</strong> ₹{product.mrp}</p>
+          <p><strong>On Sale:</strong> {product.onSale ? "Yes" : "No"}</p>
+          <p><strong>Status:</strong> {product.status}</p>
+          <p><strong>Fabric:</strong> {product.productDetail?.fabric || "-"}</p>
+          <p><strong>Work:</strong> {product.productDetail?.work || "-"}</p>
+          <p><strong>Care:</strong> {product.productDetail?.care || "-"}</p>
+          <p><strong>Pack Contains:</strong> {product.productDetail?.packContains || "-"}</p>
         </div>
       ) : (
         <p>No product selected.</p>
       )}
     </Modal.Body>
     <Modal.Footer>
-      <Button variant="secondary" onClick={onHide}>
-        Close
-      </Button>
+      <Button variant="secondary" onClick={onHide}>Close</Button>
     </Modal.Footer>
   </Modal>
 );
 
+// -------------------- Media Edit Modal --------------------
+const MediaModal = ({ show, onHide, product }) => {
+  const [files, setFiles] = useState([]); // New files to upload
+  const [mediaList, setMediaList] = useState([]); // Existing media
+  const [deleteList, setDeleteList] = useState([]); // URLs to delete
+  const [draggedIndex, setDraggedIndex] = useState(null); // Reorder drag
+  const [draggingUpload, setDraggingUpload] = useState(false); // File drag hover
+  const [uploading, setUploading] = useState(false);
+  const inputRef = useRef();
+
+  // Load existing media when product changes
+  useEffect(() => {
+    if (product) {
+      setFiles([]);
+      setDeleteList([]);
+      setMediaList(product.media || []);
+    }
+  }, [product]);
+
+  // --- Upload input / drag events ---
+  const handleFileChange = (e) => {
+    setFiles([...files, ...Array.from(e.target.files)]);
+  };
+
+  const handleDragEnter = (e) => {
+    e.preventDefault();
+    setDraggingUpload(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setDraggingUpload(false);
+  };
+
+  const handleDropFiles = (e) => {
+    e.preventDefault();
+    setDraggingUpload(false);
+    const droppedFiles = Array.from(e.dataTransfer.files);
+    setFiles([...files, ...droppedFiles]);
+  };
+
+  // --- Delete media ---
+  const handleDeleteUrl = (url) => {
+    setDeleteList([...deleteList, url]);
+    setMediaList(mediaList.filter((m) => m.url !== url));
+  };
+
+  // --- Reorder drag ---
+  const handleDragStart = (index) => setDraggedIndex(index);
+
+  const handleDragOverMedia = (e, index) => {
+    e.preventDefault();
+    if (draggedIndex === null || draggedIndex === index) return;
+    const list = [...mediaList];
+    const draggedItem = list[draggedIndex];
+    list.splice(draggedIndex, 1);
+    list.splice(index, 0, draggedItem);
+    setDraggedIndex(index);
+    setMediaList(list);
+  };
+
+  const handleDragEnd = () => setDraggedIndex(null);
+
+  // --- Save changes ---
+  const handleSave = async () => {
+    if (!product) return;
+    try {
+      setUploading(true);
+      const updatedMedia = await editProductMedia({
+        productId: product._id,
+        newFiles: files,
+        deleteUrls: deleteList,
+        reorderedMedia: mediaList,
+      });
+      alert("Media updated successfully!");
+      onHide(updatedMedia);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update media");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  return (
+    <Modal show={show} onHide={() => onHide()} size="lg" centered>
+      <Modal.Header closeButton>
+        <Modal.Title>Edit Media - {product?.title}</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        {/* Drag & Drop Upload Area */}
+        <div
+          onDragOver={(e) => e.preventDefault()}
+          onDragEnter={handleDragEnter}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDropFiles}
+          onClick={() => inputRef.current.click()}
+          style={{
+            border: "2px dashed #ccc",
+            borderRadius: 8,
+            padding: 20,
+            textAlign: "center",
+            cursor: "pointer",
+            backgroundColor: draggingUpload ? "#f0f8ff" : "#fff",
+            marginBottom: 15,
+          }}
+        >
+          <input
+            type="file"
+            multiple
+            ref={inputRef}
+            style={{ display: "none" }}
+            onChange={handleFileChange}
+          />
+          {draggingUpload ? <p>Drop files here...</p> : <p>Drag & drop files here or click to select</p>}
+        </div>
+
+        {/* Preview Existing Media (Reorderable) */}
+        <div className="d-flex flex-wrap">
+          {mediaList.map((m, idx) => (
+            <div
+              key={m.url}
+              className="position-relative m-2"
+              draggable
+              onDragStart={() => handleDragStart(idx)}
+              onDragOver={(e) => handleDragOverMedia(e, idx)}
+              onDragEnd={handleDragEnd}
+              style={{ cursor: "grab" }}
+            >
+              {m.kind === "image" ? (
+                <img src={m.url} alt={m.alt} width={100} height={100} style={{ borderRadius: 8 }} />
+              ) : (
+                <video src={m.url} width={100} height={100} controls style={{ borderRadius: 8 }} />
+              )}
+              <Button
+                size="sm"
+                variant="danger"
+                className="position-absolute top-0 end-0"
+                onClick={() => handleDeleteUrl(m.url)}
+              >
+                X
+              </Button>
+            </div>
+          ))}
+
+          {/* Preview New Uploads */}
+          {files.map((file, idx) => (
+            <div key={idx} className="position-relative m-2">
+              <img
+                src={URL.createObjectURL(file)}
+                alt={file.name}
+                width={100}
+                height={100}
+                style={{ borderRadius: 8 }}
+              />
+              <Button
+                size="sm"
+                variant="danger"
+                className="position-absolute top-0 end-0"
+                onClick={() => setFiles(files.filter((f, i) => i !== idx))}
+              >
+                X
+              </Button>
+            </div>
+          ))}
+        </div>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={() => onHide()}>
+          Cancel
+        </Button>
+        <Button variant="primary" onClick={handleSave} disabled={uploading}>
+          {uploading ? "Saving..." : "Save Changes"}
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+};
+
+// -------------------- AllProductAdmin Page --------------------
 export default function AllProductAdmin() {
   const [products, setProducts] = useState([]);
   const [page, setPage] = useState(1);
@@ -209,24 +334,23 @@ export default function AllProductAdmin() {
   const [loading, setLoading] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showModal, setShowModal] = useState(false);
+
+  const [currentEditingProduct, setCurrentEditingProduct] = useState(null);
+  const [showMediaModal, setShowMediaModal] = useState(false);
+
   const [search, setSearch] = useState("");
   const [title, setTitle] = useState("");
   const [itemNumber, setItemNumber] = useState("");
   const [status, setStatus] = useState("");
+
   const limit = 20;
   const navigate = useNavigate();
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const data = await getProducts({
-          page,
-          limit,
-          search,
-          title,
-          itemNumber,
-          status,
-        });
+        const data = await getProducts({ page, limit, search, title, itemNumber, status });
         setProducts(data.products || []);
         setPages(data.pages || 1);
       } catch (err) {
@@ -238,62 +362,43 @@ export default function AllProductAdmin() {
     fetchProducts();
   }, [page, search, title, itemNumber, status]);
 
-  const handleEdit = (id) => console.log("Edit product:", id);
   const handleDelete = (id) => console.log("Delete product:", id);
   const handleViewMore = (product) => {
     setSelectedProduct(product);
     setShowModal(true);
   };
 
+  const handleEditMedia = (product) => {
+    setCurrentEditingProduct(product);
+    setShowMediaModal(true);
+  };
+
   return (
     <Container className="my-5">
       <h2 className="mb-4">Products</h2>
+
       <Card className="mb-4 shadow-sm">
         <Card.Body>
           <Form>
             <Row className="g-3 align-items-center">
               <Col md={3}>
-                <Form.Control
-                  placeholder="Search (text)"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
+                <Form.Control placeholder="Search (text)" value={search} onChange={(e) => setSearch(e.target.value)} />
               </Col>
               <Col md={3}>
-                <Form.Control
-                  placeholder="Title"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                />
+                <Form.Control placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} />
               </Col>
               <Col md={2}>
-                <Form.Control
-                  placeholder="Item Number"
-                  value={itemNumber}
-                  onChange={(e) => setItemNumber(e.target.value)}
-                />
+                <Form.Control placeholder="Item Number" value={itemNumber} onChange={(e) => setItemNumber(e.target.value)} />
               </Col>
               <Col md={2}>
-                <Form.Select
-                  value={status}
-                  onChange={(e) => setStatus(e.target.value)}
-                >
+                <Form.Select value={status} onChange={(e) => setStatus(e.target.value)}>
                   <option value="">All Status</option>
                   <option value="ACTIVE">Active</option>
                   <option value="Draft">Draft</option>
                 </Form.Select>
               </Col>
               <Col md={2} className="d-flex">
-                <Button
-                  variant="secondary"
-                  className="w-100"
-                  onClick={() => {
-                    setSearch("");
-                    setTitle("");
-                    setItemNumber("");
-                    setStatus("");
-                  }}
-                >
+                <Button variant="secondary" className="w-100" onClick={() => { setSearch(""); setTitle(""); setItemNumber(""); setStatus(""); }}>
                   Reset
                 </Button>
               </Col>
@@ -301,20 +406,14 @@ export default function AllProductAdmin() {
           </Form>
         </Card.Body>
       </Card>
+
       {loading ? (
         <div className="d-flex justify-content-center my-5">
           <Spinner animation="border" />
         </div>
       ) : (
         <>
-          <Table
-            striped
-            bordered
-            hover
-            responsive
-            className="shadow-sm"
-            style={{ fontSize: 12 }}
-          >
+          <Table striped bordered hover responsive className="shadow-sm" style={{ fontSize: 12 }}>
             <thead>
               <tr>
                 <th>#</th>
@@ -323,7 +422,6 @@ export default function AllProductAdmin() {
                 <th>Price</th>
                 <th>On Sale</th>
                 <th>Status</th>
-                {/* <th>In Stock</th> */}
                 <th>Actions</th>
               </tr>
             </thead>
@@ -335,9 +433,9 @@ export default function AllProductAdmin() {
                   index={index}
                   page={page}
                   limit={limit}
-                  onEdit={handleEdit}
                   onDelete={handleDelete}
                   onViewMore={handleViewMore}
+                  onEditMedia={handleEditMedia}
                 />
               ))}
             </tbody>
@@ -346,21 +444,27 @@ export default function AllProductAdmin() {
           <div className="d-flex justify-content-center mt-4">
             <Pagination>
               {[...Array(pages).keys()].map((x) => (
-                <Pagination.Item
-                  key={x + 1}
-                  active={x + 1 === page}
-                  onClick={() => setPage(x + 1)}
-                >
+                <Pagination.Item key={x + 1} active={x + 1 === page} onClick={() => setPage(x + 1)}>
                   {x + 1}
                 </Pagination.Item>
               ))}
             </Pagination>
           </div>
 
-          <ProductModal
-            product={selectedProduct}
-            show={showModal}
-            onHide={() => setShowModal(false)}
+          <ProductModal product={selectedProduct} show={showModal} onHide={() => setShowModal(false)} />
+
+          <MediaModal
+            show={showMediaModal}
+            product={currentEditingProduct}
+            onHide={(updatedMedia) => {
+              setShowMediaModal(false);
+              if (updatedMedia && currentEditingProduct) {
+                setProducts((prev) =>
+                  prev.map((p) => (p._id === currentEditingProduct._id ? { ...p, media: updatedMedia } : p))
+                );
+              }
+              setCurrentEditingProduct(null);
+            }}
           />
         </>
       )}

@@ -14,22 +14,26 @@ import {
   getCategories,
   getSubCategories,
   getCollections,
-} from "../../api/admin/hierarchyManagerApi";
+} from "../../../api/admin/hierarchyManagerApi";
 
-import { addProduct } from "../../api/admin/productApi";
-import { getPolicies } from "../../api/admin/policyApi";
+import { editProduct } from "../../../api/admin/productApi";
+import { getPolicies } from "../../../api/admin/policyApi";
 
-import SEOForm from "./SEOForm/SEOForm";
-import ColourDropdown from "./ColourDropdown/ColourDropdown";
-import FAQForm from "./FAQForm/FAQForm";
+import SEOForm from "../SEOForm/SEOForm";
+import ColourDropdown from "../ColourDropdown/ColourDropdown";
+import FAQForm from "../FAQForm/FAQForm";
 import { IoAddCircleOutline } from "react-icons/io5";
 import Swal from "sweetalert2";
-import VariantsCard from "./Variants/VariantsCard";
-import GstApplicationForm from "./GstApplicationForm";
-import { useNavigate } from "react-router-dom";
-
+import VariantsCard from "../Variants/VariantsCard";
+import GstApplicationForm from "../GstApplicationForm";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function EditProduct() {
+  const location = useLocation();
+  const { getProduct } = location.state || {};
+
+  console.log("getProduct", getProduct);
+
   const [headers, setHeaders] = useState([]);
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
@@ -97,6 +101,39 @@ export default function EditProduct() {
       keywords: [],
     },
   });
+
+  const parseStringifiedArray = (val) => {
+  try {
+    if (typeof val === "string") {
+      return JSON.parse(val);
+    }
+    if (Array.isArray(val)) {
+      // sometimes val is already an array of strings
+      return val.flatMap((v) => {
+        if (typeof v === "string" && v.startsWith("[")) {
+          return JSON.parse(v); // parse stringified array
+        }
+        return v;
+      });
+    }
+    return [];
+  } catch (err) {
+    console.error("Failed to parse array:", val, err);
+    return [];
+  }
+};
+  // ✅ If editing, load product into state
+  useEffect(() => {
+  if (getProduct) {
+    setProduct((prev) => ({
+      ...prev,
+      ...getProduct,
+      categories: parseStringifiedArray(getProduct.categories),
+      subCategories: parseStringifiedArray(getProduct.subCategories),
+      collections: parseStringifiedArray(getProduct.collections),
+    }));
+  }
+}, [getProduct]);
   // Pure updater function
   const updateNestedField = (obj, path, value) => {
     const keys = path.split(".");
@@ -129,7 +166,7 @@ export default function EditProduct() {
   // Load hierarchy
   useEffect(() => {
     fetchHeaders();
-    loadCollections()
+    loadCollections();
   }, []);
   const fetchHeaders = async () => {
     const res = await getHeaders();
@@ -346,7 +383,7 @@ export default function EditProduct() {
     setLoading(true); // start loading
     console.log("product", product);
     try {
-      const result = await addProduct(product);
+      const result = await editProduct(getProduct._id,product);
       console.log("✅ Product created:", result);
       Swal.fire({
         icon: "success",
@@ -415,7 +452,7 @@ export default function EditProduct() {
 
   return (
     <Container className="my-4">
-      <h2 style={{ fontWeight: "700", fontSize: 20 }}>Add New Product</h2>
+      <h2 style={{ fontWeight: "700", fontSize: 20 }}>Edit Product</h2>
       <p className="text-muted" style={{ fontSize: 13 }}>
         Fill in the details below to add a new product.
       </p>
@@ -615,21 +652,27 @@ export default function EditProduct() {
                     ))}
                   </div>
 
-                  <div style={{ marginTop: "8px" }}>
+                  <div
+                    style={{
+                      marginTop: "8px",
+                      display: "flex",
+                      flexWrap: "nowrap", // ❌ prevent wrapping
+                      gap: "8px", // spacing between chips
+                      overflowX: "auto", // scroll horizontally if too long
+                    }}
+                  >
                     {product.subCategories?.map((sub) => (
                       <span
                         key={sub}
                         style={{
-                          display: "inline-block",
                           backgroundColor: "#f0f0f0",
                           padding: "4px 8px",
                           borderRadius: "12px",
-                          marginRight: "6px",
-                          marginBottom: "6px",
                           fontSize: "14px",
+                          whiteSpace: "nowrap", // ✅ keep each chip on one line
                         }}
                       >
-                        {sub}{" "}
+                        {sub}
                         <span
                           style={{
                             marginLeft: "6px",
@@ -766,7 +809,7 @@ export default function EditProduct() {
                 </Form.Group>
 
                 {/* Media Upload */}
-                <div>
+                {/* <div>
                   <Form.Label style={{ fontWeight: "600", fontSize: 15 }}>
                     Media <span style={{ color: "red" }}>*</span>
                   </Form.Label>
@@ -948,7 +991,7 @@ export default function EditProduct() {
                       return null;
                     })}
                   </div>
-                </div>
+                </div> */}
 
                 {/* Variant Cards */}
               </Card.Body>
@@ -1212,7 +1255,9 @@ export default function EditProduct() {
                       handleChange("fulfillmentType", e.target.value)
                     }
                   >
-                    <option value="" disabled>Fulfillment Select</option>
+                    <option value="" disabled>
+                      Fulfillment Select
+                    </option>
                     <option value="READY_TO_SHIP">Ready to Ship</option>
                     <option value="MADE_TO_ORDER">Made to Order</option>
                   </Form.Select>
@@ -1255,7 +1300,9 @@ export default function EditProduct() {
                       handleChange("productType", e.target.value)
                     }
                   >
-                     <option value="" disabled>Product Select</option>
+                    <option value="" disabled>
+                      Product Select
+                    </option>
                     <option value="Cloths">Cloths</option>
                     <option value="Jewellery">Jewellery</option>
                   </Form.Select>
