@@ -18,7 +18,7 @@ export default function Orders() {
     try {
       setLoading(true);
       const response = await getUserOrder({ page: pageNumber, limit });
-      console.log('response',response)
+      console.log("response", response);
       if (response.success) {
         setOrderList(response.orders);
         setTotalPages(response.totalPages || 1);
@@ -59,30 +59,30 @@ export default function Orders() {
   };
 
   if (loading) {
-      return   <div
-          style={{
-            height: "100vh",
-            width: "100%",
-            display: "flex",
-            justifyContent: "center",
-            flexDirection:"column",
-            alignItems: "center",
-            background: "#fff", // optional
-          }}
-        >
-          <Lottie
-            animationData={loadingAnimation}
-            loop={true}
-            autoplay={true}
-            style={{ width: 200, height: 200 }}
-          />
-             <p style={{ marginTop: "1rem", fontSize: "18px", color: "#333" }}>
-            Please wait, loading...
-          </p>
-        </div> // or a spinner component
-    }
-  
-
+    return (
+      <div
+        style={{
+          height: "100vh",
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          flexDirection: "column",
+          alignItems: "center",
+          background: "#fff", // optional
+        }}
+      >
+        <Lottie
+          animationData={loadingAnimation}
+          loop={true}
+          autoplay={true}
+          style={{ width: 200, height: 200 }}
+        />
+        <p style={{ marginTop: "1rem", fontSize: "18px", color: "#333" }}>
+          Please wait, loading...
+        </p>
+      </div>
+    ); // or a spinner component
+  }
 
   return (
     <>
@@ -91,12 +91,10 @@ export default function Orders() {
       <br />
       <br />
       <Container className="my-4">
-       
-            <OrderList orders={orderList} />
-            <div className="d-flex justify-content-center mt-3">
-              {renderPagination()}
-            </div>
-        
+        <OrderList orders={orderList} />
+        <div className="d-flex justify-content-center mt-3">
+          {renderPagination()}
+        </div>
       </Container>
     </>
   );

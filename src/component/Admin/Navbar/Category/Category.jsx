@@ -243,7 +243,23 @@ export default function Category() {
                       : ""
                   }`}
                 >
-                  {c.name}
+                  <div className="d-flex align-items-center gap-2">
+                    {/* Show category image */}
+                    {c.image && (
+                      <img
+                        src={c.image}
+                        alt={c.name}
+                        style={{
+                          width: "40px",
+                          height: "40px",
+                          objectFit: "cover",
+                          borderRadius: "6px",
+                        }}
+                      />
+                    )}
+                    <span>{c.name}</span>
+                  </div>
+
                   <div>
                     <Button
                       size="sm"

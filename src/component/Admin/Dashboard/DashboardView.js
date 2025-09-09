@@ -1,7 +1,9 @@
-import React from 'react'
+import React ,{useState,useEffect}from 'react'
 import { Container, Row, Col, Card, Table, Badge, Button} from 'react-bootstrap';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
-
+import Orders from '../../User/Orders/Orders';
+import AdminOrders from '../Sales&Biiling/AdminOrders/AdminOrders';
+import {getMonthlySales, getPieChartData, getLineChartData,getRemainingStock,getTotalStock} from "../../api/admin/orderApi"
 const salesData = [
   { date: "Mon", sales: 1200 },
   { date: "Tue", sales: 2100 },
@@ -22,7 +24,58 @@ const stockData = [
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#AA336A"];
 
+
+
 export default function DashboardView() {
+
+    const [monthlySales, setMonthlySales] = useState(null);
+  const [pieData, setPieData] = useState([]);
+  const [lineData, setLineData] = useState([]);
+  const [stock,setStock] =useState(null)
+  const [productTotal,setProductTotal] =useState(null)
+
+   const formatIndianCurrency = (num) => {
+  if (num === null || num === undefined) return "₹0";
+
+  // Convert to number (in case it comes as string)
+  const value = Number(num);
+
+  if (value >= 10000000) {
+    return `₹ ${(value / 10000000).toFixed(2)} Cr`; // Crores
+  } else if (value >= 100000) {
+    return `₹ ${(value / 100000).toFixed(2)} Lakh`; // Lakhs
+  } else if (value >= 1000) {
+    return `₹ ${(value / 1000).toFixed(2)} K`; // Thousands
+  }
+  return `₹ ${value}`;
+};
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const sales = await getMonthlySales();
+        setMonthlySales(sales);
+
+        const pie = await getPieChartData();
+        setPieData(pie.chartData);
+
+        const line = await getLineChartData();
+        setLineData(line.chartData);
+
+        const stock = await getRemainingStock()
+           setStock(stock)
+
+         const productTotal = await getTotalStock()
+           setProductTotal(productTotal)
+
+      } catch (err) {
+        console.error("Dashboard fetch error:", err.message);
+      }
+    })();
+  }, []);
+
+  console.log('productTotal',productTotal)
+
   return (
     <Container className="mt-4">
       <h2 className="mb-4 fw-semibold">Cloth Management Dashboard</h2>
@@ -33,23 +86,28 @@ export default function DashboardView() {
           <Card className="shadow-sm">
             <Card.Body>
               <Card.Title>Total Products</Card.Title>
-              <Card.Text className="display-6 text-primary">1,560</Card.Text>
+              <Card.Text className="display-6 text-primary">{productTotal?.totalStock}</Card.Text>
             </Card.Body>
           </Card>
         </Col>
         <Col md={3}>
           <Card className="shadow-sm">
-            <Card.Body>
-              <Card.Title>Today's Sales</Card.Title>
-              <Card.Text className="display-6 text-success">₹18,900</Card.Text>
-            </Card.Body>
+          <Card.Body>
+  <Card.Title>Current Month</Card.Title>
+  <Card.Text className="display-6 text-success">
+     { formatIndianCurrency(monthlySales?.totalSales || 0)}
+  </Card.Text>
+  <Card.Text className="text-muted">
+    Orders: {monthlySales?.totalOrders || 0}
+  </Card.Text>
+</Card.Body>
           </Card>
         </Col>
         <Col md={3}>
           <Card className="shadow-sm">
             <Card.Body>
               <Card.Title>Out of Stock</Card.Title>
-              <Card.Text className="display-6 text-danger">24</Card.Text>
+              <Card.Text className="display-6 text-danger">{stock?.totalSold}</Card.Text>
             </Card.Body>
           </Card>
         </Col>
@@ -57,7 +115,7 @@ export default function DashboardView() {
           <Card className="shadow-sm">
             <Card.Body>
               <Card.Title>Low Stock Alerts</Card.Title>
-              <Card.Text className="display-6 text-warning">12</Card.Text>
+              <Card.Text className="display-6 text-warning">{stock?.totalStock}</Card.Text>
             </Card.Body>
           </Card>
         </Col>
@@ -70,14 +128,12 @@ export default function DashboardView() {
             <Card.Header className="fw-bold">Sales Trend (This Week)</Card.Header>
             <Card.Body>
               <ResponsiveContainer width="100%" height={250}>
-                <LineChart data={salesData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-                  <CartesianGrid stroke="#f5f5f5" />
-                  <XAxis dataKey="date" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Line type="monotone" dataKey="sales" stroke="#8884d8" strokeWidth={3} />
-                </LineChart>
+                 <LineChart width={500} height={300} data={lineData}>
+        <XAxis dataKey="day" />
+        <YAxis />
+        <Tooltip />
+        <Line type="monotone" dataKey="netRevenue" stroke="#82ca9d" />
+      </LineChart>
               </ResponsiveContainer>
             </Card.Body>
           </Card>
@@ -88,20 +144,11 @@ export default function DashboardView() {
             <Card.Body>
               <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
-                  <Pie
-                    data={stockData}
-                    dataKey="value"
-                    nameKey="name"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={80}
-                    fill="#8884d8"
-                    label
-                  >
-                    {stockData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
+                  <Pie data={pieData} dataKey="value" nameKey="name" outerRadius={100} label>
+          {pieData?.map((entry, index) => (
+            <Cell key={index} fill={["#0088FE", "#00C49F", "#FFBB28"][index % 3]} />
+          ))}
+        </Pie>
                   <Tooltip />
                 </PieChart>
               </ResponsiveContainer>
@@ -111,7 +158,7 @@ export default function DashboardView() {
       </Row>
 
       {/* Recent Orders */}
-      <Card className="shadow-sm mb-4">
+      {/* <Card className="shadow-sm mb-4">
         <Card.Header className="fw-bold">Recent Orders</Card.Header>
         <Card.Body>
           <Table hover responsive>
@@ -160,7 +207,9 @@ export default function DashboardView() {
             </tbody>
           </Table>
         </Card.Body>
-      </Card>
+      </Card> */}
+         <AdminOrders/>
+      
     </Container>
   )
 }

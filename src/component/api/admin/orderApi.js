@@ -45,3 +45,63 @@ export const updateOrdersStatus = async (updateOrderId, updateOrderStatus) => {
     );
   }
 };
+
+// --- Monthly sales (summary)
+export const getMonthlySales = async () => {
+  try {
+    const res = await axios.get("/admin/sales/monthly");
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response?.data?.message || "Failed to fetch monthly sales");
+  }
+};
+
+// --- Total stock available
+export const getTotalStock = async () => {
+  try {
+    const res = await axios.get("/admin/total/stock");
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response?.data?.message || "Failed to fetch total stock");
+  }
+};
+
+// --- Stock sold
+export const getStockSold = async () => {
+  try {
+    const res = await axios.get("/admin/sales/stock", );
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response?.data?.message || "Failed to fetch stock sold");
+  }
+};
+
+// --- Remaining stock
+export const getRemainingStock = async () => {
+  try {
+    const res = await axios.get("/admin/stock");
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response?.data?.message || "Failed to fetch remaining stock");
+  }
+};
+
+// --- Sales Pie Chart
+export const getPieChartData = async () => {
+  try {
+    const res = await axios.get("/admin/pieChart");
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response?.data?.message || "Failed to fetch pie chart data");
+  }
+};
+
+// --- Sales Line Chart (current month)
+export const getLineChartData = async () => {
+  try {
+    const res = await axios.get("/admin/lineChart",);
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response?.data?.message || "Failed to fetch line chart data");
+  }
+};

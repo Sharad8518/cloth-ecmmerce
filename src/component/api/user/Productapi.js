@@ -28,3 +28,25 @@ export const getProductsNewIn = async (queryParams = {}) => {
   const response = await axios.get("/user//products/current-month", { params: queryParams });
   return response.data;
 };
+
+export const addOrUpdateReview = async (productId, { rating, title, comment, userName,file }) => {
+  try {
+    const formData = new FormData();
+    formData.append("rating", rating);
+    if (title) formData.append("title", title);
+    if (comment) formData.append("comment", comment);
+    if (userName) formData.append("userName", userName);
+    if (file) formData.append("file", file); // only if user uploads a file
+
+    const res = await axios.post(`/user/products/${productId}/review`, formData, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response?.data?.message || "Failed to submit review");
+  }
+};

@@ -15,6 +15,7 @@ import styles from "./OrderList.module.css";
 import { FaShippingFast, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import OrderDetailModal from "../OrderDetailModal";
 import { FaStar } from "react-icons/fa";
+import {addOrUpdateReview} from "../../../api/user/Productapi"
 import MobileBackButton from "../../../layout/BackButton/MobileBackButton";
 
 // Props: orders = array of orders fetched from API
@@ -22,7 +23,7 @@ const OrderList = ({ orders, totalPages = 1, onPageChange }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [reviewItem, setReviewItem] = useState(null);
-const [review, setReview] = useState({ rating: 5, comment: "" });
+  const [review, setReview] = useState({ rating: 5, comment: "" });
 
   const handlePageClick = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -224,23 +225,36 @@ const [review, setReview] = useState({ rating: 5, comment: "" });
     <Button variant="secondary" onClick={() => setReviewItem(null)}>
       Cancel
     </Button>
-    <Button
-      variant="success"
-      onClick={() => {
-        // ✅ Save review to backend
-        console.log("Review submitted:", {
-          productId: reviewItem?.product?._id,
-          rating: review.rating,
-          comment: review.comment,
-        });
+   <Button
+  variant="success"
+  onClick={async () => {
+    if (!review.comment && review.rating < 1) {
+      alert("Please provide a rating or comment.");
+      return;
+    }
 
-        // Reset form
-        setReview({ rating: 5, comment: "" });
-        setReviewItem(null);
-      }}
-    >
-      Submit Review
-    </Button>
+    try {
+      // Call backend API
+      const response = await addOrUpdateReview(reviewItem?.product?._id, {
+        rating: review.rating,
+        comment: review.comment,
+        userName: reviewItem?.product?.userName || "Anonymous", // or get logged in user's name
+        file: review.file || null, // optional if you allow file uploads
+      });
+
+      alert(response.message); // "Review added" or "Review updated"
+
+      // Reset form
+      setReview({ rating: 5, comment: "" });
+      setReviewItem(null);
+    } catch (err) {
+      console.error("Review error:", err);
+      alert(err.message);
+    }
+  }}
+>
+  Submit Review
+</Button>
   </Modal.Footer>
 </Modal>
 
