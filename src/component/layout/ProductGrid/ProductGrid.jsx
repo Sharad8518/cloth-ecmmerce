@@ -51,7 +51,7 @@ const ProductGrid = ({ products }) => {
               <div className="custom-card-body">
                 <h5 className="custom-card-title">{product?.title}</h5>
                 <p className="custom-card-desc">{product?.description}</p>
-                <p className="custom-card-price">₹ {product?.salePrice} /-</p>
+                <p className="custom-card-price">₹ {product?.mrp} /-</p>
                 {/* <div className="custom-card-actions">
                   <Button variant="outline-primary" size="sm" style={{border:"1px solid #000"}} onClick={() => handleAddToCart(product)}>
                     <HiOutlineShoppingBag size={25} style={{color:"#000"}}/>
