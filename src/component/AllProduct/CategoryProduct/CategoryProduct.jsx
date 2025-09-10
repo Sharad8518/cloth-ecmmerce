@@ -17,18 +17,22 @@ import styles from "./CategoryProduct.module.css";
 import { filterProduct } from "../../api/user/Productapi";
 import { getBanner } from "../../api/user/bannerApi";
 import Lottie from "lottie-react";
+import { useLocation } from "react-router-dom";
 import loadingAnimation from "../../../assets/Anim/loading.json";
 
 export default function CategoryProduct() {
+   const location = useLocation();
+  const category = location.state?.category; // safely access passed category
   // State to track filters
+  console.log('category',category)
   const [filters, setFilters] = useState({
     price: [],
-    collection: [],
+    collection: Array.isArray(category) ? category : category ? [category] : [],
     size: [],
     color: [],
     fabric: [],
     craft: [],
-    occasion: [],
+    occasion: Array.isArray(category) ? category : category ? [category] : [],
     dupatta: [],
     discount: [], // example: [10, 50] → between 10% and 50%
   });
@@ -77,27 +81,27 @@ export default function CategoryProduct() {
 
     // 🧵 Fabric
     if (filters.fabric.length) {
-      params.fabric = filters.fabric;
+      params.fabric = normalize(filters.fabric);
     }
 
     // 🎨 Craft → backend expects `work`
     if (filters.craft.length) {
-      params.work = filters.craft;
+      params.work = normalize(filters.craft);
     }
 
     // 🎉 Occasion → backend expects `collections`
     if (filters.occasion.length) {
-      params.collections = filters.occasion;
+      params.occasion = normalize(filters.occasion);
     }
 
     // 👗 Collection → backend expects `categories`
     if (filters.collection.length) {
-      params.categories = filters.collection;
+      params.collection = normalize(filters.collection);
     }
 
     // 🧣 Dupatta (⚠️ not in backend code — you may need to add)
     if (filters.dupatta.length) {
-      params.dupatta = filters.dupatta;
+      params.dupatta = normalize(filters.dupatta)
     }
 
     // 💰 Price buckets → map labels to minPrice / maxPrice
@@ -224,9 +228,9 @@ export default function CategoryProduct() {
         />
       </div>
       <br />
-      <Container fluid  className={styles.categoryProductContainer}>
+      <Container fluid className={styles.categoryProductContainer}>
         <BreadcrumbSinglePage />
-        <Row>
+        <Row >
           {/* Left Filters */}
           <Col
             md={2}
@@ -357,18 +361,20 @@ export default function CategoryProduct() {
               <Accordion.Item eventKey="7">
                 <Accordion.Header>Include Dupatta</Accordion.Header>
                 <Accordion.Body>
-                  {["Yes", "No"].map((val) => (
-                    <Form.Check
-                      key={val}
-                      type="checkbox"
-                      label={val}
-                      checked={filters.dupatta.includes(val)}
-                      onChange={() => handleFilterChange("dupatta", val)}
-                    />
-                  ))}
+                  {["Yes", "No"].map((val) => {
+                    const apiValue = val === "Yes" ? "true" : "false"; // 👈 map to backend value
+                    return (
+                      <Form.Check
+                        key={val}
+                        type="checkbox"
+                        label={val}
+                        checked={filters.dupatta.includes(apiValue)} // 👈 store true/false
+                        onChange={() => handleFilterChange("dupatta", apiValue)}
+                      />
+                    );
+                  })}
                 </Accordion.Body>
               </Accordion.Item>
-
               <Accordion.Item eventKey="8">
                 <Accordion.Header>Discount</Accordion.Header>
                 <Accordion.Body>

@@ -675,6 +675,15 @@ export default function ProductDetail() {
                         </Row>
                       )}
 
+                         {product?.colour && (
+                        <Row style={{ marginTop: 10 }}>
+                          <Col>
+                            <strong>Colour</strong>
+                          </Col>
+                          <Col>: {product.colour}</Col>
+                        </Row>
+                      )}
+
                       {product?.productType === "Cloths" &&
                         product?.dupatta && (
                           <Row style={{ marginTop: 10 }}>
