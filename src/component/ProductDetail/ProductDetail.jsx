@@ -343,18 +343,25 @@ export default function ProductDetail() {
               />
             )}
           </Col> */}
-          <Col md={6} style={{ height: "100%", boxSizing: "border-box",display:"flex",justifyContent:"space-between" }}>
-          <div  className={styles.imagevericaldesktop}>
-  {product?.media?.length > 0 && ( // ✅ check if media exists
-              <VerticalImageSelector
-                images={product?.media?.map((m) => m?.url)} // ✅ use product media URLs
-                onSelect={handleSelectImage}
-                selectedIndex={selectedIndex}
-              />
-            )}
-          </div>
-          <div  className={styles.imageBigSection}>
-           
+          <Col
+            md={6}
+            style={{
+              height: "100%",
+              boxSizing: "border-box",
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <div className={styles.imagevericaldesktop}>
+              {product?.media?.length > 0 && ( // ✅ check if media exists
+                <VerticalImageSelector
+                  images={product?.media?.map((m) => m?.url)} // ✅ use product media URLs
+                  onSelect={handleSelectImage}
+                  selectedIndex={selectedIndex}
+                />
+              )}
+            </div>
+            <div className={styles.imageBigSection}>
               <Slider
                 ref={sliderRef}
                 dots={true} // show navigation dots
@@ -377,9 +384,7 @@ export default function ProductDetail() {
                   </div>
                 ))}
               </Slider>
-          </div>
-
-            
+            </div>
           </Col>
           <Col md={6} className={styles.productContentBox}>
             <br />
@@ -642,71 +647,82 @@ export default function ProductDetail() {
 
                   {/* <hr /> */}
                   <p>{product?.shortDescription}</p>
-                  <strong style={{ color: "#0984e3" }}>Other Info</strong>
-                  {product?.packContains && (
-                    <Row style={{ marginTop: 10 }}>
-                      <Col>
-                        <strong>Pack Contains</strong>
-                      </Col>
-                      <Col>: {product.packContains}</Col>
-                    </Row>
-                  )}
-
-                  {product?.fabric && (
-                    <Row style={{ marginTop: 10 }}>
-                      <Col>
-                        <strong>Fabric</strong>
-                      </Col>
-                      <Col>: {product.fabric}</Col>
-                    </Row>
-                  )}
-                  {product?.productType === "Cloths" && (
+                  {(product?.packContains ||
+                    product?.fabric ||
+                    (product?.productType === "Cloths" && product?.dupatta) ||
+                    product?.work ||
+                    product?.care ||
+                    product?.occasion ||
+                    product?.Note) && (
                     <>
-                      {product?.dupatta && (
+                      <strong style={{ color: "#0984e3" }}>Other Info</strong>
+
+                      {product?.packContains && (
                         <Row style={{ marginTop: 10 }}>
                           <Col>
-                            <strong>Dupatta</strong>
+                            <strong>Pack Contains</strong>
                           </Col>
-                          <Col>: {product.dupatta.enabled ? "Yes" : "No"}</Col>
+                          <Col>: {product.packContains}</Col>
+                        </Row>
+                      )}
+
+                      {product?.fabric && (
+                        <Row style={{ marginTop: 10 }}>
+                          <Col>
+                            <strong>Fabric</strong>
+                          </Col>
+                          <Col>: {product.fabric}</Col>
+                        </Row>
+                      )}
+
+                      {product?.productType === "Cloths" &&
+                        product?.dupatta && (
+                          <Row style={{ marginTop: 10 }}>
+                            <Col>
+                              <strong>Dupatta</strong>
+                            </Col>
+                            <Col>
+                              : {product.dupatta.enabled ? "Yes" : "No"}
+                            </Col>
+                          </Row>
+                        )}
+
+                      {product?.work && (
+                        <Row style={{ marginTop: 10 }}>
+                          <Col>
+                            <strong>Work / Craft</strong>
+                          </Col>
+                          <Col>: {product.work}</Col>
+                        </Row>
+                      )}
+
+                      {product?.care && (
+                        <Row style={{ marginTop: 10 }}>
+                          <Col>
+                            <strong>Care</strong>
+                          </Col>
+                          <Col>: {product.care}</Col>
+                        </Row>
+                      )}
+
+                      {product?.occasion && (
+                        <Row style={{ marginTop: 10 }}>
+                          <Col>
+                            <strong>Occasion</strong>
+                          </Col>
+                          <Col>: {product.occasion}</Col>
+                        </Row>
+                      )}
+
+                      {product?.Note && (
+                        <Row style={{ marginTop: 10 }}>
+                          <Col>
+                            <strong>Note</strong>
+                          </Col>
+                          <Col>: {product.Note}</Col>
                         </Row>
                       )}
                     </>
-                  )}
-
-                  {product?.work && (
-                    <Row style={{ marginTop: 10 }}>
-                      <Col>
-                        <strong>Work / Craft</strong>
-                      </Col>
-                      <Col>: {product.work}</Col>
-                    </Row>
-                  )}
-
-                  {product?.care && (
-                    <Row style={{ marginTop: 10 }}>
-                      <Col>
-                        <strong>Care</strong>
-                      </Col>
-                      <Col>: {product.care}</Col>
-                    </Row>
-                  )}
-
-                  {product?.occasion && (
-                    <Row style={{ marginTop: 10 }}>
-                      <Col>
-                        <strong>Occasion</strong>
-                      </Col>
-                      <Col>: {product.occasion}</Col>
-                    </Row>
-                  )}
-
-                  {product?.Note && (
-                    <Row style={{ marginTop: 10 }}>
-                      <Col>
-                        <strong>Note</strong>
-                      </Col>
-                      <Col>: {product.Note}</Col>
-                    </Row>
                   )}
                 </Accordion.Body>
               </Accordion.Item>
