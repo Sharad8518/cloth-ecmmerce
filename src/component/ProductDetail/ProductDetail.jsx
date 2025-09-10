@@ -72,6 +72,44 @@ export default function ProductDetail() {
     sliderRef.current?.slickGoTo(index); // ✅ correct usage
   };
 
+  {
+    /* Utility function for generating size ranges */
+  }
+  const generateOptions = (start, end, unit = "Inch") => {
+    const options = [];
+    for (let i = start; i <= end; i++) {
+      options.push(
+        <option key={i} value={`${i} ${unit}`}>
+          {i} {unit}
+        </option>
+      );
+    }
+    return options;
+  };
+
+  {
+    /* Utility for generating height options */
+  }
+  const generateHeightOptions = (minFeet, minInch, maxFeet, maxInch) => {
+    const options = [];
+    for (let feet = minFeet; feet <= maxFeet; feet++) {
+      for (let inch = 0; inch < 12; inch++) {
+        if (
+          (feet === minFeet && inch < minInch) ||
+          (feet === maxFeet && inch > maxInch)
+        ) {
+          continue;
+        }
+        options.push(
+          <option key={`${feet}-${inch}`} value={`${feet} feet ${inch} Inch`}>
+            {feet} feet {inch} Inch
+          </option>
+        );
+      }
+    }
+    return options;
+  };
+
   console.log("selectedImage", selectedImage);
   const sizes = [
     "XS",
@@ -446,28 +484,21 @@ export default function ProductDetail() {
                   Additional info for better fit
                 </span>
 
-                <div style={{ marginTop: "-3px", marginLeft: 10 }}>
-                  <Button
-                    variant={answer === "yes" ? "primary" : "outline-primary"}
-                    size="sm"
-                    className="me-2"
-                    onClick={() => {
+                <div style={{ marginTop: "0px", marginLeft: 10 }}>
+                  <Form.Check
+                    inline
+                    type="checkbox"
+                    id="answer-yes"
+                    checked={answer === "yes"}
+                    onChange={(e) => {
                       if (!selectedSize) {
                         alert("Please select a size");
                         return;
                       }
-                      handleSelect("yes");
+                      handleSelect(e.target.checked ? "yes" : "");
                     }}
-                  >
-                    Yes
-                  </Button>
-                  <Button
-                    variant={answer === "no" ? "primary" : "outline-primary"}
-                    size="sm"
-                    onClick={() => handleSelect("no")}
-                  >
-                    No
-                  </Button>
+                    className={styles.customcheckbox}
+                  />
                 </div>
               </div>
             )}
@@ -482,7 +513,7 @@ export default function ProductDetail() {
             </button> */}
 
             {/* Show saved values */}
-            {savedPaddingDetails && (
+            {/* {savedPaddingDetails && (
               <div style={{ marginTop: 10 }}>
                 <strong>Better fit:</strong> Waist: {savedPaddingDetails.waist}{" "}
                 {savedPaddingDetails.unit}, Length: {savedPaddingDetails.length}{" "}
@@ -500,8 +531,42 @@ export default function ProductDetail() {
                   Delete
                 </button>
               </div>
-            )}
-
+            )} */}
+             {savedPaddingDetails && (
+              <>
+            <Row style={{fontSize:14}}>
+              <Col>Bust </Col>
+              <Col> : {savedPaddingDetails.bust}</Col>
+            </Row>
+              <Row style={{fontSize:14}}>
+              <Col>Waist</Col>
+              <Col> : {savedPaddingDetails.waist}</Col>
+            </Row>
+              <Row style={{fontSize:14}}>
+              <Col>Length</Col>
+              <Col> : {savedPaddingDetails.length}</Col>
+            </Row>
+              <Row style={{fontSize:14}}>
+              <Col>Hip</Col>
+              <Col> : {savedPaddingDetails.hip}</Col>
+            </Row>
+             <Row style={{fontSize:14}}>
+              <Col>Height</Col>
+              <Col> : {savedPaddingDetails.height}</Col>
+            </Row>
+              <button
+                  style={{
+                    marginLeft: 0,
+                    color: "red",
+                    backgroundColor: "#fff",
+                    border: "none",
+                  }}
+                  onClick={() => setSavedPaddingDetails(null)}
+                >
+                  Remove
+                </button>
+            </>
+                  )}
             <div className={styles.detailButtonBar}>
               {(cart?.items || []).some(
                 (item) => item.variant?.sku === selectedSize?.sku
@@ -675,7 +740,7 @@ export default function ProductDetail() {
                         </Row>
                       )}
 
-                         {product?.colour && (
+                      {product?.colour && (
                         <Row style={{ marginTop: 10 }}>
                           <Col>
                             <strong>Colour</strong>
@@ -865,7 +930,16 @@ export default function ProductDetail() {
             >
               Provide waist, length, height, bust, and hip for a better fit.
             </p>
-            <p>Select Your Nearest Size : {selectedSize?.size} </p>
+            <p
+              style={{
+                padding: 10,
+                background: "#ff6f61",
+                color: "#fff",
+                fontWeight: "800",
+              }}
+            >
+              Your Standard Size : {selectedSize?.size}{" "}
+            </p>
             {/* Bust Size */}
             <Form.Group className="mb-3">
               <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
@@ -877,10 +951,7 @@ export default function ProductDetail() {
                 onChange={(e) => handleSelectChange("bust", e.target.value)}
               >
                 <option value="">Select Bust</option>
-                <option value="32 Inch">32 Inch</option>
-                <option value="34 Inch">34 Inch</option>
-                <option value="36 Inch">36 Inch</option>
-                <option value="38 Inch">38 Inch</option>
+                {generateOptions(28, 44)}
               </Form.Select>
             </Form.Group>
 
@@ -895,13 +966,11 @@ export default function ProductDetail() {
                 onChange={(e) => handleSelectChange("waist", e.target.value)}
               >
                 <option value="">Select Waist</option>
-                <option value="25 Inch">25 Inch</option>
-                <option value="26 Inch">26 Inch</option>
-                <option value="27 Inch">27 Inch</option>
-                <option value="28 Inch">28 Inch</option>
+                {generateOptions(22, 40)}
               </Form.Select>
             </Form.Group>
 
+            {/* Hip */}
             <Form.Group className="mb-3">
               <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
                 Hip Size
@@ -912,17 +981,14 @@ export default function ProductDetail() {
                 onChange={(e) => handleSelectChange("hip", e.target.value)}
               >
                 <option value="">Select Hip</option>
-                <option value="34 Inch">34 Inch</option>
-                <option value="36 Inch">36 Inch</option>
-                <option value="38 Inch">38 Inch</option>
-                <option value="40 Inch">40 Inch</option>
+                {generateOptions(30, 50)}
               </Form.Select>
             </Form.Group>
 
-            {/* Length */}
+            {/* Full Length */}
             <Form.Group className="mb-3">
               <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
-                Length (Waist to Floor including heel)
+                Full Length
               </Form.Label>
               <Form.Select
                 style={{ fontSize: 14 }}
@@ -930,9 +996,7 @@ export default function ProductDetail() {
                 onChange={(e) => handleSelectChange("length", e.target.value)}
               >
                 <option value="">Select Length</option>
-                <option value="36 Inch (91 cm)">36 Inch (91 cm)</option>
-                <option value="38 Inch (96 cm)">38 Inch (96 cm)</option>
-                <option value="40 Inch (102 cm)">40 Inch (102 cm)</option>
+                {generateOptions(45, 62)}
               </Form.Select>
             </Form.Group>
 
@@ -947,13 +1011,9 @@ export default function ProductDetail() {
                 onChange={(e) => handleSelectChange("height", e.target.value)}
               >
                 <option value="">Select Height</option>
-                <option value="5 feet 2 Inch">5 feet 2 Inch</option>
-                <option value="5 feet 3 Inch">5 feet 3 Inch</option>
-                <option value="5 feet 4 Inch">5 feet 4 Inch</option>
-                <option value="5 feet 5 Inch">5 feet 5 Inch</option>
+                {generateHeightOptions(4, 5, 6, 4)}
               </Form.Select>
             </Form.Group>
-
             {/* Hip Size */}
             {/* <div style={{ margin: "5px 0" }}>
               <button
@@ -985,7 +1045,6 @@ export default function ProductDetail() {
                     backgroundColor: "#e9e8e8ff",
                     color: "#0e0e0eff",
                     border: "none",
-                    height: 40,
                     padding: "10px 20px",
                     borderRadius: "5px",
                     cursor: "pointer",

@@ -17,9 +17,12 @@ import OrderDetailModal from "../OrderDetailModal";
 import { FaStar } from "react-icons/fa";
 import {addOrUpdateReview} from "../../../api/user/Productapi"
 import MobileBackButton from "../../../layout/BackButton/MobileBackButton";
+import { useLocation } from "react-router-dom";
 
 // Props: orders = array of orders fetched from API
 const OrderList = ({ orders, totalPages = 1, onPageChange }) => {
+   const location = useLocation();
+  const userName = location.state?.userName; 
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [reviewItem, setReviewItem] = useState(null);
@@ -238,7 +241,7 @@ const OrderList = ({ orders, totalPages = 1, onPageChange }) => {
       const response = await addOrUpdateReview(reviewItem?.product?._id, {
         rating: review.rating,
         comment: review.comment,
-        userName: reviewItem?.product?.userName || "Anonymous", // or get logged in user's name
+        userName: userName || "Anonymous", // or get logged in user's name
         file: review.file || null, // optional if you allow file uploads
       });
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useRef } from "react";
 import {
   Table,
   Badge,
@@ -13,10 +13,14 @@ import {
   Row,
   Col,
 } from "react-bootstrap";
+import { useReactToPrint } from "react-to-print";
 import { getAllOrders, updateOrdersStatus } from "../../../api/admin/orderApi";
+import PrintableOrder from "../PrintableOrder/PrintableOrder";
 
 export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
+ 
+
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -89,6 +93,16 @@ export default function AdminOrders() {
     e.preventDefault();
     fetchOrders(1); // reset to page 1 when filters change
   };
+const componentRef = useRef();
+   const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
+
+  useEffect(() => {
+  if (selectedOrder) {
+    handlePrint();
+  }
+}, [selectedOrder]);
 
   const renderPagination = () => {
     let items = [];
@@ -254,7 +268,16 @@ export default function AdminOrders() {
                         >
                           Update
                         </Button>
-
+  <Button
+                        size="sm"
+                        variant="outline-success"
+                        onClick={() => {
+                          setSelectedOrder(order);
+                          setTimeout(handlePrint, 100); // wait for ref to update
+                        }}
+                      >
+                        Print
+                      </Button>
                         
                       </td>
                     </tr>
@@ -500,6 +523,13 @@ export default function AdminOrders() {
           </Button>
         </Modal.Footer>
       </Modal>
+
+       {/* Hidden printable component */}
+      {selectedOrder && (
+        <div style={{ display: "none" }}>
+          <PrintableOrder ref={componentRef} order={selectedOrder} />
+        </div>
+      )}
     </Container>
   );
 }

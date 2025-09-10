@@ -82,7 +82,7 @@ export default function FrequentlyBought() {
         &#8592; Back
       </Button>
 
-      <h2 className="mb-4">Frequently Bought Togethers</h2>
+      <h2 className="mb-4">Complete the Look (Pair It)</h2>
 
       {/* Current Product */}
       {productDetails && (
