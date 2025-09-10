@@ -35,6 +35,11 @@ import KurtaSet from "../KurtaSet/KurtaSet";
 import Potilis from "../Potilis/Potilis";
 import DesignerSuit from "../DesignerSuit/DesignerSuit";
 import EditProduct from "../Admin/Product/EditProduct/EditProduct";
+import PrivacyPolicy from "../PrivacyPolicy/PrivacyPolicy";
+import AboutUs from "../AboutUs/AboutUs";
+import TermCondition from "../TermCondition/TermCondition";
+import ReturnExchange from "../Return&Exchange/ReturnExchange";
+import CookiesPolicy from "../CookiesPolicy/CookiesPolicy";
 
 export default function RouteManager() {
   return (
@@ -50,6 +55,11 @@ export default function RouteManager() {
       <Route path="/orders" element={<Orders />} />
       <Route path="/favourites" element={<Favourites />} />
       <Route path="/collections" element={<Collections />} />
+      <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
+      <Route path="/aboutUs" element={<AboutUs />} />
+      <Route path="/termCondition" element={<TermCondition />} />
+      <Route path="/returnExchange" element={<ReturnExchange />} />
+      <Route path="/cookiesPolicy" element={<CookiesPolicy />} />
       <Route path="/indoWestern/:category/:subName" element={<IndoWestern />} />
       <Route path="/jewellery/:category/:subName" element={<Jewellery />} />
       <Route path="/kurtaSet/:category/:subName" element={<KurtaSet />} />

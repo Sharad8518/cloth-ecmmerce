@@ -21,7 +21,7 @@ import { getPromotion } from "../api/user/PromotionApi";
 import { LuUser } from "react-icons/lu";
 import { LuCircleUser } from "react-icons/lu";
 import axios from "axios";
-
+import { jwtDecode } from "jwt-decode";
 const collectionMenu = [
   {
     title: "CO-ORDS SET",
@@ -105,6 +105,18 @@ export default function NavbarMenu() {
   const loadingRef = useRef(null);
   const location = useLocation();
 
+
+  
+function isTokenExpired(token) {
+  if (!token) return true;
+  try {
+    const decoded = jwtDecode(token);
+    return decoded.exp * 1000 < Date.now(); // exp is in seconds
+  } catch (e) {
+    return true; // invalid or corrupted token
+  }
+}
+
   useEffect(() => {
     const fetchNavbar = async () => {
       try {
@@ -146,15 +158,16 @@ export default function NavbarMenu() {
 
   console.log("Cart items:", cart.items || []);
 
-  const handleUserClick = () => {
-    if (!token) {
-      // 🚪 No token → open login modal
-      openModal();
-    } else {
-      // ✅ User logged in → go to profile page
-      navigate("/profile");
-    }
-  };
+const handleUserClick = () => {
+  const token = localStorage.getItem("token"); // assuming accessToken key
+  if (!token || isTokenExpired(token)) {
+    // 🚪 No token or expired → open login modal
+    openModal();
+  } else {
+    // ✅ Valid token → go to profile page
+    navigate("/profile");
+  }
+};
 
   useEffect(() => {
     const fetch = async () => {
@@ -192,7 +205,7 @@ export default function NavbarMenu() {
                 boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
                 position: "sticky",
                 top: 0,
-                zIndex: 999,
+                zIndex: 999,  
               }}
             >
               {promo.topBannerText}{" "}
@@ -356,6 +369,7 @@ export default function NavbarMenu() {
               <Container style={{ width: "70%" }}>
                 <Row style={{ flexWrap: "nowrap", overflowX: "auto" }}>
                   {activeHeader.categories.map((category, idx) => (
+                    <>
                     <Col
                       key={category._id}
                       style={{
@@ -381,8 +395,7 @@ export default function NavbarMenu() {
                         ))}
                       </ul>
                     </Col>
-                  ))}
-                  <Col
+                     <Col
                     style={{
                       minWidth: "200px",
                       marginRight: "20px",
@@ -393,9 +406,9 @@ export default function NavbarMenu() {
                     }}
                   >
                   {
-                    activeHeader.image && (
+                    category.image && (
                     <img
-                      src={activeHeader.image} // replace with your image URL
+                      src={category.image} // replace with your image URL
                       alt="Promo"
                       style={{
                         maxWidth: "100%",
@@ -408,6 +421,9 @@ export default function NavbarMenu() {
                   }
                    
                   </Col>
+                  </>
+                  ))}
+                 
                 </Row>
               </Container>
             </div>

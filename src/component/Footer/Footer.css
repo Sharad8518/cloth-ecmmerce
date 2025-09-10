@@ -58,10 +58,26 @@
   cursor: pointer;
   transition: color 0.3s;
 }
+.footer-links ul li {
+  margin-bottom: 8px;
+  color: #bbb;
+  cursor: pointer;
+  transition: color 0.3s;
+  text-decoration: none;
+}
+
+.footer-links ul li .link {
+  margin-bottom: 8px;
+  color: #bbb;
+  cursor: pointer;
+  transition: color 0.3s;
+  text-decoration: none;
+}
 
 .footer-links ul li:hover {
   color: #00bcd4;
 }
+
 
 .social-icons a {
   margin-right: 12px;
