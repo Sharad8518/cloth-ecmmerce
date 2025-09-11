@@ -532,29 +532,29 @@ export default function ProductDetail() {
                 </button>
               </div>
             )} */}
-             {savedPaddingDetails && (
-              <>
-            <Row style={{fontSize:14}}>
-              <Col>Bust </Col>
-              <Col> : {savedPaddingDetails.bust}</Col>
-            </Row>
-              <Row style={{fontSize:14}}>
-              <Col>Waist</Col>
-              <Col> : {savedPaddingDetails.waist}</Col>
-            </Row>
-              <Row style={{fontSize:14}}>
-              <Col>Length</Col>
-              <Col> : {savedPaddingDetails.length}</Col>
-            </Row>
-              <Row style={{fontSize:14}}>
-              <Col>Hip</Col>
-              <Col> : {savedPaddingDetails.hip}</Col>
-            </Row>
-             <Row style={{fontSize:14}}>
-              <Col>Height</Col>
-              <Col> : {savedPaddingDetails.height}</Col>
-            </Row>
-              <button
+            {savedPaddingDetails && (
+              <div style={{ width: 320 }}>
+                <Row style={{ fontSize: 14 }}>
+                  <Col>Bust </Col>
+                  <Col> : {savedPaddingDetails.bust}</Col>
+                </Row>
+                <Row style={{ fontSize: 14 }}>
+                  <Col>Waist</Col>
+                  <Col> : {savedPaddingDetails.waist}</Col>
+                </Row>
+                <Row style={{ fontSize: 14 }}>
+                  <Col>Length</Col>
+                  <Col> : {savedPaddingDetails.length}</Col>
+                </Row>
+                <Row style={{ fontSize: 14 }}>
+                  <Col>Hip</Col>
+                  <Col> : {savedPaddingDetails.hip}</Col>
+                </Row>
+                <Row style={{ fontSize: 14 }}>
+                  <Col>Height</Col>
+                  <Col> : {savedPaddingDetails.height}</Col>
+                </Row>
+                <button
                   style={{
                     marginLeft: 0,
                     color: "red",
@@ -565,8 +565,8 @@ export default function ProductDetail() {
                 >
                   Remove
                 </button>
-            </>
-                  )}
+              </div>
+            )}
             <div className={styles.detailButtonBar}>
               {(cart?.items || []).some(
                 (item) => item.variant?.sku === selectedSize?.sku
@@ -910,13 +910,15 @@ export default function ProductDetail() {
           </Col>
         </Row>
       </Container>
+      {product?.frequentlyBoughtTogether.length > 0 && (
+        <Frequently items={product?.frequentlyBoughtTogether} />
+      )}
       <br />
-      <br />
-      <Frequently items={product?.frequentlyBoughtTogether} />
-      <br />
-      <div style={{ padding: "2rem", backgroundColor: "#f9f9f9" }}>
-        <SimilarProducts products={product?.similarProducts} />
-      </div>
+      {product?.similarProducts.length > 0 && (
+        <div style={{ backgroundColor: "#f9f9f9" }}>
+          <SimilarProducts products={product?.similarProducts} />
+        </div>
+      )}
       <br />
       <div className={styles.customerHeading}>Customer Review</div>
       <CustomerReviews reviews={reviews} />
@@ -924,11 +926,16 @@ export default function ProductDetail() {
       {isPaddingModalOpen && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
-            <h3>Enter Additional Info Details</h3>
+            <h3>Enter Your Measurements</h3>
             <p
-              style={{ fontSize: "0.9rem", color: "#555", textAlign: "center" }}
+              style={{
+                fontSize: "0.9rem",
+                color: "#555",
+                textAlign: "center",
+                marginTop: -7,
+              }}
             >
-              Provide waist, length, height, bust, and hip for a better fit.
+              Provide proper info for better Fit
             </p>
             <p
               style={{
@@ -936,6 +943,7 @@ export default function ProductDetail() {
                 background: "#ff6f61",
                 color: "#fff",
                 fontWeight: "800",
+                fontSize: 19,
               }}
             >
               Your Standard Size : {selectedSize?.size}{" "}

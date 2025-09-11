@@ -1,10 +1,9 @@
-import React ,{useEffect,useState}from 'react'
-import ProductGrid from '../../layout/ProductGrid/ProductGrid';
-import {getProducts } from '../../api/user/Productapi'
+import React, { useEffect, useState } from "react";
+import ProductGrid from "../../layout/ProductGrid/ProductGrid";
+import { getProducts } from "../../api/user/Productapi";
 import { Pagination, Spinner, Container } from "react-bootstrap";
 import Lottie from "lottie-react";
 import loadingAnimation from "../../../assets/Anim/loading.json";
-
 
 // const products = [
 //   {
@@ -64,7 +63,6 @@ import loadingAnimation from "../../../assets/Anim/loading.json";
 // ];
 
 export default function Product() {
-
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -87,14 +85,15 @@ export default function Product() {
     fetchProducts();
   }, [page]);
 
-if (loading) {
-    return   <div
+  if (loading) {
+    return (
+      <div
         style={{
           height: "100vh",
           width: "100%",
           display: "flex",
           justifyContent: "center",
-          flexDirection:"column",
+          flexDirection: "column",
           alignItems: "center",
           background: "#fff", // optional
         }}
@@ -105,15 +104,15 @@ if (loading) {
           autoplay={true}
           style={{ width: 200, height: 200 }}
         />
-           <p style={{ marginTop: "1rem", fontSize: "18px", color: "#333" }}>
+        <p style={{ marginTop: "1rem", fontSize: "18px", color: "#333" }}>
           Please wait, loading...
         </p>
-      </div> // or a spinner component
+      </div>
+    ); // or a spinner component
   }
 
-
   return (
-   <Container className="my-4">
+    <Container className="my-4">
       <ProductGrid products={products} />
 
       <div className="d-flex justify-content-center mt-4">
@@ -130,5 +129,5 @@ if (loading) {
         </Pagination>
       </div>
     </Container>
-  )
+  );
 }
