@@ -535,23 +535,23 @@ export default function ProductDetail() {
             {savedPaddingDetails && (
               <div style={{ width: 320 }}>
                 <Row style={{ fontSize: 14 }}>
-                  <Col>Bust </Col>
+                  <Col>Bust Size </Col>
                   <Col> : {savedPaddingDetails.bust}</Col>
                 </Row>
                 <Row style={{ fontSize: 14 }}>
-                  <Col>Waist</Col>
+                  <Col>Waist Size</Col>
                   <Col> : {savedPaddingDetails.waist}</Col>
                 </Row>
                 <Row style={{ fontSize: 14 }}>
-                  <Col>Length</Col>
+                  <Col>Full Length Size</Col>
                   <Col> : {savedPaddingDetails.length}</Col>
                 </Row>
                 <Row style={{ fontSize: 14 }}>
-                  <Col>Hip</Col>
+                  <Col>Hip Size</Col>
                   <Col> : {savedPaddingDetails.hip}</Col>
                 </Row>
                 <Row style={{ fontSize: 14 }}>
-                  <Col>Height</Col>
+                  <Col>Height Size</Col>
                   <Col> : {savedPaddingDetails.height}</Col>
                 </Row>
                 <button

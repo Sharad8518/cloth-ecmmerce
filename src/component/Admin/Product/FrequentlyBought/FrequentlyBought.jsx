@@ -8,7 +8,7 @@ export default function FrequentlyBought() {
   const navigate = useNavigate();
   const location = useLocation();
   const { productId, productDetails } = location.state || {};
-
+  const [category, setCategory] = useState("");
   const [allProducts, setAllProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -125,13 +125,32 @@ export default function FrequentlyBought() {
           marginBottom: 10,
         }}
       >
-        <Form.Control
-          type="text"
-          placeholder="Search products..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          style={{ width: 300 }}
-        />
+        <div style={{ display: "flex", gap: "10px" }}>
+          {/* Search Input */}
+          <Form.Control
+            type="text"
+            placeholder="Search products..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{ width: 300 }}
+          />
+
+          {/* Category Select */}
+          <Form.Select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            style={{ width: 200 }}
+          >
+            <option value="">Select Category</option>
+            <option value="Designer Suit">Designer Suit</option>
+            <option value="Indo Western">Indo Western</option>
+            <option value="Kurta Set">Kurta Set</option>
+            <option value="Jwellery">Jwellery</option>
+            <option value="Mens">Mens</option>
+          </Form.Select>
+        </div>
+
+        {/* Show Selected Button */}
         {selectedProducts.length > 0 && (
           <Button variant="primary" onClick={handleOpenModal}>
             Show Selected ({selectedProducts.length})
@@ -159,12 +178,15 @@ export default function FrequentlyBought() {
                   className={styles.smallProductImage}
                 />
                 <Card.Body className="p-2 d-flex flex-column">
-                  <Card.Title className="small mb-1">
+                  <Card.Title
+                    className=" mb-1 text-truncate"
+                    style={{ maxWidth: "200px", fontSize: 14 }}
+                  >
                     {product.title}
                   </Card.Title>
                   <Card.Text
-                    className="text-muted small mb-2"
-                    style={{ flexGrow: 1 }}
+                    className="text-muted small mb-2 text-truncate"
+                    style={{ flexGrow: 1, maxWidth: "200px" }}
                   >
                     {product.description}
                   </Card.Text>
