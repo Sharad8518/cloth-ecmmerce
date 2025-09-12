@@ -136,6 +136,8 @@ export const getProducts = async (queryParams = {}) => {
     const params = {};
     if (queryParams.search) params.search = queryParams.search;
     if (queryParams.title) params.title = queryParams.title;
+    if (queryParams.header) params.header = queryParams.header;
+    if (queryParams.collections) params.collections = queryParams.collections; // comma-separated
     if (queryParams.itemNumber) params.itemNumber = queryParams.itemNumber;
     if (queryParams.status) params.status = queryParams.status;
     if (queryParams.page) params.page = queryParams.page;

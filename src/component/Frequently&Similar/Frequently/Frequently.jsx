@@ -11,7 +11,7 @@ export default function Frequently({ items }) {
     {items.map((item) => (
       <div key={item.id} className={styles.productCard}>
         <div className={styles.imageWrapper}>
-          <img src={item.images[0].url} alt={item.title} className={styles.productImage} />
+          <img src={item.media[0].url} alt={item.title} className={styles.productImage} />
           <input
             type="radio"
             name="frequentlyBought"
@@ -19,7 +19,7 @@ export default function Frequently({ items }) {
             className={styles.radioButton}
           />
         </div>
-        <div className={styles.frequentlyPrice}>Rs {item.price}</div>
+        <div className={styles.frequentlyPrice}>Rs {item.mrp}</div>
         <p className={styles.productTitle}>{item.title}</p>
       </div>
     ))}

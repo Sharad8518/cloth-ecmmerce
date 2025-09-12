@@ -32,6 +32,8 @@ import {
 import { FiEdit3 } from "react-icons/fi";
 import { AiOutlineDelete } from "react-icons/ai";
 import styles from "./Collection.module.css";
+import { getProducts } from "../../../api/user/Productapi";
+import Pagination from "react-bootstrap/Pagination";
 
 export default function Collection() {
   const [headers, setHeaders] = useState([]);
@@ -41,8 +43,15 @@ export default function Collection() {
 
   const [selectedHeader, setSelectedHeader] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectCollection,setSelectionCollection] =useState("")
   const [selectedSubCategory, setSelectedSubCategory] = useState(null);
-
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isloading, setIsLoading] = useState();
+  const [allProducts, setAllProducts] = useState([]);
+  const [category, setCategory] = useState("");
+  const [page, setPage] = useState(1);
+const [pages, setPages] = useState(1);
+const [limit] = useState(12); // 
   const [modal, setModal] = useState({ show: false, entity: "", data: {} });
 
   useEffect(() => {
@@ -54,14 +63,11 @@ export default function Collection() {
     setHeaders(res);
   };
 
-
-
   const fetchCollects = async () => {
     const res = await getCollections();
     setCollections(res);
   };
 
-  
   const loadCollections = async (subCategoryId) => {
     if (!subCategoryId) {
       setCollections([]); // Clear collections if no subcategory selected
@@ -156,6 +162,57 @@ export default function Collection() {
     );
   };
 
+ useEffect(() => {
+  const fetchProducts = async () => {
+    try {
+      setIsLoading(true);
+      const queryParams = {
+        search: searchTerm || undefined,
+        header: category || undefined,
+        collections: selectCollection || undefined,
+        page,
+        limit,
+      };
+      const response = await getProducts(queryParams);
+
+      setAllProducts(response.products);
+      setPages(response.pages); // total pages from backend
+    } catch (error) {
+      console.error("Failed to fetch products:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  fetchProducts();
+}, [searchTerm, category, selectCollection, page, limit]);
+
+
+const renderPagination = () => {
+  let items = [];
+  for (let number = 1; number <= pages; number++) {
+    items.push(
+      <Pagination.Item
+        key={number}
+        active={number === page}
+        onClick={() => setPage(number)}
+      >
+        {number}
+      </Pagination.Item>
+    );
+  }
+
+  return (
+    <Pagination className="justify-content-center mt-3">
+      {items}
+    </Pagination>
+  );
+};
+
+  if (isloading) {
+    return <div>Loading</div>;
+  }
+
   return (
     <Container fluid className="p-4">
       {/* Headers */}
@@ -179,7 +236,7 @@ export default function Collection() {
             </thead>
             <tbody>
               {collections.map((h) => (
-                <tr key={h._id} >
+                <tr key={h._id} onClick={()=>setSelectionCollection(h.name)}>
                   {/* Image Column */}
                   <td>
                     {h.image ? (
@@ -280,6 +337,77 @@ export default function Collection() {
         </Card.Body>
       </Card>
 
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginBottom: 10,
+        }}
+      >
+        <h4>{selectCollection} Collection Product </h4>
+        <div style={{ display: "flex", gap: "10px" }}>
+          {/* Search Input */}
+          <Form.Control
+            type="text"
+            placeholder="Search products..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{ width: 300 }}
+          />
+
+          {/* Category Select */}
+          <Form.Select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            style={{ width: 200 }}
+          >
+            <option value="">Select Category</option>
+            <option value="Designer Suit">Designer Suit</option>
+            <option value="Indo Western">Indo Western</option>
+            <option value="Kurta Set">Kurta Set</option>
+            <option value="Jwellery">Jwellery</option>
+            <option value="Mens">Mens</option>
+          </Form.Select>
+        </div>
+
+        {/* Show Selected Button */}
+      </div>
+      <hr />
+
+      <Row className="g-2">
+        {allProducts?.map((product) => {
+          return (
+            <Col key={product._id} xs={6} sm={3} md={2} lg={2}>
+              <Card
+                className={`h-100 text-center`}
+                style={{ cursor: "pointer" }}
+              >
+                <Card.Img
+                  variant="top"
+                  src={product.media?.[0]?.url}
+                  alt={product.title}
+                  className={styles.smallProductImage}
+                />
+                <Card.Body className="p-2 d-flex flex-column">
+                  <Card.Title
+                    className=" mb-1 text-truncate"
+                    style={{ maxWidth: "200px", fontSize: 14 }}
+                  >
+                    {product.title}
+                  </Card.Title>
+                  <Card.Text
+                    className="text-muted small mb-2 text-truncate"
+                    style={{ flexGrow: 1, maxWidth: "200px" }}
+                  >
+                    {product.description}
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
+          );
+        })}
+      </Row>
+{renderPagination()}
       <Modal
         show={modal.show && modal.entity === "collections"}
         onHide={() => setModal({ show: false, entity: "", data: {} })}

@@ -81,11 +81,7 @@
   color: #111;
 }
 @media (max-width: 768px) {
-  .container {
-  width: 90%;
-  margin: auto;
-  font-family: 'Inter', sans-serif;
-}
+
   .grid {
     justify-content: space-between; /* prevent big gaps */
   }

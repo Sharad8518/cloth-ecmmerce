@@ -395,6 +395,7 @@
     font-weight: 650;
     margin-top: 10px;
     font-size: 17px;
+    flex-wrap: wrap;
     font-family: "Inter", sans-serif;
   }
 
@@ -432,4 +433,12 @@
     flex: 1;
     margin: 0 5px;
   }
+
+  .productContentBox {
+  overflow-y: scroll;
+  height: 100%;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
 }

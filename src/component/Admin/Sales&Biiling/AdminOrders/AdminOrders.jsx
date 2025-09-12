@@ -1,4 +1,4 @@
-import React, { useEffect, useState,useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Table,
   Badge,
@@ -19,7 +19,6 @@ import PrintableOrder from "../PrintableOrder/PrintableOrder";
 
 export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
- 
 
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -93,16 +92,16 @@ export default function AdminOrders() {
     e.preventDefault();
     fetchOrders(1); // reset to page 1 when filters change
   };
-const componentRef = useRef();
-   const handlePrint = useReactToPrint({
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
 
   useEffect(() => {
-  if (selectedOrder) {
-    handlePrint();
-  }
-}, [selectedOrder]);
+    if (selectedOrder) {
+      handlePrint();
+    }
+  }, [selectedOrder]);
 
   const renderPagination = () => {
     let items = [];
@@ -156,8 +155,12 @@ const componentRef = useRef();
                 <option value="">All Status</option>
                 <option value="pending">Pending</option>
                 <option value="processing">Processing</option>
-                <option value="Handcraft In Progress">Handcraft In Progress</option>
-                <option value="Being Tailored For You">Being Tailored For You </option>
+                <option value="Handcraft In Progress">
+                  Handcraft In Progress
+                </option>
+                <option value="Being Tailored For You">
+                  Being Tailored For You{" "}
+                </option>
                 <option value="shipped">Shipped</option>
                 <option value="delivered">Delivered</option>
                 <option value="cancelled">Cancelled</option>
@@ -213,24 +216,32 @@ const componentRef = useRef();
                         {order.user?.name} <br />
                         <small>{order.user?.email}</small>
                       </td>
-                       <td>
+                      <td>
                         <small>{order.shippingAddress?.state}</small>
                       </td>
                       <td>{order.items?.length}</td>
                       <td>₹ {order.totalAmount}</td>
                       <td>{order.payment?.method}</td>
                       <td>
-                        <Badge
-                          bg={
-                            order.payment?.status === "paid"
-                              ? "success"
-                              : order.payment?.status === "pending"
-                              ? "warning"
-                              : "danger"
-                          }
-                        >
-                          {order.payment?.status.toUpperCase()}
-                        </Badge>
+                        {order.payment?.status === "created" ? (
+                          <Badge
+                            bg={"danger"}
+                          >
+                            Failed
+                          </Badge>
+                        ) : (
+                          <Badge
+                            bg={
+                              order.payment?.status === "paid"
+                                ? "success"
+                                : order.payment?.status === "pending"
+                                ? "warning"
+                                : "danger"
+                            }
+                          >
+                            {order.payment?.status.toUpperCase()}
+                          </Badge>
+                        )}
                       </td>
                       <td>
                         <Badge
@@ -268,17 +279,16 @@ const componentRef = useRef();
                         >
                           Update
                         </Button>
-  <Button
-                        size="sm"
-                        variant="outline-success"
-                        onClick={() => {
-                          setSelectedOrder(order);
-                          setTimeout(handlePrint, 100); // wait for ref to update
-                        }}
-                      >
-                        Print
-                      </Button>
-                        
+                        <Button
+                          size="sm"
+                          variant="outline-success"
+                          onClick={() => {
+                            setSelectedOrder(order);
+                            setTimeout(handlePrint, 100); // wait for ref to update
+                          }}
+                        >
+                          Print
+                        </Button>
                       </td>
                     </tr>
                   ))
@@ -292,7 +302,7 @@ const componentRef = useRef();
       )}
 
       {/* Existing Modals remain unchanged */}
-        {/* Modal for Order Details */}
+      {/* Modal for Order Details */}
       <Modal show={showModal} onHide={handleClose} size="lg" centered>
         <Modal.Header closeButton>
           <Modal.Title>Order Details</Modal.Title>
@@ -485,8 +495,12 @@ const componentRef = useRef();
                 >
                   <option value="pending">Pending</option>
                   <option value="processing">Processing</option>
-                  <option value="Handcraft In Progress">Handcraft In Progress</option>
-                  <option value="Being Tailored For You">Being Tailored For You </option>
+                  <option value="Handcraft In Progress">
+                    Handcraft In Progress
+                  </option>
+                  <option value="Being Tailored For You">
+                    Being Tailored For You{" "}
+                  </option>
                   <option value="shipped">Shipped</option>
                   <option value="delivered">Delivered</option>
                   <option value="cancelled">Cancelled</option>
@@ -524,7 +538,7 @@ const componentRef = useRef();
         </Modal.Footer>
       </Modal>
 
-       {/* Hidden printable component */}
+      {/* Hidden printable component */}
       {selectedOrder && (
         <div style={{ display: "none" }}>
           <PrintableOrder ref={componentRef} order={selectedOrder} />

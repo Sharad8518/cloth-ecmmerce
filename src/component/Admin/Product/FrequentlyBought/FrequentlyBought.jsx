@@ -13,29 +13,33 @@ export default function FrequentlyBought() {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const [isloading, setIsLoading] = useState(true);
+  const [isloading, setIsLoading] = useState();
 
   // Fetch all products on mount
   useEffect(() => {
     const fetchProducts = async () => {
+      
       try {
-        const response = await getProducts();
-
-        // response.products contains the array
+        const queryParams = {
+          search: searchTerm || undefined,
+          header: category || undefined, // pass header filter
+         
+        };
+        const response = await getProducts(queryParams);
+        // Exclude current product
         const otherProducts = response.products.filter(
           (p) => String(p._id) !== String(productId)
         );
-
         setAllProducts(otherProducts);
-        setIsLoading(false);
       } catch (error) {
         console.error("Failed to fetch products:", error);
+      } finally {
         setIsLoading(false);
       }
     };
 
     fetchProducts();
-  }, [productId]);
+  }, [productId, searchTerm, category]);
 
   console.log("allProducts", allProducts);
 
@@ -82,7 +86,7 @@ export default function FrequentlyBought() {
         &#8592; Back
       </Button>
 
-      <h2 className="mb-4">Complete the Look (Pair It)</h2>
+      <h2 className="mb-4">Complete the Look </h2>
 
       {/* Current Product */}
       {productDetails && (

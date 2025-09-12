@@ -39,7 +39,7 @@
 }
 
 .productCard {
-  min-width: 120px;
+ max-width: 270px;
   text-align: center;
   background: #f8f8f8;
   border-radius: 8px;
@@ -83,6 +83,12 @@
 .productTitle {
   margin-top: 8px;
   font-size: 0.9rem;
+  width: 100%;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;   /* limit to 2 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* 📱 Mobile view - 2 cards per row */
@@ -95,6 +101,16 @@
     flex: 0 0 calc(50% - 10px); /* two cards in a row with small gap */
     max-width: calc(50% - 10px);
   }
+
+  
+.imageWrapper {
+  position: relative;
+  display: inline-block;
+    width: 150px;
+  height: 200px;
+  overflow: hidden; /* ensures nothing spills out */
+  border-radius: 4px;
+}
 
   .clickadd{
     text-align: center;
