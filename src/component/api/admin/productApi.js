@@ -183,3 +183,8 @@ export const addFBTToProduct = async (productId, fbtIds) => {
   });
   return response.data;
 };
+
+export const onSaleProduct = async(productId,form)=>{
+  const response = await axios.put(`/admin/product/${productId}/sale`,form)
+  return response.data
+}

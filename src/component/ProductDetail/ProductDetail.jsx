@@ -438,7 +438,50 @@ export default function ProductDetail() {
             <div className={styles.detailProductDiscreaption}>
               {product?.description}
             </div>
-            <div className={styles.detailPrize}>Rs. {product?.mrp} /-</div>
+            <div className={styles.detailPrice}>
+              {product?.saleOn ? (
+                <>
+                  <span
+                    style={{
+                      textDecoration: "line-through",
+                      color: "#888",
+                      marginRight: "8px",
+                      fontSize: "0.9rem",
+                    }}
+                  >
+                    Rs. {product?.mrp} /-
+                  </span>
+                  <span
+                    style={{
+                      color: "red",
+                      fontWeight: "bold",
+                      fontSize: "1.1rem",
+                    }}
+                  >
+                    Rs. {product?.salePrice} /-
+                  </span>
+                  {product?.discountType === "percent" && (
+                    <span
+                      style={{
+                        background: "rgba(0, 128, 0, 0.1)", // light green background
+                        color: "#2e7d32", // professional deep green
+                        marginLeft: "8px",
+                        padding: "2px 6px",
+                        borderRadius: "12px", // pill shape
+                        fontSize: "0.75rem",
+                        fontWeight: "600",
+                        letterSpacing: "0.3px",
+                        display: "inline-block",
+                      }}
+                    >
+                      {product?.discountValue}% OFF
+                    </span>
+                  )}
+                </>
+              ) : (
+                <span>Rs. {product?.mrp} /-</span>
+              )}
+            </div>
             <div className={styles.detailMRP}>MRP Inclusive of all size</div>
             <hr />
             {product?.fulfillmentType === "MADE_TO_ORDER" ? (
@@ -569,7 +612,7 @@ export default function ProductDetail() {
             )}
             <div className={styles.detailButtonBar}>
               {(cart?.items || []).some(
-                (item) => item.variant?.sku === selectedSize?.sku
+                (item) => item.variant?.sku === selectedSize?.sku || item.variant?.sku === product._id
               ) ? (
                 <button
                   className={styles.detailAddCartButton}
@@ -624,6 +667,7 @@ export default function ProductDetail() {
                       color: selectedColor || "N/A",
                       quantity: 1,
                       paddingDetails: savedPaddingDetails,
+                      price: product.saleOn ? product.salePrice : product.mrp, 
                     });
                   }}
                 >
@@ -672,7 +716,7 @@ export default function ProductDetail() {
                           ? selectedSize.size
                           : "N/A",
                       color: selectedColor || "N/A",
-                      price: product.mrp,
+                      price: product.saleOn ? product.salePrice : product.mrp, // ✅ use salePrice if on sale
                       paddingDetails: savedPaddingDetails,
                     },
                   };

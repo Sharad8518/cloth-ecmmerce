@@ -15,14 +15,14 @@ import styles from "./OrderList.module.css";
 import { FaShippingFast, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import OrderDetailModal from "../OrderDetailModal";
 import { FaStar } from "react-icons/fa";
-import {addOrUpdateReview} from "../../../api/user/Productapi"
+import { addOrUpdateReview } from "../../../api/user/Productapi";
 import MobileBackButton from "../../../layout/BackButton/MobileBackButton";
 import { useLocation } from "react-router-dom";
 
 // Props: orders = array of orders fetched from API
 const OrderList = ({ orders, totalPages = 1, onPageChange }) => {
-   const location = useLocation();
-  const userName = location.state?.userName; 
+  const location = useLocation();
+  const userName = location.state?.userName;
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [reviewItem, setReviewItem] = useState(null);
@@ -54,8 +54,8 @@ const OrderList = ({ orders, totalPages = 1, onPageChange }) => {
   return (
     <Container className="my-4">
       <div className={styles.headerOrder}>
-      <MobileBackButton/>
-      <h2 className={styles.myoders}>My Orders</h2>
+        <MobileBackButton />
+        <h2 className={styles.myoders}>My Orders</h2>
       </div>
 
       {orders?.length === 0 ? (
@@ -107,17 +107,58 @@ const OrderList = ({ orders, totalPages = 1, onPageChange }) => {
                           SKU: {item?.variant?.sku}
                           <br />
                           Qty: {item?.quantity}
-                          {order.orderStatus === "delivered" && (
-                            <div className="mt-2">
-                              <Button
-                                size="sm"
-                                variant="outline-success"
-                                onClick={() => setReviewItem(item)}
-                              >
-                                Give Review
-                              </Button>
-                            </div>
-                          )}
+                         {order.orderStatus === "delivered" && (
+  <div className="mt-2">
+    {item.product.userReview ? (
+      // ✅ Show existing review
+      <div
+        className="p-3 rounded shadow-sm"
+        style={{
+          backgroundColor: "#f9f9f9",
+          border: "1px solid #eee",
+        }}
+      >
+        {/* Rating Stars */}
+        <div className="d-flex align-items-center mb-1">
+          {[...Array(5)].map((_, i) => (
+            <span
+              key={i}
+              style={{
+                color:
+                  i < item.product.userReview.rating ? "#f4b400" : "#ddd",
+                fontSize: "1rem",
+              }}
+            >
+              ★
+            </span>
+          ))}
+        </div>
+
+        {/* Comment */}
+        <p className="mb-2" style={{ fontSize: "0.9rem", color: "#333" }}>
+          {item.product.userReview.comment}
+        </p>
+
+        {/* User + Date */}
+        <small className="text-muted">
+          by <strong>{item.product.userReview.name}</strong> •{" "}
+          {new Date(item.product.userReview.createdAt).toLocaleDateString()}
+        </small>
+      </div>
+    ) : (
+      // ✅ Show review button if none exists
+      <Button
+        size="sm"
+        variant="success"
+        className="fw-semibold shadow-sm"
+        onClick={() => setReviewItem(item)}
+      >
+        + Write a Review
+      </Button>
+    )}
+  </div>
+)}
+
                         </td>
                         <td>₹ {item?.subtotal}</td>
                       </tr>
@@ -187,80 +228,82 @@ const OrderList = ({ orders, totalPages = 1, onPageChange }) => {
       />
 
       <Modal show={!!reviewItem} onHide={() => setReviewItem(null)} centered>
-  <Modal.Header closeButton>
-    <Modal.Title>
-      Review Product - {reviewItem?.product?.title}
-    </Modal.Title>
-  </Modal.Header>
-  <Modal.Body>
-    <Form>
-      <Form.Group className="mb-3">
-        <Form.Label>Rating</Form.Label>
-        <div>
-          {[1, 2, 3, 4, 5].map((star) => (
-            <FaStar
-              key={star}
-              size={22}
-              className="me-1"
-              color={review.rating >= star ? "gold" : "lightgray"}
-              style={{ cursor: "pointer" }}
-              onClick={() => setReview({ ...review, rating: star })}
-            />
-          ))}
-        </div>
-      </Form.Group>
+        <Modal.Header closeButton>
+          <Modal.Title>
+            Review Product - {reviewItem?.product?.title}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group className="mb-3">
+              <Form.Label>Rating</Form.Label>
+              <div>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <FaStar
+                    key={star}
+                    size={22}
+                    className="me-1"
+                    color={review.rating >= star ? "gold" : "lightgray"}
+                    style={{ cursor: "pointer" }}
+                    onClick={() => setReview({ ...review, rating: star })}
+                  />
+                ))}
+              </div>
+            </Form.Group>
 
-      <Form.Group className="mb-3">
-        <Form.Label>Comment</Form.Label>
-        <Form.Control
-          as="textarea"
-          rows={3}
-          placeholder="Write your review..."
-          value={review.comment}
-          onChange={(e) =>
-            setReview({ ...review, comment: e.target.value })
-          }
-        />
-      </Form.Group>
-    </Form>
-  </Modal.Body>
-  <Modal.Footer>
-    <Button variant="secondary" onClick={() => setReviewItem(null)}>
-      Cancel
-    </Button>
-   <Button
-  variant="success"
-  onClick={async () => {
-    if (!review.comment && review.rating < 1) {
-      alert("Please provide a rating or comment.");
-      return;
-    }
+            <Form.Group className="mb-3">
+              <Form.Label>Comment</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                placeholder="Write your review..."
+                value={review.comment}
+                onChange={(e) =>
+                  setReview({ ...review, comment: e.target.value })
+                }
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setReviewItem(null)}>
+            Cancel
+          </Button>
+          <Button
+            variant="success"
+            onClick={async () => {
+              if (!review.comment && review.rating < 1) {
+                alert("Please provide a rating or comment.");
+                return;
+              }
 
-    try {
-      // Call backend API
-      const response = await addOrUpdateReview(reviewItem?.product?._id, {
-        rating: review.rating,
-        comment: review.comment,
-        userName: userName || "Anonymous", // or get logged in user's name
-        file: review.file || null, // optional if you allow file uploads
-      });
+              try {
+                // Call backend API
+                const response = await addOrUpdateReview(
+                  reviewItem?.product?._id,
+                  {
+                    rating: review.rating,
+                    comment: review.comment,
+                    userName: userName || "Anonymous", // or get logged in user's name
+                    file: review.file || null, // optional if you allow file uploads
+                  }
+                );
 
-      alert(response.message); // "Review added" or "Review updated"
+                alert(response.message); // "Review added" or "Review updated"
 
-      // Reset form
-      setReview({ rating: 5, comment: "" });
-      setReviewItem(null);
-    } catch (err) {
-      console.error("Review error:", err);
-      alert(err.message);
-    }
-  }}
->
-  Submit Review
-</Button>
-  </Modal.Footer>
-</Modal>
-
+                // Reset form
+                setReview({ rating: 5, comment: "" });
+                setReviewItem(null);
+              } catch (err) {
+                console.error("Review error:", err);
+                alert(err.message);
+              }
+            }}
+          >
+            Submit Review
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 };
