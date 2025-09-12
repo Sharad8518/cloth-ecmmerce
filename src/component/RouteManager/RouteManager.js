@@ -14,7 +14,7 @@ import AddNavbar from "../Admin/Navbar/AddNavbar";
 import NavbarManager from "../Admin/Navbar/NavbarManager";
 import HierarchyManager from "../Admin/Dashboard/Hierarchy/HierarchyManager";
 import AllProduct from "../Admin/Product/AllProduct/AllProduct";
-import SimilarProduct from "../Admin/Product/SimilarProduct/SimilarProduct";
+import SimilarProduct from "../AllProduct/SimilarProduct/SimilarProducts";
 import FrequentlyBought from "../Admin/Product/FrequentlyBought/FrequentlyBought";
 import Checkout from "../Checkout/Checkout";
 import Profile from "../User/Profile/Profile";
@@ -40,7 +40,8 @@ import AboutUs from "../AboutUs/AboutUs";
 import TermCondition from "../TermCondition/TermCondition";
 import ReturnExchange from "../Return&Exchange/ReturnExchange";
 import CookiesPolicy from "../CookiesPolicy/CookiesPolicy";
-
+import NotFound from "../NotFound/NotFound";
+import NoInternet from "../NoInternet/NoInternet";
 export default function RouteManager() {
   return (
     <Routes>
@@ -86,6 +87,8 @@ export default function RouteManager() {
           <Route path="Policy" element={<PolicyPage />} />
           <Route path="EditProduct" element={<EditProduct />} />
         </Route>
+           <Route path="*" element={<NotFound />} />
+           <Route path="/no-internet" element={<NoInternet />} />
       </Route>
     </Routes>
   );

@@ -5,12 +5,15 @@ import App from './App';
 import { BrowserRouter } from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import NetworkGuard from './component/NetworkGuard/NetworkGuard';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <GoogleOAuthProvider clientId="672339349923-ngjpcqmem65enrqepn27kbp3cf4kbut4.apps.googleusercontent.com">
      <BrowserRouter>
+      <NetworkGuard>
     <App />
+    </NetworkGuard>
     </BrowserRouter>
     </GoogleOAuthProvider>
   </React.StrictMode>
