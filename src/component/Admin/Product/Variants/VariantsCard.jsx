@@ -43,7 +43,7 @@ function VariantsCard({ product, setProduct, addVariant, updateVariant, removeVa
               <th>Size</th>
               <th>Status</th>
               <th>Qty</th>
-              <th>Low Stock Alert</th>
+              <th>Low Stock</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -57,7 +57,9 @@ function VariantsCard({ product, setProduct, addVariant, updateVariant, removeVa
                   <td>
                     <Form.Select
                       size="sm"
-                      style={{ fontSize: 14 }}
+                      style={{ fontSize: 15,width:100
+
+                       }}
                       value={variant.size || ""}
                       onChange={(e) =>
                         updateVariant(vIndex, "size", e.target.value)
@@ -83,7 +85,7 @@ function VariantsCard({ product, setProduct, addVariant, updateVariant, removeVa
                   <td>
                     <Form.Select
                       size="sm"
-                      style={{ fontSize: 14 }}
+                      style={{ fontSize: 14,width:100 }}
                       value={variant.status || "Active"}
                       onChange={(e) =>
                         updateVariant(vIndex, "status", e.target.value)
@@ -99,7 +101,7 @@ function VariantsCard({ product, setProduct, addVariant, updateVariant, removeVa
                     <Form.Control
                       type="number"
                       size="sm"
-                      style={{ fontSize: 14 }}
+                      style={{ fontSize: 14 ,width:100}}
                       value={variant.stock}
                       onChange={(e) =>
                         updateVariant(
@@ -116,7 +118,7 @@ function VariantsCard({ product, setProduct, addVariant, updateVariant, removeVa
                     <Form.Control
                       type="number"
                       size="sm"
-                      style={{ fontSize: 14 }}
+                      style={{ fontSize: 14,width:100 }}
                       value={variant.lowStockAlertQty}
                       onChange={(e) =>
                         updateVariant(
@@ -133,6 +135,7 @@ function VariantsCard({ product, setProduct, addVariant, updateVariant, removeVa
                     <Button
                       variant="danger"
                       size="sm"
+                      style={{width:100}}
                       onClick={() => removeVariant(vIndex)}
                     >
                       Remove

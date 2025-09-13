@@ -14,7 +14,7 @@ import AddNavbar from "../Admin/Navbar/AddNavbar";
 import NavbarManager from "../Admin/Navbar/NavbarManager";
 import HierarchyManager from "../Admin/Dashboard/Hierarchy/HierarchyManager";
 import AllProduct from "../Admin/Product/AllProduct/AllProduct";
-import SimilarProduct from "../AllProduct/SimilarProduct/SimilarProducts";
+import SimilarProduct from "../Admin/Product/SimilarProduct/SimilarProduct";
 import FrequentlyBought from "../Admin/Product/FrequentlyBought/FrequentlyBought";
 import Checkout from "../Checkout/Checkout";
 import Profile from "../User/Profile/Profile";

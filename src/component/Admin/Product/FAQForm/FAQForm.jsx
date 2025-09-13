@@ -1,9 +1,15 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Form, Button, Card, Row, Col } from "react-bootstrap";
 import { IoAddCircleOutline } from "react-icons/io5";
 
 export default function FAQForm({ product, setProduct }) {
+
   const [faqs, setFaqs] = useState(product.faq || []);
+
+  // Sync local faqs whenever product.faq changes
+  useEffect(() => {
+    setFaqs(product.faq || []);
+  }, [product.faq]);
 
   const handleFAQChange = (index, field, value) => {
     const newFaqs = [...faqs];
@@ -13,7 +19,9 @@ export default function FAQForm({ product, setProduct }) {
   };
 
   const addFAQ = () => {
-    setFaqs([...faqs, { question: "", answer: "" }]);
+    const newFaqs = [...faqs, { question: "", answer: "" }];
+    setFaqs(newFaqs);
+    setProduct((prev) => ({ ...prev, faq: newFaqs }));
   };
 
   const removeFAQ = (index) => {
@@ -21,6 +29,7 @@ export default function FAQForm({ product, setProduct }) {
     setFaqs(newFaqs);
     setProduct((prev) => ({ ...prev, faq: newFaqs }));
   };
+
 
   return (
     <Card className="mt-4 shadow-sm border-0">

@@ -369,7 +369,7 @@ export default function ProductDetail() {
       <NavbarMenu />
       <br /> <br />
       <Container className={styles.ProductDetailContainer}>
-        <MobileBackButton />
+        {/* <MobileBackButton /> */}
 
         <Row className={styles.productDetailRow}>
           {/* <Col md={1} className={styles.vericalImage}>
@@ -479,10 +479,10 @@ export default function ProductDetail() {
                   )}
                 </>
               ) : (
-                <span>Rs. {product?.mrp} /-</span>
+                <span style={{fontWeight:"600"}}>Rs. {product?.mrp} /-</span>
               )}
             </div>
-            <div className={styles.detailMRP}>MRP Inclusive of all size</div>
+            <div className={styles.detailMRP}>Price Inclusive of Tax</div>
             <hr />
             {product?.fulfillmentType === "MADE_TO_ORDER" ? (
               <div className={styles.detailMadeToOrderText}>
@@ -532,6 +532,7 @@ export default function ProductDetail() {
                     inline
                     type="checkbox"
                     id="answer-yes"
+                    style={{width:30,height:30}}
                     checked={answer === "yes"}
                     onChange={(e) => {
                       if (!selectedSize) {
@@ -576,30 +577,30 @@ export default function ProductDetail() {
               </div>
             )} */}
             {savedPaddingDetails && (
-              <div style={{ width: 320 }}>
-                <Row style={{ fontSize: 14 }}>
+              <div style={{ width: 320,marginLeft:10 }}>
+                <Row style={{ fontSize: 14,fontWeight:"600" }}>
                   <Col>Bust Size </Col>
                   <Col> : {savedPaddingDetails.bust}</Col>
                 </Row>
-                <Row style={{ fontSize: 14 }}>
+                <Row style={{ fontSize: 14,fontWeight:"600" }}>
                   <Col>Waist Size</Col>
                   <Col> : {savedPaddingDetails.waist}</Col>
                 </Row>
-                <Row style={{ fontSize: 14 }}>
-                  <Col>Full Length Size</Col>
-                  <Col> : {savedPaddingDetails.length}</Col>
-                </Row>
-                <Row style={{ fontSize: 14 }}>
+                <Row style={{ fontSize: 14, fontWeight:"600"}}>
                   <Col>Hip Size</Col>
                   <Col> : {savedPaddingDetails.hip}</Col>
                 </Row>
-                <Row style={{ fontSize: 14 }}>
-                  <Col>Height Size</Col>
+                <Row style={{ fontSize: 14,fontWeight:"600" }}>
+                  <Col >Full Length</Col>
+                  <Col> : {savedPaddingDetails.length}</Col>
+                </Row>
+                <Row style={{ fontSize: 14,fontWeight:"600" }}>
+                  <Col>Height with heel</Col>
                   <Col> : {savedPaddingDetails.height}</Col>
                 </Row>
                 <button
                   style={{
-                    marginLeft: 0,
+                    marginLeft: -5,
                     color: "red",
                     backgroundColor: "#fff",
                     border: "none",
@@ -955,17 +956,23 @@ export default function ProductDetail() {
         </Row>
       </Container>
       {product?.frequentlyBoughtTogether.length > 0 && (
+        <div style={{ backgroundColor: "#f9f9f9" }}>
         <Frequently items={product?.frequentlyBoughtTogether} />
+        </div>
       )}
       <br />
       {product?.similarProducts.length > 0 && (
-        <div style={{ backgroundColor: "#f9f9f9" }}>
+        <div >
           <SimilarProducts products={product?.similarProducts} />
         </div>
       )}
       <br />
-      <div className={styles.customerHeading}>Customer Review</div>
+     
+      <div style={{ backgroundColor: "#f9f9f9",padding:10,paddingTop:20 }}>
+         <div className={styles.customerHeading}>Customer Review</div>
       <CustomerReviews reviews={reviews} />
+      </div>
+      <br/>
       <Footer />
       {isPaddingModalOpen && (
         <div className={styles.modalOverlay}>

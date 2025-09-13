@@ -144,7 +144,7 @@ export default function AddProduct() {
 
     setCategories(filtered);
     setSubCategories([]);
-    setCollections([]);
+   
   };
   const navigate = useNavigate();
 
@@ -155,7 +155,7 @@ export default function AddProduct() {
     const filtered = (res || []).filter((s) => s?.category?._id === categoryId);
 
     setSubCategories(filtered);
-    setCollections([]);
+ 
   };
 
   const loadCollections = async () => {
@@ -289,20 +289,7 @@ export default function AddProduct() {
     }));
   };
 
-  useEffect(() => {
-    const cost = parseFloat(product.costPrice);
-    const margin = parseFloat(product.marginPercent);
 
-    if (!isNaN(cost) && !isNaN(margin)) {
-      const marginValue = (cost * margin) / 100;
-      const calculatedSalePrice = (cost + marginValue).toFixed(2);
-
-      setProduct((prev) => ({
-        ...prev,
-        salePrice: calculatedSalePrice,
-      }));
-    }
-  }, [product.costPrice, product.marginPercent]);
 
   // Add speciality
   const addSpeciality = () => {
@@ -436,6 +423,7 @@ export default function AddProduct() {
 
                   <Form.Select
                     value={product.header || ""}
+                    style={{ fontSize: 14 }}
                     onChange={async (e) => {
                       const headerTitle = e.target.value;
 
@@ -464,9 +452,10 @@ export default function AddProduct() {
                 </Form.Group>
 
                 <Form.Group className="mb-3">
-                  <Form.Label style={{ fontWeight: "600", fontSize: 15 }}>
+                  <Form.Label style={{ fontWeight: "600", fontSize: 14 }}>
                     Categories <span style={{ color: "red" }}>*</span>
                   </Form.Label>
+
                   <div
                     style={{
                       maxHeight: "150px",
@@ -476,6 +465,11 @@ export default function AddProduct() {
                       padding: "8px",
                     }}
                   >
+                    {categories.length <= 0 && (
+                      <h6 style={{ marginTop: 5, fontSize: 14 }}>
+                        Select a Header to See Category
+                      </h6>
+                    )}
                     {categories?.map((c) =>
                       c ? (
                         <Form.Check
@@ -568,6 +562,11 @@ export default function AddProduct() {
                       padding: "8px",
                     }}
                   >
+                    {subCategories.length <= 0 && (
+                      <h6 style={{ marginTop: 5, fontSize: 14 }}>
+                        Select a Category to see Subcategories
+                      </h6>
+                    )}
                     {subCategories.filter(Boolean).map((sc) => (
                       <Form.Check
                         key={sc._id}
@@ -600,7 +599,7 @@ export default function AddProduct() {
                             }));
 
                             if (sc?._id) {
-                              await loadCollections(sc._id);
+                              // await loadCollections(sc._id);
                             }
                           } else {
                             newSubCategories = (
@@ -751,11 +750,11 @@ export default function AddProduct() {
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label style={{ fontWeight: "600", fontSize: 15 }}>
-                    Description <span style={{ color: "red" }}>*</span>
+                    Short Description <span style={{ color: "red" }}>*</span>
                   </Form.Label>
                   <Form.Control
                     as="textarea"
-                    rows={4}
+                    rows={2}
                     name="description"
                     style={{ fontSize: 14 }}
                     value={product?.description || ""}
@@ -974,13 +973,15 @@ export default function AddProduct() {
                     <option value="" disabled>
                       Product Select
                     </option>
-                    <option value="Cloths">Cloths</option>
+                    <option value="Women_Cloths">Women Cloths</option>
+                      <option value="Men_Cloths">Men Cloths</option>
                     <option value="Jewellery">Jewellery</option>
+                    <option value="Other">Other</option>
                   </Form.Select>
                 </Form.Group>
               </Card.Body>
             </Card>
-            {product.productType === "Cloths" ? (
+            {(product.productType === "Women_Cloths" || product?.productType === "Men_Cloths") && (
               <Card className="mt-3" style={{ padding: "20px" }}>
                 <VariantsCard
                   product={product}
@@ -989,35 +990,7 @@ export default function AddProduct() {
                   updateVariant={updateVariant}
                   removeVariant={removeVariant}
                 />
-              </Card>
-            ) : (
-              <>
-                {product?.productType === "Jewellery" && (
-                  <Card className="mt-3" style={{ padding: "20px" }}>
-                    <Form.Group className="mb-3">
-                      <Form.Label style={{ fontWeight: "600", fontSize: 15 }}>
-                        Quantity <span style={{ color: "red" }}>*</span>
-                      </Form.Label>
-                      <Form.Control
-                        type="number"
-                        name="quantity"
-                        value={product?.quantity || ""}
-                        style={{ fontSize: 14 }}
-                        onChange={(e) =>
-                          handleChange("quantity", e.target.value)
-                        }
-                        required={product?.productType === "Jewellery"} // ✅ required only for Jewellery
-                      />
-                    </Form.Group>
-                  </Card>
-                )}
-              </>
-            )}
-
-            <Card className="mt-3">
-              <Card.Header>Additional Info For Better Fit</Card.Header>
-              <Card.Body>
-                {/* Padding Required */}
+                <br/>
                 <Form.Group className="mb-3">
                   <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
                     Additional Measurement Required?
@@ -1038,78 +1011,33 @@ export default function AddProduct() {
                     Note: Toggle Yes / No. (Can also be ignored by user)
                   </Form.Text>
                 </Form.Group>
-
-                {/* Show only if Padding Required = Yes */}
-                {product.paddingRequired === "Yes" && (
-                  <>
-                    {/* Waist */}
+              </Card>
+            )}
+           
+            
+                {(product?.productType === "Jewellery" || product?.productType === "Other") && (
+                  <Card className="mt-3" style={{ padding: "20px" }}>
                     <Form.Group className="mb-3">
-                      <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
-                        Waist
+                      <Form.Label style={{ fontWeight: "600", fontSize: 15 }}>
+                        Quantity <span style={{ color: "red" }}>*</span>
                       </Form.Label>
-                      <Form.Select
+                      <Form.Control
+                        type="number"
+                        name="quantity"
+                        value={product?.quantity || ""}
                         style={{ fontSize: 14 }}
-                        value={product.waist || ""}
-                        onChange={(e) => handleChange("waist", e.target.value)}
-                      >
-                        <option value="">Select Waist</option>
-                        <option value="25 Inch">25 Inch</option>
-                        <option value="26 Inch">26 Inch</option>
-                        <option value="27 Inch">27 Inch</option>
-                        <option value="28 Inch">28 Inch</option>
-                      </Form.Select>
-                      <Form.Text className="text-muted">
-                        Note: Select from list
-                      </Form.Text>
+                        onChange={(e) =>
+                          handleChange("quantity", e.target.value)
+                        }
+                        required={product?.productType === "Jewellery"} // ✅ required only for Jewellery
+                      />
                     </Form.Group>
-
-                    {/* Length */}
-                    <Form.Group className="mb-3">
-                      <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
-                        Length (Waist to Floor including heel)
-                      </Form.Label>
-                      <Form.Select
-                        style={{ fontSize: 14 }}
-                        value={product.length || ""}
-                        onChange={(e) => handleChange("length", e.target.value)}
-                      >
-                        <option value="">Select Length</option>
-                        <option value="36 Inch (91 cm)">36 Inch (91 cm)</option>
-                        <option value="38 Inch (96 cm)">38 Inch (96 cm)</option>
-                        <option value="40 Inch (102 cm)">
-                          40 Inch (102 cm)
-                        </option>
-                      </Form.Select>
-                      <Form.Text className="text-muted">
-                        Note: Select from list
-                      </Form.Text>
-                    </Form.Group>
-
-                    {/* Height */}
-                    <Form.Group className="mb-3">
-                      <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
-                        Your Height (Including heel)
-                      </Form.Label>
-                      <Form.Select
-                        style={{ fontSize: 14 }}
-                        value={product.height || ""}
-                        onChange={(e) => handleChange("height", e.target.value)}
-                      >
-                        <option value="">Select Height</option>
-                        <option value="5 feet 2 Inch">5 feet 2 Inch</option>
-                        <option value="5 feet 3 Inch">5 feet 3 Inch</option>
-                        <option value="5 feet 4 Inch">5 feet 4 Inch</option>
-                        <option value="5 feet 5 Inch">5 feet 5 Inch</option>
-                      </Form.Select>
-                      <Form.Text className="text-muted">
-                        Note: Select from list
-                      </Form.Text>
-                    </Form.Group>
-                  </>
+                  </Card>
                 )}
-              </Card.Body>
-            </Card>
+             
+          
 
+           
             <Card style={{ marginTop: "20px" }}>
               <Card.Header>Pricing</Card.Header>
               <Card.Body>
@@ -1155,7 +1083,7 @@ export default function AddProduct() {
                 </Row>
 
                 <Row className="mb-3">
-                  <Col md={6}>
+                  <Col md={12}>
                     <Form.Group>
                       <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
                         MRP <span style={{ color: "red" }}>*</span>
@@ -1172,31 +1100,7 @@ export default function AddProduct() {
                       />
                     </Form.Group>
                   </Col>
-                  <Col md={6}>
-                    <Form.Group>
-                      <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
-                        Sale Price
-                      </Form.Label>
-                      <Form.Control
-                        type="number"
-                        name="salePrice"
-                        style={{ fontSize: 14 }}
-                        value={product.salePrice || ""}
-                        onChange={(e) =>
-                          handleChange("salePrice", e.target.value)
-                        }
-                        // placeholder="Auto-calculated or editable"
-                        min="0"
-                      />
-                      <Form.Text
-                        className="text-muted"
-                        style={{ fontSize: 12 }}
-                      >
-                        Auto-calculated from cost + margin, but can be
-                        overridden.
-                      </Form.Text>
-                    </Form.Group>
-                  </Col>
+                 
                 </Row>
                 <GstApplicationForm
                   product={product}
@@ -1302,11 +1206,11 @@ export default function AddProduct() {
                   <Col md={12}>
                     <Form.Group className="mb-3">
                       <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
-                        Short Description
+                        Long Description
                       </Form.Label>
                       <Form.Control
                         as="textarea"
-                        rows={2}
+                        rows={4}
                         style={{ fontSize: 14 }}
                         value={product.shortDescription || ""}
                         onChange={(e) =>
@@ -1375,7 +1279,9 @@ export default function AddProduct() {
                   </Col>
                 </Row>
 
-                <Form.Group className="mb-3">
+                <Row>
+                  <Col md={6}>
+                   <Form.Group className="mb-3">
                   <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
                     Pack Contains
                   </Form.Label>
@@ -1388,6 +1294,27 @@ export default function AddProduct() {
                     // placeholder="Enter items (e.g. Kurta, Dupatta, Bottom)"
                   />
                 </Form.Group>
+                  </Col>
+
+                    <Col md={6}>
+                   <Form.Group className="mb-3">
+                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                    Jewellery Plating
+                  </Form.Label>
+                  <Form.Control
+                    style={{ fontSize: 14 }}
+                    value={product.packContains || ""}
+                    onChange={(e) =>
+                      handleChange("packContains", e.target.value)
+                    }
+                    // placeholder="Enter items (e.g. Kurta, Dupatta, Bottom)"
+                  />
+                </Form.Group>
+                  </Col>
+
+                </Row>
+
+               
 
                 <Row>
                   <Col md={6}>

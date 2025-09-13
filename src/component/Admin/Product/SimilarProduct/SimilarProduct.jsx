@@ -139,7 +139,7 @@ console.log('allProducts',allProducts)
                    <option value="Mens">Mens</option>
                  </Form.Select>
                </div>
-        {selectedProducts.length > 0 && (
+        {selectedProducts?.length > 0 && (
           <Button variant="primary" onClick={handleOpenModal}>
             Show Selected ({selectedProducts.length})
           </Button>
@@ -149,7 +149,7 @@ console.log('allProducts',allProducts)
       {/* Product Grid */}
       <Row className="g-2">
         {allProducts?.map((product) => {
-          const isSelected = selectedProducts.includes(product._id);
+          const isSelected = selectedProducts?.includes(product._id);
           return (
             <Col key={product._id} xs={6} sm={3} md={2} lg={2}>
               <Card

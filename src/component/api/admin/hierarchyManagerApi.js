@@ -44,17 +44,15 @@ export const createHeader = async (data) => {
 
 /* Update Header */
 export const updateHeader = async (id, data) => {
-  const formData = new FormData();
-
-  // Append text fields
-  if (data.title) formData.append("title", data.title);
-  if (data.slug) formData.append("slug", data.slug);
-  if (data.status) formData.append("status", data.status);
-  if (data.showNavbar) formData.append("showNavbar", data.showNavbar);
-  if (data.addCategory) formData.append("addCategory", data.addCategory);
-
-  const response = await axios.put(`/admin/headers/${id}`, formData);
-  return response.data;
+  try {
+    const response = await axios.put(`/admin/headers/${id}`, data, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Failed to update header:", error);
+    throw error;
+  }
 };
 
 /* Delete Header */

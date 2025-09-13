@@ -93,7 +93,6 @@ export default function Header() {
             <thead className="table-light">
               <tr>
                 <th style={{ width: "25%" }}>Name</th>
-                <th>Image</th>
                 <th>Edit</th>
                 <th>Status</th>
                 <th>Show in Navbar</th>
@@ -105,14 +104,7 @@ export default function Header() {
               {headers?.map((h) => (
                 <tr key={h._id}>
                   <td style={{ fontWeight: "bold" }}>{h.title}</td>
-                  <td>
-                    {
-                       h.image && (
-                     <img src={h.image} style={{width:100,height:100}}/>
-                       )
-
-                    }
-                   </td>
+                  
                   <td>
                     <Button
                       size="sm"
@@ -198,92 +190,7 @@ export default function Header() {
               />
             </Form.Group>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Upload Image</Form.Label>
-
-              <div
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  const file = e.dataTransfer.files[0];
-                  if (file && file.type.startsWith("image/")) {
-                    setModal((prev) => ({
-                      ...prev,
-                      data: {
-                        ...prev.data,
-                        imageFile: file,
-                        imagePreview: URL.createObjectURL(file),
-                      },
-                    }));
-                  }
-                }}
-                onClick={() => document.getElementById("fileInput").click()}
-                style={{
-                  border: "2px dashed #aaa",
-                  borderRadius: "10px",
-                  padding: "20px",
-                  textAlign: "center",
-                  cursor: "pointer",
-                  background: "#f9f9f9",
-                }}
-              >
-                <input
-                  id="fileInput"
-                  type="file"
-                  accept="image/*"
-                  style={{ display: "none" }}
-                  onChange={(e) => {
-                    const file = e.target.files[0];
-                    if (file) {
-                      setModal((prev) => ({
-                        ...prev,
-                        data: {
-                          ...prev.data,
-                          imageFile: file,
-                          imagePreview: URL.createObjectURL(file),
-                        },
-                      }));
-                    }
-                  }}
-                />
-
-                {modal.data.imagePreview ? (
-                  <div>
-                    <img
-                      src={modal.data.imagePreview}
-                      alt="Preview"
-                      style={{
-                        maxWidth: "100%",
-                        maxHeight: "150px",
-                        borderRadius: "6px",
-                        marginBottom: "10px",
-                      }}
-                    />
-                    <button
-                      type="button"
-                      className="btn btn-sm btn-outline-danger"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setModal((prev) => ({
-                          ...prev,
-                          data: {
-                            ...prev.data,
-                            imageFile: null,
-                            imagePreview: null,
-                          },
-                        }));
-                      }}
-                    >
-                      Remove Image
-                    </button>
-                  </div>
-                ) : (
-                  <p className="text-muted mb-0">
-                    Drag & drop an image here, or click to select
-                  </p>
-                )}
-              </div>
-            </Form.Group>
+            
 
             <Form.Group className="mb-3">
               <Form.Label>Slug</Form.Label>

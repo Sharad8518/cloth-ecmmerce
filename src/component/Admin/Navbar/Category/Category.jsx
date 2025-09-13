@@ -155,6 +155,8 @@ export default function Category() {
     setModal({ show: true, entity, data });
   };
 
+console.log("modal",modal)
+
   return (
     <Container fluid className="p-4">
       <Card>
@@ -226,7 +228,7 @@ export default function Category() {
         <Col md={6}>
           <Card>
             <Card.Header className="d-flex justify-content-between align-items-center">
-              <strong>Categories</strong>
+              <strong>Categories </strong>
             </Card.Header>
             <ListGroup variant="flush">
               {categories.map((c) => (
@@ -450,10 +452,10 @@ export default function Category() {
                     }}
                   />
 
-                  {modal.data.imagePreview ? (
+                  {modal.data.imagePreview || modal.data.image ? (
                     <div>
                       <img
-                        src={modal.data.imagePreview}
+                        src={modal.data.imagePreview || modal.data.image}
                         alt="Preview"
                         style={{
                           maxWidth: "100%",
@@ -473,6 +475,7 @@ export default function Category() {
                               ...prev.data,
                               imageFile: null,
                               imagePreview: null,
+                              imageUrl: null, // optional: clear stored URL
                             },
                           }));
                         }}

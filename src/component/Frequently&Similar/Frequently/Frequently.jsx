@@ -5,7 +5,7 @@ export default function Frequently({ items }) {
   return (
       <div className={styles.container}>
   <h2 className={styles.frequentlyHeaderText}>Complete the Look</h2>
-  <div className={styles.clickadd}>Click To Add</div>
+ 
   <br />
   <div className={styles.productList}>
     {items.map((item) => (

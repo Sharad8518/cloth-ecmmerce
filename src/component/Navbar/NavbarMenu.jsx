@@ -229,14 +229,12 @@ const handleUserClick = () => {
         >
           <div className="navbar-left">
             {/* <h2 className="logo">ShopMate</h2> */}
-            <h5 style={{ color: "#460201" }}>HOUSE Of ZIBA</h5>
+            <Link to={`/`} style={{ color: "#460201",textDecoration:"none",fontSize:22,fontWeight:"600" }} >HOUSE Of ZIBA</Link>
           </div>
 
           <div className="navbar-center">
             <ul className="nav-links" style={{ marginTop: 10 }}>
-              <li style={{ position: "relative" }}>
-                <Link to={`/`}>Home</Link>
-              </li>
+             
               {collectionMenu.map((header) => (
                 <li
                   key={header._id}
