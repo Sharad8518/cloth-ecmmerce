@@ -120,7 +120,7 @@ function isTokenExpired(token) {
   useEffect(() => {
     const fetchNavbar = async () => {
       try {
-        const res = await axios.get("https://houseofziba-nodejs.onrender.com/api/user/navbar");
+        const res = await axios.get("https://house-of-ziba-new-v2.onrender.com/api/user/navbar");
         const menu = res.data.map((header) => ({
           ...header,
           categories: header?.categories?.map((cat) => ({
