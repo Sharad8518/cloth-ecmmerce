@@ -20,15 +20,13 @@ import Lottie from "lottie-react";
 import loadingAnimation from "../../assets/Anim/loading.json";
 import { useParams } from "react-router-dom";
 
-
 export default function IndoWestern() {
   const { subName } = useParams();
-  
 
   // State to track filters
   const [filters, setFilters] = useState({
-   header: ["Indo Western"],
-    subCategories:Array.isArray(subName) ? subName : subName ? [subName] : [],
+    header: ["Indo Western"],
+    subCategories: Array.isArray(subName) ? subName : subName ? [subName] : [],
     collections: [],
     price: [],
     size: [],
@@ -78,13 +76,12 @@ export default function IndoWestern() {
     }
 
     if (filters.header) {
-    params.header = normalize(filters.header); // pass directly
-  }
-  
-  if (filters.subCategories.length) {
-      params.subCategories = normalize(filters.subCategories);
+      params.header = normalize(filters.header); // pass directly
     }
 
+    if (filters.subCategories.length) {
+      params.subCategories = normalize(filters.subCategories);
+    }
 
     // 📏 Size
     if (filters.size.length) {
@@ -111,8 +108,8 @@ export default function IndoWestern() {
       params.collections = normalize(filters.collections);
     }
 
-      // 👗 Collection → backend expects `categories`
-    
+    // 👗 Collection → backend expects `categories`
+
     // 🧣 Dupatta (⚠️ not in backend code — you may need to add)
     if (filters.dupatta.length) {
       params.dupatta = filters.dupatta;
@@ -245,8 +242,8 @@ export default function IndoWestern() {
       <Container fluid className={styles.categoryProductContainer}>
         <div style={{ display: "flex" }}>
           <BreadcrumbSinglePage />
-          <span style={{ marginTop: 10, marginLeft: 5 }}>  / Indo Western</span>
-          <span style={{ marginTop: 10, marginLeft: 5 }}>  / {subName}</span>
+          <span style={{ marginTop: 10, marginLeft: 5 }}> / Indo Western</span>
+          <span style={{ marginTop: 10, marginLeft: 5 }}> / {subName}</span>
         </div>
         <Row>
           {/* Left Filters */}
@@ -262,10 +259,10 @@ export default function IndoWestern() {
                 <Accordion.Header>Shop by Price</Accordion.Header>
                 <Accordion.Body>
                   {[
-                    "Under ₹500",
-                    "₹500 - ₹1000",
-                    "₹1000 - ₹2000",
-                    "Above ₹2000",
+                    "Under ₹3000",
+                    "₹3000 - ₹6000",
+                    "₹6000 - ₹10000",
+                    "Above ₹10000",
                   ].map((val) => (
                     <Form.Check
                       key={val}
@@ -273,6 +270,64 @@ export default function IndoWestern() {
                       label={val}
                       checked={filters.price.includes(val)}
                       onChange={() => handleFilterChange("price", val)}
+                    />
+                  ))}
+                </Accordion.Body>
+              </Accordion.Item>
+
+              <Accordion.Item eventKey="8">
+                <Accordion.Header>Discount</Accordion.Header>
+                <Accordion.Body>
+                  {["Upto - 10%", "10 - 25%", "25 - 50%", "Above 50%"].map(
+                    (val, idx) => (
+                      <Form.Check
+                        key={idx}
+                        type="checkbox"
+                        label={val}
+                        checked={filters.discount.includes(val)}
+                        onChange={() => handleFilterChange("discount", val)}
+                      />
+                    )
+                  )}
+                </Accordion.Body>
+              </Accordion.Item>
+
+              <Accordion.Item eventKey="6">
+                <Accordion.Header>Occasion</Accordion.Header>
+                <Accordion.Body>
+                  {["Wedding", "Casual", "Party", "Festive"].map((val) => (
+                    <Form.Check
+                      key={val}
+                      type="checkbox"
+                      label={val}
+                      checked={filters.occasion.includes(val)}
+                      onChange={() => handleFilterChange("occasion", val)}
+                    />
+                  ))}
+                </Accordion.Body>
+              </Accordion.Item>
+
+              {/* Color */}
+              <Accordion.Item eventKey="3">
+                <Accordion.Header>Color Shades</Accordion.Header>
+                <Accordion.Body>
+                  {[
+                    "White",
+                    "Pink",
+                    "Red",
+                    "Black",
+                    "Green",
+                    "Blue",
+                    "Yellow",
+                    "Purple",
+                    "Multicolour",
+                  ].map((val) => (
+                    <Form.Check
+                      key={val}
+                      type="checkbox"
+                      label={val}
+                      checked={filters.color.includes(val)}
+                      onChange={() => handleFilterChange("color", val)}
                     />
                   ))}
                 </Accordion.Body>
@@ -311,22 +366,6 @@ export default function IndoWestern() {
                 </Accordion.Body>
               </Accordion.Item>
 
-              {/* Color */}
-              <Accordion.Item eventKey="3">
-                <Accordion.Header>Color</Accordion.Header>
-                <Accordion.Body>
-                  {["Red", "Blue", "Green", "Black", "White"].map((val) => (
-                    <Form.Check
-                      key={val}
-                      type="checkbox"
-                      label={val}
-                      checked={filters.color.includes(val)}
-                      onChange={() => handleFilterChange("color", val)}
-                    />
-                  ))}
-                </Accordion.Body>
-              </Accordion.Item>
-
               {/* Fabric */}
               <Accordion.Item eventKey="4">
                 <Accordion.Header>Fabric</Accordion.Header>
@@ -360,20 +399,6 @@ export default function IndoWestern() {
               </Accordion.Item>
 
               {/* Occasion */}
-              <Accordion.Item eventKey="6">
-                <Accordion.Header>Occasion</Accordion.Header>
-                <Accordion.Body>
-                  {["Wedding", "Casual", "Party", "Festive"].map((val) => (
-                    <Form.Check
-                      key={val}
-                      type="checkbox"
-                      label={val}
-                      checked={filters.occasion.includes(val)}
-                      onChange={() => handleFilterChange("occasion", val)}
-                    />
-                  ))}
-                </Accordion.Body>
-              </Accordion.Item>
 
               {/* Include Dupatta */}
               <Accordion.Item eventKey="7">
@@ -390,88 +415,11 @@ export default function IndoWestern() {
                   ))}
                 </Accordion.Body>
               </Accordion.Item>
-
-              <Accordion.Item eventKey="8">
-                <Accordion.Header>Discount</Accordion.Header>
-                <Accordion.Body>
-                  {[
-                    "10% or more",
-                    "20% or more",
-                    "30% or more",
-                    "40% or more",
-                    "50% or more",
-                  ].map((val, idx) => (
-                    <Form.Check
-                      key={idx}
-                      type="checkbox"
-                      label={val}
-                      checked={filters.discount.includes(val)}
-                      onChange={() => handleFilterChange("discount", val)}
-                    />
-                  ))}
-                </Accordion.Body>
-              </Accordion.Item>
             </Accordion>
           </Col>
 
           {/* Right Product Section */}
           <Col md={10}>
-            {/* Selected filters */}
-            {selectedFilters?.length > 0 && (
-              <div style={{ marginBottom: 20 }}>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 10,
-                    flexWrap: "wrap",
-                  }}
-                >
-                  <strong>Selected Filters:</strong>
-                  {selectedFilters?.map((filter, idx) => (
-                    <Badge
-                      key={idx}
-                      bg="secondary"
-                      style={{
-                        padding: "6px 10px",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "6px",
-                        cursor: "pointer",
-                      }}
-                    >
-                      {filter.value}
-                      <span
-                        onClick={() =>
-                          setFilters((prev) => ({
-                            ...prev,
-                            [filter.type]: prev[filter.type].filter(
-                              (v) => v !== filter.value
-                            ),
-                          }))
-                        }
-                        style={{
-                          marginLeft: 4,
-                          fontWeight: "bold",
-                          color: "#fff",
-                          cursor: "pointer",
-                        }}
-                      >
-                        &times;
-                      </span>
-                    </Badge>
-                  ))}
-                  <Button
-                    variant="outline-danger"
-                    size="sm"
-                    onClick={clearAllFilters}
-                  >
-                    Clear All
-                  </Button>
-                </div>
-              </div>
-            )}
-
             {/* Sorting + Pagination */}
             <div
               style={{

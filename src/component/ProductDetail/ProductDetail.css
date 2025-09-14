@@ -1,30 +1,73 @@
-.slick-slide {
-  height:100vh; /* Or your desired fixed height */
-
+.imageBigSection {
+  position: relative;
 }
 
+.imageBigSection .slick-dots {
+  position: absolute;
+  bottom: 15px; /* distance from bottom of image */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+.imageBigSection .slick-dots li button:before {
+  font-size: 12px;
+  color: white; /* dots color */
+  opacity: 0.8;
+}
+
+.imageBigSection .slick-dots li.slick-active button:before {
+  color: #ffcc00; /* active dot color */
+  opacity: 1;
+}
+
+
+
+.slick-slide {
+  height: 100vh; /* Or your desired fixed height */
+}
+
+
+
 .slick-slide img {
-  height: 100%; /* Ensures the image fills the slide height */
+  height: 100vh; /* Ensures the image fills the slide height */
   object-fit: cover; /* Prevents image stretching and maintains aspect ratio */
+  object-position: center;
+  display: block;
 }
 
 @media (max-width: 768px) {
   .slick-slide {
-    height: 75vh; 
-          
+    height: 75vh;
   }
+ .slick-slide img {
+  height: 75vh; /* Ensures the image fills the slide height */
+  object-fit: cover; /* Prevents image stretching and maintains aspect ratio */
+  object-position: center;
+  display: block;
+}
 }
 
 @media (max-width: 480px) {
   .slick-slide {
-    height: 65vh;  
-               
+    height: 65vh;
   }
+   .slick-slide img {
+  height:  65vh; /* Ensures the image fills the slide height */
+  object-fit: cover; /* Prevents image stretching and maintains aspect ratio */
+  object-position: center;
+  display: block;
+}
 }
 
 @media (max-width: 380px) {
   .slick-slide {
-    height: 73vh;   /* adjust as needed */
-   
+    height: 75vh; /* adjust as needed */
   }
+     .slick-slide img {
+  height: 73vh; /* Ensures the image fills the slide height */
+  object-fit: cover; /* Prevents image stretching and maintains aspect ratio */
+  object-position: center;
+  display: block;
+}
 }

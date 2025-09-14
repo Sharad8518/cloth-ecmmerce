@@ -71,6 +71,7 @@ export default function AddProduct() {
     fabric: "",
     work: "",
     packContains: "",
+    plating:"",
     occasion: "",
     care: "",
     note: "",
@@ -1303,9 +1304,9 @@ export default function AddProduct() {
                   </Form.Label>
                   <Form.Control
                     style={{ fontSize: 14 }}
-                    value={product.packContains || ""}
+                    value={product.plating || ""}
                     onChange={(e) =>
-                      handleChange("packContains", e.target.value)
+                      handleChange("plating", e.target.value)
                     }
                     // placeholder="Enter items (e.g. Kurta, Dupatta, Bottom)"
                   />

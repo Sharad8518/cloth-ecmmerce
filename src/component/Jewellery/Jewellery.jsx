@@ -267,9 +267,9 @@ export default function Jewellery() {
                 <Accordion.Body>
                   {[
                     "Under ₹500",
-                    "₹500 - ₹1000",
-                    "₹1000 - ₹2000",
-                    "Above ₹2000",
+                    "₹500 - ₹1500",
+                    "₹1500 - ₹3000",
+                    "Above ₹3000",
                   ].map((val) => (
                     <Form.Check
                       key={val}
@@ -285,9 +285,9 @@ export default function Jewellery() {
               {/* Other filter sections (category, size, color, etc.) */}
               {/* Example for Category */}
               <Accordion.Item eventKey="1">
-                <Accordion.Header>Collection</Accordion.Header>
+                <Accordion.Header>Plating</Accordion.Header>
                 <Accordion.Body>
-                  {["Sarees", "Lehengas", "Kurtis", "Suits"].map((val) => (
+                  {["Silver Plating", "Gold Plating", "Rose Gold Plating", "Rhodium Plating","None"].map((val) => (
                     <Form.Check
                       key={val}
                       type="checkbox"
@@ -298,28 +298,14 @@ export default function Jewellery() {
                   ))}
                 </Accordion.Body>
               </Accordion.Item>
-              {/* Repeat for Size, Color, Fabric, Craft, Occasion, Dupatta */}
-              {/* Size */}
-              <Accordion.Item eventKey="2">
-                <Accordion.Header>Size</Accordion.Header>
-                <Accordion.Body>
-                  {["XS", "S", "M", "L", "XL"].map((val) => (
-                    <Form.Check
-                      key={val}
-                      type="checkbox"
-                      label={val}
-                      checked={filters.size.includes(val)}
-                      onChange={() => handleFilterChange("size", val)}
-                    />
-                  ))}
-                </Accordion.Body>
-              </Accordion.Item>
+            
+             
 
               {/* Color */}
               <Accordion.Item eventKey="3">
                 <Accordion.Header>Color</Accordion.Header>
                 <Accordion.Body>
-                  {["Red", "Blue", "Green", "Black", "White"].map((val) => (
+                  {["White", "Green", "Blue", "Yellow", "Red","Multicolor"].map((val) => (
                     <Form.Check
                       key={val}
                       type="checkbox"
@@ -331,43 +317,14 @@ export default function Jewellery() {
                 </Accordion.Body>
               </Accordion.Item>
 
-              {/* Fabric */}
-              <Accordion.Item eventKey="4">
-                <Accordion.Header>Fabric</Accordion.Header>
-                <Accordion.Body>
-                  {["Cotton", "Silk", "Chiffon", "Georgette"].map((val) => (
-                    <Form.Check
-                      key={val}
-                      type="checkbox"
-                      label={val}
-                      checked={filters.fabric.includes(val)}
-                      onChange={() => handleFilterChange("fabric", val)}
-                    />
-                  ))}
-                </Accordion.Body>
-              </Accordion.Item>
+             
 
-              {/* Craft */}
-              <Accordion.Item eventKey="5">
-                <Accordion.Header>Craft</Accordion.Header>
-                <Accordion.Body>
-                  {["Embroidery", "Zari", "Block Print"].map((val) => (
-                    <Form.Check
-                      key={val}
-                      type="checkbox"
-                      label={val}
-                      checked={filters.craft.includes(val)}
-                      onChange={() => handleFilterChange("craft", val)}
-                    />
-                  ))}
-                </Accordion.Body>
-              </Accordion.Item>
-
+         
               {/* Occasion */}
               <Accordion.Item eventKey="6">
                 <Accordion.Header>Occasion</Accordion.Header>
                 <Accordion.Body>
-                  {["Wedding", "Casual", "Party", "Festive"].map((val) => (
+                  {["Casual", "Workwear", "Everyday", "Party", "Festive","Gifting"].map((val) => (
                     <Form.Check
                       key={val}
                       type="checkbox"
@@ -379,31 +336,16 @@ export default function Jewellery() {
                 </Accordion.Body>
               </Accordion.Item>
 
-              {/* Include Dupatta */}
-              <Accordion.Item eventKey="7">
-                <Accordion.Header>Include Dupatta</Accordion.Header>
-                <Accordion.Body>
-                  {["Yes", "No"].map((val) => (
-                    <Form.Check
-                      key={val}
-                      type="checkbox"
-                      label={val}
-                      checked={filters.dupatta.includes(val)}
-                      onChange={() => handleFilterChange("dupatta", val)}
-                    />
-                  ))}
-                </Accordion.Body>
-              </Accordion.Item>
-
+            
+             
               <Accordion.Item eventKey="8">
                 <Accordion.Header>Discount</Accordion.Header>
                 <Accordion.Body>
                   {[
-                    "10% or more",
-                    "20% or more",
-                    "30% or more",
-                    "40% or more",
-                    "50% or more",
+                    "Upto - 10%",
+                    "10 - 25%",
+                    "25 - 50%",
+                    "Above 50%",
                   ].map((val, idx) => (
                     <Form.Check
                       key={idx}
@@ -420,61 +362,8 @@ export default function Jewellery() {
 
           {/* Right Product Section */}
           <Col md={10}>
-            {/* Selected filters */}
-            {selectedFilters?.length > 0 && (
-              <div style={{ marginBottom: 20 }}>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 10,
-                    flexWrap: "wrap",
-                  }}
-                >
-                  <strong>Selected Filters:</strong>
-                  {selectedFilters?.map((filter, idx) => (
-                    <Badge
-                      key={idx}
-                      bg="secondary"
-                      style={{
-                        padding: "6px 10px",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "6px",
-                        cursor: "pointer",
-                      }}
-                    >
-                      {filter.value}
-                      <span
-                        onClick={() =>
-                          setFilters((prev) => ({
-                            ...prev,
-                            [filter.type]: prev[filter.type].filter(
-                              (v) => v !== filter.value
-                            ),
-                          }))
-                        }
-                        style={{
-                          marginLeft: 4,
-                          fontWeight: "bold",
-                          color: "#fff",
-                          cursor: "pointer",
-                        }}
-                      >
-                        &times;
-                      </span>
-                    </Badge>
-                  ))}
-                  <Button
-                    variant="outline-danger"
-                    size="sm"
-                    onClick={clearAllFilters}
-                  >
-                    Clear All
-                  </Button>
-                </div>
-              </div>
-            )}
+           
+            
 
             {/* Sorting + Pagination */}
             <div

@@ -25,7 +25,7 @@ export default function Potilis() {
   const { category, subName } = useParams();
   // State to track filters
   const [filters, setFilters] = useState({
-    header: ["Jwellery"],
+    header: ["Potilis"],
     subCategories: Array.isArray(subName) ? subName : subName ? [subName] : [],
     categories: Array.isArray(category) ? category : category ? [category] : [],
     collections: [],
@@ -247,7 +247,7 @@ export default function Potilis() {
       <Container fluid className={styles.categoryProductContainer}>
         <div style={{ display: "flex" }}>
           <BreadcrumbSinglePage />
-          <span style={{ marginTop: 10, marginLeft: 5 }}> / Indo Western</span>
+          <span style={{ marginTop: 10, marginLeft: 5 }}> / Potilis</span>
           <span style={{ marginTop: 10, marginLeft: 5 }}> / {subName}</span>
         </div>
         <Row>
@@ -418,62 +418,8 @@ export default function Potilis() {
 
           {/* Right Product Section */}
           <Col md={10}>
-            {/* Selected filters */}
-            {selectedFilters?.length > 0 && (
-              <div style={{ marginBottom: 20 }}>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 10,
-                    flexWrap: "wrap",
-                  }}
-                >
-                  <strong>Selected Filters:</strong>
-                  {selectedFilters?.map((filter, idx) => (
-                    <Badge
-                      key={idx}
-                      bg="secondary"
-                      style={{
-                        padding: "6px 10px",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "6px",
-                        cursor: "pointer",
-                      }}
-                    >
-                      {filter.value}
-                      <span
-                        onClick={() =>
-                          setFilters((prev) => ({
-                            ...prev,
-                            [filter.type]: prev[filter.type].filter(
-                              (v) => v !== filter.value
-                            ),
-                          }))
-                        }
-                        style={{
-                          marginLeft: 4,
-                          fontWeight: "bold",
-                          color: "#fff",
-                          cursor: "pointer",
-                        }}
-                      >
-                        &times;
-                      </span>
-                    </Badge>
-                  ))}
-                  <Button
-                    variant="outline-danger"
-                    size="sm"
-                    onClick={clearAllFilters}
-                  >
-                    Clear All
-                  </Button>
-                </div>
-              </div>
-            )}
-
+            
+           
             {/* Sorting + Pagination */}
             <div
               style={{

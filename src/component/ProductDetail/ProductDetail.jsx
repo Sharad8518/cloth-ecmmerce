@@ -399,7 +399,7 @@ export default function ProductDetail() {
                 />
               )}
             </div>
-            <div className={styles.imageBigSection}>
+            <div className={`${styles.imageBigSection} imageBigSection `}>
               <Slider
                 ref={sliderRef}
                 dots={true} // show navigation dots
@@ -479,7 +479,7 @@ export default function ProductDetail() {
                   )}
                 </>
               ) : (
-                <span style={{fontWeight:"600"}}>Rs. {product?.mrp} /-</span>
+                <span style={{ fontWeight: "600" }}>Rs. {product?.mrp} /-</span>
               )}
             </div>
             <div className={styles.detailMRP}>Price Inclusive of Tax</div>
@@ -528,11 +528,10 @@ export default function ProductDetail() {
                 </span>
 
                 <div style={{ marginTop: "0px", marginLeft: 10 }}>
-                  <Form.Check
-                    inline
+                  <input
                     type="checkbox"
                     id="answer-yes"
-                    style={{width:30,height:30}}
+                    style={{ width: 25, height: 25, cursor: "pointer" }}
                     checked={answer === "yes"}
                     onChange={(e) => {
                       if (!selectedSize) {
@@ -541,8 +540,8 @@ export default function ProductDetail() {
                       }
                       handleSelect(e.target.checked ? "yes" : "");
                     }}
-                    className={styles.customcheckbox}
                   />
+                 
                 </div>
               </div>
             )}
@@ -577,24 +576,24 @@ export default function ProductDetail() {
               </div>
             )} */}
             {savedPaddingDetails && (
-              <div style={{ width: 320,marginLeft:10 }}>
-                <Row style={{ fontSize: 14,fontWeight:"600" }}>
+              <div style={{ width: 320, marginLeft: 10 }}>
+                <Row style={{ fontSize: 14, fontWeight: "600" }}>
                   <Col>Bust Size </Col>
                   <Col> : {savedPaddingDetails.bust}</Col>
                 </Row>
-                <Row style={{ fontSize: 14,fontWeight:"600" }}>
+                <Row style={{ fontSize: 14, fontWeight: "600" }}>
                   <Col>Waist Size</Col>
                   <Col> : {savedPaddingDetails.waist}</Col>
                 </Row>
-                <Row style={{ fontSize: 14, fontWeight:"600"}}>
+                <Row style={{ fontSize: 14, fontWeight: "600" }}>
                   <Col>Hip Size</Col>
                   <Col> : {savedPaddingDetails.hip}</Col>
                 </Row>
-                <Row style={{ fontSize: 14,fontWeight:"600" }}>
-                  <Col >Full Length</Col>
+                <Row style={{ fontSize: 14, fontWeight: "600" }}>
+                  <Col>Full Length</Col>
                   <Col> : {savedPaddingDetails.length}</Col>
                 </Row>
-                <Row style={{ fontSize: 14,fontWeight:"600" }}>
+                <Row style={{ fontSize: 14, fontWeight: "600" }}>
                   <Col>Height with heel</Col>
                   <Col> : {savedPaddingDetails.height}</Col>
                 </Row>
@@ -613,7 +612,9 @@ export default function ProductDetail() {
             )}
             <div className={styles.detailButtonBar}>
               {(cart?.items || []).some(
-                (item) => item.variant?.sku === selectedSize?.sku || item.variant?.sku === product._id
+                (item) =>
+                  item.variant?.sku === selectedSize?.sku ||
+                  item.variant?.sku === product._id
               ) ? (
                 <button
                   className={styles.detailAddCartButton}
@@ -668,7 +669,7 @@ export default function ProductDetail() {
                       color: selectedColor || "N/A",
                       quantity: 1,
                       paddingDetails: savedPaddingDetails,
-                      price: product.saleOn ? product.salePrice : product.mrp, 
+                      price: product.saleOn ? product.salePrice : product.mrp,
                     });
                   }}
                 >
@@ -957,22 +958,21 @@ export default function ProductDetail() {
       </Container>
       {product?.frequentlyBoughtTogether.length > 0 && (
         <div style={{ backgroundColor: "#f9f9f9" }}>
-        <Frequently items={product?.frequentlyBoughtTogether} />
+          <Frequently items={product?.frequentlyBoughtTogether} />
         </div>
       )}
       <br />
       {product?.similarProducts.length > 0 && (
-        <div >
+        <div>
           <SimilarProducts products={product?.similarProducts} />
         </div>
       )}
       <br />
-     
-      <div style={{ backgroundColor: "#f9f9f9",padding:10,paddingTop:20 }}>
-         <div className={styles.customerHeading}>Customer Review</div>
-      <CustomerReviews reviews={reviews} />
+      <div style={{ backgroundColor: "#f9f9f9", padding: 10, paddingTop: 20 }}>
+        <div className={styles.customerHeading}>Customer Review</div>
+        <CustomerReviews reviews={reviews} />
       </div>
-      <br/>
+      <br />
       <Footer />
       {isPaddingModalOpen && (
         <div className={styles.modalOverlay}>

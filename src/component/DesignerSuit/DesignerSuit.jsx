@@ -23,6 +23,7 @@ import { useParams } from "react-router-dom";
 
 export default function DesignerSuit() {
 const { category,subName } = useParams();
+console.log('subName',subName)
   
 
   // State to track filters
@@ -41,6 +42,7 @@ const { category,subName } = useParams();
     discount: [], // example: [10, 50] → between 10% and 50%
   });
 
+ 
   // Data from API
   const [products, setProducts] = useState([]);
   const [banner, setBanner] = useState([]);
@@ -168,7 +170,7 @@ const { category,subName } = useParams();
   // Run whenever filters, page, or sort change
   useEffect(() => {
     fetchProducts();
-  }, [filters, currentPage, sortBy]);
+  }, [filters, currentPage, sortBy,subName]);
 
   // Handle filter change
   const handleFilterChange = (type, value) => {
@@ -255,7 +257,7 @@ const { category,subName } = useParams();
         </div>
         <Row>
           {/* Left Filters */}
-          <Col
+         <Col
             md={2}
             style={{ background: "#f8f9fa", padding: "20px" }}
             className={styles.filterBox}
@@ -267,10 +269,10 @@ const { category,subName } = useParams();
                 <Accordion.Header>Shop by Price</Accordion.Header>
                 <Accordion.Body>
                   {[
-                    "Under ₹500",
-                    "₹500 - ₹1000",
-                    "₹1000 - ₹2000",
-                    "Above ₹2000",
+                    "Under ₹3000",
+                    "₹3000 - ₹6000",
+                    "₹6000 - ₹10000",
+                    "Above ₹10000",
                   ].map((val) => (
                     <Form.Check
                       key={val}
@@ -278,6 +280,64 @@ const { category,subName } = useParams();
                       label={val}
                       checked={filters.price.includes(val)}
                       onChange={() => handleFilterChange("price", val)}
+                    />
+                  ))}
+                </Accordion.Body>
+              </Accordion.Item>
+
+              <Accordion.Item eventKey="8">
+                <Accordion.Header>Discount</Accordion.Header>
+                <Accordion.Body>
+                  {["Upto - 10%", "10 - 25%", "25 - 50%", "Above 50%"].map(
+                    (val, idx) => (
+                      <Form.Check
+                        key={idx}
+                        type="checkbox"
+                        label={val}
+                        checked={filters.discount.includes(val)}
+                        onChange={() => handleFilterChange("discount", val)}
+                      />
+                    )
+                  )}
+                </Accordion.Body>
+              </Accordion.Item>
+
+              <Accordion.Item eventKey="6">
+                <Accordion.Header>Occasion</Accordion.Header>
+                <Accordion.Body>
+                  {["Wedding", "Casual", "Party", "Festive"].map((val) => (
+                    <Form.Check
+                      key={val}
+                      type="checkbox"
+                      label={val}
+                      checked={filters.occasion.includes(val)}
+                      onChange={() => handleFilterChange("occasion", val)}
+                    />
+                  ))}
+                </Accordion.Body>
+              </Accordion.Item>
+
+              {/* Color */}
+              <Accordion.Item eventKey="3">
+                <Accordion.Header>Color Shades</Accordion.Header>
+                <Accordion.Body>
+                  {[
+                    "White",
+                    "Pink",
+                    "Red",
+                    "Black",
+                    "Green",
+                    "Blue",
+                    "Yellow",
+                    "Purple",
+                    "Multicolour",
+                  ].map((val) => (
+                    <Form.Check
+                      key={val}
+                      type="checkbox"
+                      label={val}
+                      checked={filters.color.includes(val)}
+                      onChange={() => handleFilterChange("color", val)}
                     />
                   ))}
                 </Accordion.Body>
@@ -316,22 +376,6 @@ const { category,subName } = useParams();
                 </Accordion.Body>
               </Accordion.Item>
 
-              {/* Color */}
-              <Accordion.Item eventKey="3">
-                <Accordion.Header>Color</Accordion.Header>
-                <Accordion.Body>
-                  {["Red", "Blue", "Green", "Black", "White"].map((val) => (
-                    <Form.Check
-                      key={val}
-                      type="checkbox"
-                      label={val}
-                      checked={filters.color.includes(val)}
-                      onChange={() => handleFilterChange("color", val)}
-                    />
-                  ))}
-                </Accordion.Body>
-              </Accordion.Item>
-
               {/* Fabric */}
               <Accordion.Item eventKey="4">
                 <Accordion.Header>Fabric</Accordion.Header>
@@ -365,20 +409,6 @@ const { category,subName } = useParams();
               </Accordion.Item>
 
               {/* Occasion */}
-              <Accordion.Item eventKey="6">
-                <Accordion.Header>Occasion</Accordion.Header>
-                <Accordion.Body>
-                  {["Wedding", "Casual", "Party", "Festive"].map((val) => (
-                    <Form.Check
-                      key={val}
-                      type="checkbox"
-                      label={val}
-                      checked={filters.occasion.includes(val)}
-                      onChange={() => handleFilterChange("occasion", val)}
-                    />
-                  ))}
-                </Accordion.Body>
-              </Accordion.Item>
 
               {/* Include Dupatta */}
               <Accordion.Item eventKey="7">
@@ -395,87 +425,12 @@ const { category,subName } = useParams();
                   ))}
                 </Accordion.Body>
               </Accordion.Item>
-
-              <Accordion.Item eventKey="8">
-                <Accordion.Header>Discount</Accordion.Header>
-                <Accordion.Body>
-                  {[
-                    "10% or more",
-                    "20% or more",
-                    "30% or more",
-                    "40% or more",
-                    "50% or more",
-                  ].map((val, idx) => (
-                    <Form.Check
-                      key={idx}
-                      type="checkbox"
-                      label={val}
-                      checked={filters.discount.includes(val)}
-                      onChange={() => handleFilterChange("discount", val)}
-                    />
-                  ))}
-                </Accordion.Body>
-              </Accordion.Item>
             </Accordion>
           </Col>
 
           {/* Right Product Section */}
           <Col md={10}>
-            {/* Selected filters */}
-            {selectedFilters?.length > 0 && (
-              <div style={{ marginBottom: 20 }}>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 10,
-                    flexWrap: "wrap",
-                  }}
-                >
-                  <strong>Selected Filters:</strong>
-                  {selectedFilters?.map((filter, idx) => (
-                    <Badge
-                      key={idx}
-                      bg="secondary"
-                      style={{
-                        padding: "6px 10px",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "6px",
-                        cursor: "pointer",
-                      }}
-                    >
-                      {filter.value}
-                      <span
-                        onClick={() =>
-                          setFilters((prev) => ({
-                            ...prev,
-                            [filter.type]: prev[filter.type].filter(
-                              (v) => v !== filter.value
-                            ),
-                          }))
-                        }
-                        style={{
-                          marginLeft: 4,
-                          fontWeight: "bold",
-                          color: "#fff",
-                          cursor: "pointer",
-                        }}
-                      >
-                        &times;
-                      </span>
-                    </Badge>
-                  ))}
-                  <Button
-                    variant="outline-danger"
-                    size="sm"
-                    onClick={clearAllFilters}
-                  >
-                    Clear All
-                  </Button>
-                </div>
-              </div>
-            )}
+        
 
             {/* Sorting + Pagination */}
             <div
