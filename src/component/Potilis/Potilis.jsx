@@ -252,169 +252,138 @@ export default function Potilis() {
         </div>
         <Row>
           {/* Left Filters */}
-          <Col
-            md={2}
-            style={{ background: "#f8f9fa", padding: "20px" }}
-            className={styles.filterBox}
-          >
-            <h5>Filters</h5>
-            <Accordion defaultActiveKey="0" alwaysOpen>
-              {/* Price */}
-              <Accordion.Item eventKey="0">
-                <Accordion.Header>Shop by Price</Accordion.Header>
-                <Accordion.Body>
-                  {[
-                    "Under ₹500",
-                    "₹500 - ₹1000",
-                    "₹1000 - ₹2000",
-                    "Above ₹2000",
-                  ].map((val) => (
-                    <Form.Check
-                      key={val}
-                      type="checkbox"
-                      label={val}
-                      checked={filters.price.includes(val)}
-                      onChange={() => handleFilterChange("price", val)}
-                    />
-                  ))}
-                </Accordion.Body>
-              </Accordion.Item>
-
-              {/* Other filter sections (category, size, color, etc.) */}
-              {/* Example for Category */}
-              <Accordion.Item eventKey="1">
-                <Accordion.Header>Collection</Accordion.Header>
-                <Accordion.Body>
-                  {["Sarees", "Lehengas", "Kurtis", "Suits"].map((val) => (
-                    <Form.Check
-                      key={val}
-                      type="checkbox"
-                      label={val}
-                      checked={filters.collections.includes(val)}
-                      onChange={() => handleFilterChange("collections", val)}
-                    />
-                  ))}
-                </Accordion.Body>
-              </Accordion.Item>
-              {/* Repeat for Size, Color, Fabric, Craft, Occasion, Dupatta */}
-              {/* Size */}
-              <Accordion.Item eventKey="2">
-                <Accordion.Header>Size</Accordion.Header>
-                <Accordion.Body>
-                  {["XS", "S", "M", "L", "XL"].map((val) => (
-                    <Form.Check
-                      key={val}
-                      type="checkbox"
-                      label={val}
-                      checked={filters.size.includes(val)}
-                      onChange={() => handleFilterChange("size", val)}
-                    />
-                  ))}
-                </Accordion.Body>
-              </Accordion.Item>
-
-              {/* Color */}
-              <Accordion.Item eventKey="3">
-                <Accordion.Header>Color</Accordion.Header>
-                <Accordion.Body>
-                  {["Red", "Blue", "Green", "Black", "White"].map((val) => (
-                    <Form.Check
-                      key={val}
-                      type="checkbox"
-                      label={val}
-                      checked={filters.color.includes(val)}
-                      onChange={() => handleFilterChange("color", val)}
-                    />
-                  ))}
-                </Accordion.Body>
-              </Accordion.Item>
-
-              {/* Fabric */}
-              <Accordion.Item eventKey="4">
-                <Accordion.Header>Fabric</Accordion.Header>
-                <Accordion.Body>
-                  {["Cotton", "Silk", "Chiffon", "Georgette"].map((val) => (
-                    <Form.Check
-                      key={val}
-                      type="checkbox"
-                      label={val}
-                      checked={filters.fabric.includes(val)}
-                      onChange={() => handleFilterChange("fabric", val)}
-                    />
-                  ))}
-                </Accordion.Body>
-              </Accordion.Item>
-
-              {/* Craft */}
-              <Accordion.Item eventKey="5">
-                <Accordion.Header>Craft</Accordion.Header>
-                <Accordion.Body>
-                  {["Embroidery", "Zari", "Block Print"].map((val) => (
-                    <Form.Check
-                      key={val}
-                      type="checkbox"
-                      label={val}
-                      checked={filters.craft.includes(val)}
-                      onChange={() => handleFilterChange("craft", val)}
-                    />
-                  ))}
-                </Accordion.Body>
-              </Accordion.Item>
-
-              {/* Occasion */}
-              <Accordion.Item eventKey="6">
-                <Accordion.Header>Occasion</Accordion.Header>
-                <Accordion.Body>
-                  {["Wedding", "Casual", "Party", "Festive"].map((val) => (
-                    <Form.Check
-                      key={val}
-                      type="checkbox"
-                      label={val}
-                      checked={filters.occasion.includes(val)}
-                      onChange={() => handleFilterChange("occasion", val)}
-                    />
-                  ))}
-                </Accordion.Body>
-              </Accordion.Item>
-
-              {/* Include Dupatta */}
-              <Accordion.Item eventKey="7">
-                <Accordion.Header>Include Dupatta</Accordion.Header>
-                <Accordion.Body>
-                  {["Yes", "No"].map((val) => (
-                    <Form.Check
-                      key={val}
-                      type="checkbox"
-                      label={val}
-                      checked={filters.dupatta.includes(val)}
-                      onChange={() => handleFilterChange("dupatta", val)}
-                    />
-                  ))}
-                </Accordion.Body>
-              </Accordion.Item>
-
-              <Accordion.Item eventKey="8">
-                <Accordion.Header>Discount</Accordion.Header>
-                <Accordion.Body>
-                  {[
-                    "10% or more",
-                    "20% or more",
-                    "30% or more",
-                    "40% or more",
-                    "50% or more",
-                  ].map((val, idx) => (
-                    <Form.Check
-                      key={idx}
-                      type="checkbox"
-                      label={val}
-                      checked={filters.discount.includes(val)}
-                      onChange={() => handleFilterChange("discount", val)}
-                    />
-                  ))}
-                </Accordion.Body>
-              </Accordion.Item>
-            </Accordion>
-          </Col>
+            <Col
+                      md={2}
+                      style={{ background: "#f8f9fa", padding: "20px" }}
+                      className={styles.filterBox}
+                    >
+                      <h5>Filters</h5>
+                      <Accordion defaultActiveKey="0" alwaysOpen>
+                        {/* Price */}
+                        <Accordion.Item eventKey="0">
+                          <Accordion.Header>Shop by Price</Accordion.Header>
+                          <Accordion.Body>
+                            {[
+                              "Under ₹3000",
+                              "₹3000 - ₹6000",
+                              "₹6000 - ₹10000",
+                              "Above ₹10000",
+                            ].map((val) => (
+                              <Form.Check
+                                key={val}
+                                type="checkbox"
+                                label={val}
+                                checked={filters.price.includes(val)}
+                                onChange={() => handleFilterChange("price", val)}
+                              />
+                            ))}
+                          </Accordion.Body>
+                        </Accordion.Item>
+          
+                        <Accordion.Item eventKey="8">
+                          <Accordion.Header>Discount</Accordion.Header>
+                          <Accordion.Body>
+                            {["Upto - 10%", "10 - 25%", "25 - 50%", "Above 50%"].map(
+                              (val, idx) => (
+                                <Form.Check
+                                  key={idx}
+                                  type="checkbox"
+                                  label={val}
+                                  checked={filters.discount.includes(val)}
+                                  onChange={() => handleFilterChange("discount", val)}
+                                />
+                              )
+                            )}
+                          </Accordion.Body>
+                        </Accordion.Item>
+          
+                    
+          
+                        {/* Color */}
+                        <Accordion.Item eventKey="3">
+                          <Accordion.Header>Color Shades</Accordion.Header>
+                          <Accordion.Body>
+                            {[
+                              "White",
+                              "Pink",
+                              "Red",
+                              "Black",
+                              "Green",
+                              "Blue",
+                              "Yellow",
+                              "Purple",
+                              "Multicolour",
+                            ].map((val) => (
+                              <Form.Check
+                                key={val}
+                                type="checkbox"
+                                label={val}
+                                checked={filters.color.includes(val)}
+                                onChange={() => handleFilterChange("color", val)}
+                              />
+                            ))}
+                          </Accordion.Body>
+                        </Accordion.Item>
+          
+                        {/* Other filter sections (category, size, color, etc.) */}
+                        {/* Example for Category */}
+                        <Accordion.Item eventKey="1">
+                          <Accordion.Header>Collection</Accordion.Header>
+                          <Accordion.Body>
+                            {["Sarees", "Lehengas", "Kurtis", "Suits"].map((val) => (
+                              <Form.Check
+                                key={val}
+                                type="checkbox"
+                                label={val}
+                                checked={filters.collections.includes(val)}
+                                onChange={() => handleFilterChange("collections", val)}
+                              />
+                            ))}
+                          </Accordion.Body>
+                        </Accordion.Item>
+                        {/* Repeat for Size, Color, Fabric, Craft, Occasion, Dupatta */}
+                       
+                       
+          
+                        {/* Fabric */}
+                        <Accordion.Item eventKey="4">
+                          <Accordion.Header>Fabric</Accordion.Header>
+                          <Accordion.Body>
+                            {["Cotton", "Silk", "Chiffon", "Georgette"].map((val) => (
+                              <Form.Check
+                                key={val}
+                                type="checkbox"
+                                label={val}
+                                checked={filters.fabric.includes(val)}
+                                onChange={() => handleFilterChange("fabric", val)}
+                              />
+                            ))}
+                          </Accordion.Body>
+                        </Accordion.Item>
+          
+                        {/* Craft */}
+                        <Accordion.Item eventKey="5">
+                          <Accordion.Header>Craft</Accordion.Header>
+                          <Accordion.Body>
+                            {["Embroidery", "Zari", "Block Print"].map((val) => (
+                              <Form.Check
+                                key={val}
+                                type="checkbox"
+                                label={val}
+                                checked={filters.craft.includes(val)}
+                                onChange={() => handleFilterChange("craft", val)}
+                              />
+                            ))}
+                          </Accordion.Body>
+                        </Accordion.Item>
+          
+                        {/* Occasion */}
+          
+                       
+                       
+                      </Accordion>
+                    </Col>
+          
 
           {/* Right Product Section */}
           <Col md={10}>

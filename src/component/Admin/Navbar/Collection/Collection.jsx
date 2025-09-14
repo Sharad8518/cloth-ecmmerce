@@ -34,6 +34,7 @@ import { AiOutlineDelete } from "react-icons/ai";
 import styles from "./Collection.module.css";
 import { getProducts } from "../../../api/user/Productapi";
 import Pagination from "react-bootstrap/Pagination";
+import { addCollectionToProducts } from "../../../api/admin/productApi";
 
 export default function Collection() {
   const [headers, setHeaders] = useState([]);
@@ -43,15 +44,15 @@ export default function Collection() {
 
   const [selectedHeader, setSelectedHeader] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [selectCollection,setSelectionCollection] =useState("")
+  const [selectCollection, setSelectionCollection] = useState("");
   const [selectedSubCategory, setSelectedSubCategory] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [isloading, setIsLoading] = useState();
+  const [isloading, setIsLoading] = useState(true);
   const [allProducts, setAllProducts] = useState([]);
   const [category, setCategory] = useState("");
   const [page, setPage] = useState(1);
-const [pages, setPages] = useState(1);
-const [limit] = useState(12); // 
+  const [pages, setPages] = useState(1);
+  const [limit] = useState(12); //
   const [modal, setModal] = useState({ show: false, entity: "", data: {} });
 
   useEffect(() => {
@@ -162,56 +163,98 @@ const [limit] = useState(12); //
     );
   };
 
- useEffect(() => {
-  const fetchProducts = async () => {
-    try {
-      setIsLoading(true);
-      const queryParams = {
-        search: searchTerm || undefined,
-        header: category || undefined,
-        collections: selectCollection || undefined,
-        page,
-        limit,
-      };
-      const response = await getProducts(queryParams);
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const queryParams = {
+          search: searchTerm || undefined,
+          header: category || undefined,
+          page,
+          limit,
+        };
+        const response = await getProducts(queryParams);
 
-      setAllProducts(response.products);
-      setPages(response.pages); // total pages from backend
+        setAllProducts(response.products);
+        setPages(response.pages); // total pages from backend
+      } catch (error) {
+        console.error("Failed to fetch products:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [searchTerm, category, page, limit]);
+
+  const renderPagination = () => {
+    let items = [];
+    for (let number = 1; number <= pages; number++) {
+      items.push(
+        <Pagination.Item
+          key={number}
+          active={number === page}
+          onClick={() => setPage(number)}
+        >
+          {number}
+        </Pagination.Item>
+      );
+    }
+
+    return (
+      <Pagination className="justify-content-center mt-3">{items}</Pagination>
+    );
+  };
+  const [showProductModal, setShowProductModal] = useState(false);
+ const [selectedProducts, setSelectedProducts] = useState([]);
+  const [collectionProducts, setCollectionProducts] = useState([]);
+  const [selectedCollectionName, setSelectedCollectionName] = useState("");
+const [showModal, setShowModal] = useState(false);
+    const handleOpenModal = () => setShowModal(true);
+  const handleCloseModal = () => setShowModal(false);
+  const fetchProductsByCollection = async (collectionName) => {
+    try {
+      const response = await getProducts({
+        collections: collectionName,
+        page: 1,
+        limit: 50, // adjust as needed
+      });
+      setCollectionProducts(response.products || []);
+      setSelectedCollectionName(collectionName);
+      setShowProductModal(true);
     } catch (error) {
-      console.error("Failed to fetch products:", error);
+      console.error("Failed to fetch collection products:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  fetchProducts();
-}, [searchTerm, category, selectCollection, page, limit]);
-
-
-const renderPagination = () => {
-  let items = [];
-  for (let number = 1; number <= pages; number++) {
-    items.push(
-      <Pagination.Item
-        key={number}
-        active={number === page}
-        onClick={() => setPage(number)}
-      >
-        {number}
-      </Pagination.Item>
+  const removeProduct = (id) =>
+    setSelectedProducts(selectedProducts.filter((pid) => pid !== id));
+  const handleViewFullImage = (url) => window.open(url, "_blank");
+   const toggleSelectProduct = (id) => {
+    setSelectedProducts((prev) =>
+      prev.includes(id) ? prev.filter((pid) => pid !== id) : [...prev, id]
     );
-  }
+  };
+    const handleSubmitSimilar = async () => {
+      try {
+        // await addSimilarToProduct(productId, selectedProducts );
+        await addCollectionToProducts(selectCollection,selectedProducts)
+        alert("Collections products added successfully ✅");
+        setSelectedProducts([]);
+        handleCloseModal();
+      } catch (err) {
+        console.error("Error:", err);
+        alert("Failed to add similar products ❌");
+      }
+    };
 
-  return (
-    <Pagination className="justify-content-center mt-3">
-      {items}
-    </Pagination>
-  );
-};
+
 
   if (isloading) {
     return <div>Loading</div>;
   }
+  
 
   return (
     <Container fluid className="p-4">
@@ -232,11 +275,14 @@ const renderPagination = () => {
                 <th>Active/Inactive</th>
                 <th>Show in Navbar</th>
                 <th>Delete</th>
+                <th>
+                  <center>Collection Product</center>
+                </th>
               </tr>
             </thead>
             <tbody>
-              {collections.map((h) => (
-                <tr key={h._id} onClick={()=>setSelectionCollection(h.name)}>
+              {collections?.map((h) => (
+                <tr key={h._id} onClick={() => setSelectionCollection(h.name)}  style={{backgroundColor:selectCollection === h.name ?"green":"transaparent"}}>
                   {/* Image Column */}
                   <td>
                     {h.image ? (
@@ -324,6 +370,21 @@ const renderPagination = () => {
                       <AiOutlineDelete />
                     </Button>
                   </td>
+
+                  <td>
+                    <center>
+                      <Button
+                        size="sm"
+                        style={{ width: "100px", height: 30 }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          fetchProductsByCollection(h.name);
+                        }}
+                      >
+                        Show
+                      </Button>
+                    </center>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -344,8 +405,13 @@ const renderPagination = () => {
           marginBottom: 10,
         }}
       >
-        <h4>{selectCollection} Collection Product </h4>
+        <h4>{selectCollection}</h4>
         <div style={{ display: "flex", gap: "10px" }}>
+          {selectedProducts?.length > 0 && (
+                    <Button variant="primary" onClick={handleOpenModal}>
+                      Show Selected ({selectedProducts.length})
+                    </Button>
+                  )}
           {/* Search Input */}
           <Form.Control
             type="text"
@@ -376,11 +442,13 @@ const renderPagination = () => {
 
       <Row className="g-2">
         {allProducts?.map((product) => {
+             const isSelected = selectedProducts?.includes(product._id);
           return (
             <Col key={product._id} xs={6} sm={3} md={2} lg={2}>
               <Card
                 className={`h-100 text-center`}
                 style={{ cursor: "pointer" }}
+                onClick={() => toggleSelectProduct(product._id)}
               >
                 <Card.Img
                   variant="top"
@@ -401,13 +469,22 @@ const renderPagination = () => {
                   >
                     {product.description}
                   </Card.Text>
+                  <Form.Check
+                    type="checkbox"
+                    label="Select"
+                    checked={isSelected}
+                    onChange={(e) =>
+                      e.stopPropagation() || toggleSelectProduct(product._id)
+                    }
+                    className="small"
+                  />
                 </Card.Body>
               </Card>
             </Col>
           );
         })}
       </Row>
-{renderPagination()}
+      {renderPagination()}
       <Modal
         show={modal.show && modal.entity === "collections"}
         onHide={() => setModal({ show: false, entity: "", data: {} })}
@@ -548,6 +625,166 @@ const renderPagination = () => {
           </Button>
           <Button variant="primary" onClick={saveCollectionEntity}>
             Save
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal
+        show={showProductModal}
+        onHide={() => setShowProductModal(false)}
+        size="lg"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>{selectedCollectionName} - Products</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {collectionProducts.length > 0 ? (
+            <Row className="g-2">
+              {collectionProducts.map((product) => (
+                <Col key={product._id} xs={6} sm={4} md={3}>
+                  <Card className="h-100 text-center">
+                    <Card.Img
+                      variant="top"
+                      src={product.media?.[0]?.url}
+                      alt={product.title}
+                      style={{
+                        // height: "120px",
+                        objectFit: "cover",
+                      }}
+                    />
+                    <Card.Body className="p-2">
+                      <Card.Title
+                        className="mb-1 text-truncate"
+                        style={{ fontSize: 14 }}
+                      >
+                        {product.title}
+                      </Card.Title>
+                      <Card.Text
+                        className="text-muted small mb-0 text-truncate"
+                        style={{ fontSize: 12 }}
+                      >
+                        {product.description}
+                      </Card.Text>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+          ) : (
+            <p>No products found in this collection.</p>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => setShowProductModal(false)}
+          >
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showModal} onHide={handleCloseModal} size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>Selected Products</Modal.Title>
+          
+        </Modal.Header>
+        <h5 style={{marginTop:0,background:"#dfe6e9",padding:10,textAlign:"center",fontSize:15}}>{selectCollection}</h5>
+        <Modal.Body>
+          {selectedProducts.length === 0 ? (
+            <p>No products selected.</p>
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                overflowX: "auto",
+                gap: "12px",
+                padding: "8px 0",
+              }}
+            >
+              {selectedProducts.map((id) => {
+                const product = allProducts.find((p) => p._id === id);
+                if (!product) return null;
+
+                return (
+                  <div
+                    key={product._id}
+                    style={{
+                      minWidth: 140,
+                      maxWidth: 140,
+                      flex: "0 0 auto",
+                      border: "1px solid #ddd",
+                      borderRadius: 8,
+                      overflow: "hidden",
+                      position: "relative",
+                      background: "#fff",
+                    }}
+                  >
+                    <img
+                      src={product.media?.[0]?.url}
+                      alt={product.title}
+                      style={{
+                        width: "100%",
+                        height: 100,
+                        objectFit: "cover",
+                        cursor: "pointer",
+                      }}
+                      onClick={() =>
+                        handleViewFullImage(product.media?.[0]?.url)
+                      }
+                    />
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      style={{
+                        position: "absolute",
+                        top: 4,
+                        right: 4,
+                        borderRadius: "50%",
+                        padding: "2px 8px",
+                        lineHeight: 1,
+                      }}
+                      onClick={() => removeProduct(product._id)}
+                    >
+                      ×
+                    </Button>
+                    <div style={{ padding: 6 }}>
+                      <div
+                        style={{
+                          fontSize: 12,
+                          fontWeight: 600,
+                          marginBottom: 2,
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
+                        {product.title}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 11,
+                          color: "#666",
+                          height: 32,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
+                        {product.description}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleSubmitSimilar} disabled={!selectCollection} >
+            Submit
           </Button>
         </Modal.Footer>
       </Modal>

@@ -160,3 +160,21 @@ export const onSaleProduct = async(productId,form)=>{
   const response = await axios.put(`/admin/product/${productId}/sale`,form)
   return response.data
 }
+
+// ✅ Add a collection to multiple products
+export const addCollectionToProducts = async (collection, productIds) => {
+  const response = await axios.put(`/admin/products/collections/add`, {
+    collection,
+    productIds,
+  });
+  return response.data;
+};
+
+// ✅ Remove a collection from multiple products
+export const removeCollectionFromProducts = async (collection, productIds) => {
+  const response = await axios.put(`/admin/products/collections/remove`, {
+    collection,
+    productIds,
+  });
+  return response.data;
+};
