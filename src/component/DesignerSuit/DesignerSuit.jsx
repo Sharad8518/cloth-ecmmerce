@@ -305,7 +305,15 @@ console.log('subName',subName)
               <Accordion.Item eventKey="6">
                 <Accordion.Header>Occasion</Accordion.Header>
                 <Accordion.Body>
-                  {["Wedding", "Casual", "Party", "Festive"].map((val) => (
+                  {[
+                    "Casual",
+                    "Workwear",
+                    "Everyday",
+                    "Party",
+                    "Wedding",
+                    "Festive",
+                    "Gifting",
+                  ].map((val) => (
                     <Form.Check
                       key={val}
                       type="checkbox"
@@ -343,44 +351,28 @@ console.log('subName',subName)
                 </Accordion.Body>
               </Accordion.Item>
 
-              {/* Other filter sections (category, size, color, etc.) */}
-              {/* Example for Category */}
-              <Accordion.Item eventKey="1">
-                <Accordion.Header>Collection</Accordion.Header>
-                <Accordion.Body>
-                  {["Sarees", "Lehengas", "Kurtis", "Suits"].map((val) => (
-                    <Form.Check
-                      key={val}
-                      type="checkbox"
-                      label={val}
-                      checked={filters.collections.includes(val)}
-                      onChange={() => handleFilterChange("collections", val)}
-                    />
-                  ))}
-                </Accordion.Body>
-              </Accordion.Item>
-              {/* Repeat for Size, Color, Fabric, Craft, Occasion, Dupatta */}
-              {/* Size */}
-              <Accordion.Item eventKey="2">
-                <Accordion.Header>Size</Accordion.Header>
-                <Accordion.Body>
-                  {["XS", "S", "M", "L", "XL"].map((val) => (
-                    <Form.Check
-                      key={val}
-                      type="checkbox"
-                      label={val}
-                      checked={filters.size.includes(val)}
-                      onChange={() => handleFilterChange("size", val)}
-                    />
-                  ))}
-                </Accordion.Body>
-              </Accordion.Item>
-
               {/* Fabric */}
               <Accordion.Item eventKey="4">
                 <Accordion.Header>Fabric</Accordion.Header>
                 <Accordion.Body>
-                  {["Cotton", "Silk", "Chiffon", "Georgette"].map((val) => (
+                  {[
+                    "Silk",
+                    "Modal Silk",
+                    "Glass Silk",
+                    "Shimmer Silk",
+                    "Organza Silk",
+                    "Viscose Silk",
+                    "Cotton Silk",
+                    ,
+                    "Tissue",
+                    "Geogett",
+                    "Crepe",
+                    "Shaneel(Chenille)",
+                    "Velvet",
+                    "Chanderi",
+                    "Linen",
+                    "Cotton",
+                  ].map((val) => (
                     <Form.Check
                       key={val}
                       type="checkbox"
@@ -396,7 +388,22 @@ console.log('subName',subName)
               <Accordion.Item eventKey="5">
                 <Accordion.Header>Craft</Accordion.Header>
                 <Accordion.Body>
-                  {["Embroidery", "Zari", "Block Print"].map((val) => (
+                  {[
+                    "Dabka Work",
+                    "Mirror Work",
+                    "Resham Work",
+                    "Sequins Work",
+                    "Bead Work",
+                    "Pearl Work",
+                    "Sarahi Work",
+                    "Kahmiri Tilla",
+                    "Pitta Work",
+                    "Zardosi",
+                    "Anchor Threads",
+                    "Machine Threads",
+                    "Hand Painting",
+                    "Block Painting",
+                  ].map((val) => (
                     <Form.Check
                       key={val}
                       type="checkbox"
@@ -408,10 +415,7 @@ console.log('subName',subName)
                 </Accordion.Body>
               </Accordion.Item>
 
-              {/* Occasion */}
-
-              {/* Include Dupatta */}
-              <Accordion.Item eventKey="7">
+               <Accordion.Item eventKey="7">
                 <Accordion.Header>Include Dupatta</Accordion.Header>
                 <Accordion.Body>
                   {["Yes", "No"].map((val) => (
@@ -425,8 +429,47 @@ console.log('subName',subName)
                   ))}
                 </Accordion.Body>
               </Accordion.Item>
+
+              {/* Other filter sections (category, size, color, etc.) */}
+              {/* Example for Category */}
+              {/* <Accordion.Item eventKey="1">
+                <Accordion.Header>Collection</Accordion.Header>
+                <Accordion.Body>
+                  {["Sarees", "Lehengas", "Kurtis", "Suits"].map((val) => (
+                    <Form.Check
+                      key={val}
+                      type="checkbox"
+                      label={val}
+                      checked={filters.collections.includes(val)}
+                      onChange={() => handleFilterChange("collections", val)}
+                    />
+                  ))}
+                </Accordion.Body>
+              </Accordion.Item> */}
+              {/* Repeat for Size, Color, Fabric, Craft, Occasion, Dupatta */}
+              {/* Size */}
+              <Accordion.Item eventKey="2">
+                <Accordion.Header>Size</Accordion.Header>
+                <Accordion.Body>
+                  {["XS", "S", "M", "L", "XL","XXL","3XL","4XL"].map((val) => (
+                    <Form.Check
+                      key={val}
+                      type="checkbox"
+                      label={val}
+                      checked={filters.size.includes(val)}
+                      onChange={() => handleFilterChange("size", val)}
+                    />
+                  ))}
+                </Accordion.Body>
+              </Accordion.Item>
+
+              {/* Occasion */}
+
+              {/* Include Dupatta */}
+             
             </Accordion>
           </Col>
+
 
           {/* Right Product Section */}
           <Col md={10}>

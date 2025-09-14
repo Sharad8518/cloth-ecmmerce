@@ -8,37 +8,84 @@ if (token) {
 /* ---------------- Add Product ---------------- */
 export const addProduct = async (productData) => {
   const formData = new FormData();
+  // --- Simple fields ---
+  formData.append("title", productData.title || "");
+  formData.append("itemNumber", productData.itemNumber || "");
+  formData.append("description", productData.description || "");
+  formData.append("mrp", productData.mrp || "");
+  formData.append("costPrice", productData.costPrice || "");
+  formData.append("marginPercent", productData.marginPercent || "");
+  formData.append("quantity", productData.quantity || "");
+  formData.append("salePrice", productData.salePrice || "");
+  formData.append("colour", productData.colour || "");
+  formData.append("fulfillmentType", productData.fulfillmentType || "");
+  formData.append("productType", productData.productType || "");
+  formData.append("occasion", productData.occasion || "");
+  formData.append("estimatedShippingDays", productData.estimatedShippingDays || "");
+  formData.append("productSpeciality", productData.productSpeciality || "");
+  formData.append("styleNo", productData.styleNo || "");
+  formData.append("fabric", productData.fabric || "");
+  formData.append("work", productData.work || "");
+  formData.append("packContains", productData.packContains || "");
+  formData.append("care", productData.care || "");
+  formData.append("note", productData.note || "");
+  formData.append("plating", productData.plating || "");
+  formData.append("shortDescription", productData.shortDescription || "");
+  formData.append("dupatta", productData.dupatta || "");
+  formData.append("productionDetail", productData.productionDetail || "");
+  formData.append("styleAndFit", productData.styleAndFit || "");
 
-  // Append media files separately (use the actual File object)
+  // --- Arrays (convert to JSON) ---
+  if (productData.keywords?.length) {
+    formData.append("keywords", JSON.stringify(productData.keywords));
+  }
+
+  if (productData.variants?.length) {
+    formData.append("variants", JSON.stringify(productData.variants));
+  }
+
+ if (productData.categories?.length) {
+  productData.categories.forEach((cat) => {
+    formData.append("categories[]", cat);
+  });
+}
+
+// --- SubCategories ---
+if (productData.subCategories?.length) {
+  productData.subCategories.forEach((sub) => {
+    formData.append("subCategories[]", sub);
+  });
+}
+
+// --- Collections ---
+if (productData.collections?.length) {
+  productData.collections.forEach((col) => {
+    formData.append("collections[]", col);
+  });
+}
+  if (productData.faq?.length) {
+    formData.append("faq", JSON.stringify(productData.faq));
+  }
+
+  // --- Objects ---
+  if (productData.shippingAndReturns) {
+    formData.append("shippingAndReturns", JSON.stringify(productData.shippingAndReturns));
+  }
+
+  if (productData.seo) {
+    formData.append("seo", JSON.stringify(productData.seo));
+  }
+
+  // --- Media (actual files) ---
   if (productData.media && productData.media.length > 0) {
     productData.media.forEach((m) => {
-      formData.append("images", m.file); // ✅ actual File
+      if (m.file) {
+        formData.append("images", m.file); // file upload
+      }
     });
   }
 
-  // Normalize array fields before appending
-  const arrayFields = ["categories", "subCategories", "collections"];
-
-  Object.keys(productData).forEach((key) => {
-    if (key !== "media") {
-      let value = productData[key];
-
-      // ✅ Ensure array fields are properly stringified
-      if (arrayFields.includes(key)) {
-        if (Array.isArray(value)) {
-          formData.append(key, JSON.stringify(value));
-        } else if (typeof value === "string") {
-          // if coming as single string like "Kurta"
-          formData.append(key, JSON.stringify([value]));
-        }
-      } else if (value && typeof value === "object") {
-        formData.append(key, JSON.stringify(value));
-      } else if (value !== undefined && value !== null) {
-        formData.append(key, value);
-      }
-    }
-  });
-
+  // --- API Call ---
   const response = await axios.post("/admin/products", formData, {
     headers: {
       "Content-Type": "multipart/form-data",
@@ -47,6 +94,7 @@ export const addProduct = async (productData) => {
 
   return response.data;
 };
+
 
 export const editProduct = async (productId, productData) => {
   const response = await axios.put(
@@ -58,8 +106,6 @@ export const editProduct = async (productId, productData) => {
   );
   return response.data;
 };
-
-
 
 /**
  * Edit product media
@@ -156,10 +202,10 @@ export const addFBTToProduct = async (productId, fbtIds) => {
   return response.data;
 };
 
-export const onSaleProduct = async(productId,form)=>{
-  const response = await axios.put(`/admin/product/${productId}/sale`,form)
-  return response.data
-}
+export const onSaleProduct = async (productId, form) => {
+  const response = await axios.put(`/admin/product/${productId}/sale`, form);
+  return response.data;
+};
 
 // ✅ Add a collection to multiple products
 export const addCollectionToProducts = async (collection, productIds) => {

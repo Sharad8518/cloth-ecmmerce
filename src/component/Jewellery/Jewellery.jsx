@@ -282,63 +282,7 @@ export default function Jewellery() {
                 </Accordion.Body>
               </Accordion.Item>
 
-              {/* Other filter sections (category, size, color, etc.) */}
-              {/* Example for Category */}
-              <Accordion.Item eventKey="1">
-                <Accordion.Header>Plating</Accordion.Header>
-                <Accordion.Body>
-                  {["Silver Plating", "Gold Plating", "Rose Gold Plating", "Rhodium Plating","None"].map((val) => (
-                    <Form.Check
-                      key={val}
-                      type="checkbox"
-                      label={val}
-                      checked={filters.collections.includes(val)}
-                      onChange={() => handleFilterChange("collections", val)}
-                    />
-                  ))}
-                </Accordion.Body>
-              </Accordion.Item>
-            
-             
-
-              {/* Color */}
-              <Accordion.Item eventKey="3">
-                <Accordion.Header>Color</Accordion.Header>
-                <Accordion.Body>
-                  {["White", "Green", "Blue", "Yellow", "Red","Multicolor"].map((val) => (
-                    <Form.Check
-                      key={val}
-                      type="checkbox"
-                      label={val}
-                      checked={filters.color.includes(val)}
-                      onChange={() => handleFilterChange("color", val)}
-                    />
-                  ))}
-                </Accordion.Body>
-              </Accordion.Item>
-
-             
-
-         
-              {/* Occasion */}
-              <Accordion.Item eventKey="6">
-                <Accordion.Header>Occasion</Accordion.Header>
-                <Accordion.Body>
-                  {["Casual", "Workwear", "Everyday", "Party", "Festive","Gifting"].map((val) => (
-                    <Form.Check
-                      key={val}
-                      type="checkbox"
-                      label={val}
-                      checked={filters.occasion.includes(val)}
-                      onChange={() => handleFilterChange("occasion", val)}
-                    />
-                  ))}
-                </Accordion.Body>
-              </Accordion.Item>
-
-            
-             
-              <Accordion.Item eventKey="8">
+                <Accordion.Item eventKey="8">
                 <Accordion.Header>Discount</Accordion.Header>
                 <Accordion.Body>
                   {[
@@ -357,6 +301,83 @@ export default function Jewellery() {
                   ))}
                 </Accordion.Body>
               </Accordion.Item>
+
+                {/* Occasion */}
+              <Accordion.Item eventKey="6">
+                <Accordion.Header>Occasion</Accordion.Header>
+                <Accordion.Body>
+                  {["Casual", "Workwear", "Everyday", "Party", "Festivel","Gifting"].map((val) => (
+                    <Form.Check
+                      key={val}
+                      type="checkbox"
+                      label={val}
+                      checked={filters.occasion.includes(val)}
+                      onChange={() => handleFilterChange("occasion", val)}
+                    />
+                  ))}
+                </Accordion.Body>
+              </Accordion.Item>
+
+                 {/* Color */}
+              <Accordion.Item eventKey="3">
+                <Accordion.Header>Color</Accordion.Header>
+                <Accordion.Body>
+                  {["Golden Finish", "Silver Finish", "Antique Finish", "Dual Stone Finish", "Green Stone","Blue Stone","Yellow Stone","Multicolor"].map((val) => (
+                    <Form.Check
+                      key={val}
+                      type="checkbox"
+                      label={val}
+                      checked={filters.color.includes(val)}
+                      onChange={() => handleFilterChange("color", val)}
+                    />
+                  ))}
+                </Accordion.Body>
+              </Accordion.Item>
+
+              <Accordion.Item eventKey="9">
+                <Accordion.Header>Material</Accordion.Header>
+                <Accordion.Body>
+                  {["Brass", "Cropper", "Nickel Silver", "Stainless Steel", "Alloy"].map((val) => (
+                    <Form.Check
+                      key={val}
+                      type="checkbox"
+                      label={val}
+                      checked={filters.color.includes(val)}
+                      onChange={() => handleFilterChange("material", val)}
+                    />
+                  ))}
+                </Accordion.Body>
+              </Accordion.Item>
+
+              {/* Other filter sections (category, size, color, etc.) */}
+              {/* Example for Category */}
+              <Accordion.Item eventKey="1">
+                <Accordion.Header>Plating</Accordion.Header>
+                <Accordion.Body>
+                  {["Silver Plating", "Gold Plating", "Rose Gold Plating", "Rhodium Plating","Oxidized"].map((val) => (
+                    <Form.Check
+                      key={val}
+                      type="checkbox"
+                      label={val}
+                      checked={filters.collections.includes(val)}
+                      onChange={() => handleFilterChange("collections", val)}
+                    />
+                  ))}
+                </Accordion.Body>
+              </Accordion.Item>
+            
+             
+
+           
+
+             
+
+         
+            
+
+            
+             
+            
             </Accordion>
           </Col>
 
