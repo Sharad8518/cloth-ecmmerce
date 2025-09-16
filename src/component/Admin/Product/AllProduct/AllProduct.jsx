@@ -15,11 +15,20 @@ import {
   ButtonGroup,
   OverlayTrigger,
   Tooltip,
+  Tab,
+  Nav,
+  Accordion,
 } from "react-bootstrap";
-import { editProductMedia, getProducts } from "../../../api/admin/productApi";
+import {
+  editProductMedia,
+  getProducts,
+  addOrUpdateReview,
+  verifyReview,
+} from "../../../api/admin/productApi";
+import { MdReviews } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import SaleModal from "../SaleModal/SaleModal";
-
+import { FaStar } from "react-icons/fa";
 import {
   FaEdit,
   FaTrash,
@@ -28,6 +37,7 @@ import {
   FaTags,
   FaCopy,
   FaRandom,
+  FaTimes,
 } from "react-icons/fa";
 
 // -------------------- Product Row --------------------
@@ -39,6 +49,7 @@ const ProductRow = ({
   onDelete,
   onViewMore,
   onEditMedia,
+  onAddReview,
   onSale,
 }) => {
   const navigate = useNavigate();
@@ -50,7 +61,11 @@ const ProductRow = ({
       <tr>
         <td>{(page - 1) * limit + index + 1}</td>
         <td>{product.itemNumber || "-"}</td>
+        <td>
+          <img src={product.media[0].url} style={{ width: 50, height: 50 }} />
+        </td>
         <td>{product.title || "-"}</td>
+        <td>{product.categories[0] || "-"}</td>
         <td>₹{product.mrp || "-"}</td>
         <td>
           {product.saleOn ? (
@@ -63,6 +78,8 @@ const ProductRow = ({
             </Badge>
           )}
         </td>
+        <td>{product.availableStock}</td>
+         <td>{product.sold}</td>
         <td>
           <Badge pill bg={product.status === "ACTIVE" ? "success" : "warning"}>
             {product.status || "-"}
@@ -133,6 +150,10 @@ const ProductRow = ({
                 <FaEdit className="me-2 text-secondary" /> Edit Media
               </Dropdown.Item>
 
+              <Dropdown.Item onClick={() => onAddReview(product)}>
+                <MdReviews className="me-2 text-secondary" /> Add Review
+              </Dropdown.Item>
+
               <Dropdown.Divider />
 
               <Dropdown.Item onClick={() => onViewMore(product)}>
@@ -155,54 +176,309 @@ const ProductRow = ({
 };
 
 // -------------------- Product Details Modal --------------------
-const ProductModal = ({ product, show, onHide }) => (
-  <Modal show={show} onHide={onHide} size="lg" centered>
-    <Modal.Header closeButton>
-      <Modal.Title>{product?.title || "Product Details"}</Modal.Title>
-    </Modal.Header>
-    <Modal.Body>
-      {product ? (
-        <div>
-          <p>
-            <strong>Item Number:</strong> {product.itemNumber}
-          </p>
-          <p>
-            <strong>Description:</strong> {product.description || "-"}
-          </p>
-          <p>
-            <strong>Price:</strong> ₹{product.mrp}
-          </p>
-          <p>
-            <strong>On Sale:</strong> {product.saleOn ? "Yes" : "No"}
-          </p>
-          <p>
-            <strong>Status:</strong> {product.status}
-          </p>
-          <p>
-            <strong>Fabric:</strong> {product.productDetail?.fabric || "-"}
-          </p>
-          <p>
-            <strong>Work:</strong> {product.productDetail?.work || "-"}
-          </p>
-          <p>
-            <strong>Care:</strong> {product.productDetail?.care || "-"}
-          </p>
-          <p>
-            <strong>Pack Contains:</strong>{" "}
-            {product.productDetail?.packContains || "-"}
-          </p>
-        </div>
-      ) : (
-        <p>No product selected.</p>
-      )}
-    </Modal.Body>
-    <Modal.Footer>
-      <Button variant="secondary" onClick={onHide}>
-        Close
-      </Button>
-    </Modal.Footer>
-  </Modal>
-);
+const ProductModal = ({ product, show, onHide }) => {
+  if (!product) return null;
+
+  const discount =
+    product.saleOn && product.discountValue
+      ? product.discountType === "percent"
+        ? `${product.discountValue}% OFF`
+        : `₹${product.discountValue} OFF`
+      : null;
+
+ const handleToggleVerify = async (reviewId) => {
+  try {
+    const response = await verifyReview(product._id, reviewId);
+    alert(response.message);
+  } catch (err) {
+    console.error(err);
+    alert(err.message);
+  }
+};
+ 
+
+  return (
+    <Modal show={show} onHide={onHide} size="lg" centered>
+      <Modal.Header closeButton>
+        <Modal.Title>{product?.title || "Product Details"}</Modal.Title>
+      </Modal.Header>
+
+      <Modal.Body>
+        <Row>
+          {/* --- Media --- */}
+          <Col md={5} className="mb-3">
+            {product.media && product.media.length > 0 ? (
+              <img
+                src={product.media[0].url}
+                alt={product.media[0].alt || product.title}
+                className="img-fluid rounded shadow-sm"
+              />
+            ) : (
+              <div className="bg-light text-center py-5 rounded">
+                No Image Available
+              </div>
+            )}
+          </Col>
+
+          {/* --- Product Info --- */}
+          <Col md={7}>
+            <h5>{product.title}</h5>
+            <p className="text-muted">
+              {product.shortDescription || product.description}
+            </p>
+
+            <h4 className="fw-bold">
+              ₹
+              {product.saleOn && product.salePrice
+                ? product.salePrice
+                : product.mrp}{" "}
+              {product.saleOn && (
+                <small className="text-muted text-decoration-line-through">
+                  ₹{product.mrp}
+                </small>
+              )}
+              {discount && (
+                <Badge bg="success" className="ms-2">
+                  {discount}
+                </Badge>
+              )}
+            </h4>
+
+            <p>
+              <strong>Status:</strong>{" "}
+              <Badge bg={product.status === "ACTIVE" ? "success" : "secondary"}>
+                {product.status}
+              </Badge>
+            </p>
+
+            <p>
+              <strong>Item Number:</strong> {product.itemNumber}
+            </p>
+
+            <p>
+              <strong>Category:</strong> {product.categories?.join(", ") || "-"}
+            </p>
+
+            <p>
+              <strong>Colour:</strong> {product.colour || "-"}
+            </p>
+
+            <p>
+              <strong>Fulfillment:</strong> {product.fulfillmentType}
+            </p>
+
+            {/* Average Rating */}
+            <div className="d-flex align-items-center">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <FaStar
+                  key={i}
+                  color={
+                    i < Math.round(product.averageRating)
+                      ? "#ffc107"
+                      : "#e4e5e9"
+                  }
+                />
+              ))}
+              <span className="ms-2">
+                {product.averageRating || 0} / 5 ({product.reviews?.length || 0}{" "}
+                reviews)
+              </span>
+            </div>
+          </Col>
+        </Row>
+
+        {/* --- Tabs Section --- */}
+        <Tab.Container defaultActiveKey="details">
+          <Nav variant="tabs" className="mt-4">
+            <Nav.Item>
+              <Nav.Link eventKey="details">Details</Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link eventKey="variants">Variants</Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link eventKey="shipping">Shipping</Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link eventKey="faq">FAQ</Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link eventKey="reviews">Reviews</Nav.Link>
+            </Nav.Item>
+          </Nav>
+
+          <Tab.Content className="pt-3">
+            {/* Details */}
+            <Tab.Pane eventKey="details">
+              <Card className="shadow-sm p-3 mb-3">
+                <Card.Header>
+                  <h5 className="mb-0">Product Details</h5>
+                </Card.Header>
+                <Card.Body>
+                  <Table borderless size="sm" className="mb-0">
+                    <tbody>
+                      <tr>
+                        <th>Fabric</th>
+                        <td>{product.fabric || "-"}</td>
+                      </tr>
+                      <tr>
+                        <th>Work</th>
+                        <td>{product.work || "-"}</td>
+                      </tr>
+                      <tr>
+                        <th>Care</th>
+                        <td>{product.care || "-"}</td>
+                      </tr>
+                      <tr>
+                        <th>Pack Contains</th>
+                        <td>{product.packContains || "-"}</td>
+                      </tr>
+                      <tr>
+                        <th>Occasion</th>
+                        <td>{product.occasion || "-"}</td>
+                      </tr>
+                    </tbody>
+                  </Table>
+                </Card.Body>
+              </Card>
+            </Tab.Pane>
+
+            {/* Variants */}
+            <Tab.Pane eventKey="variants">
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h5 className="mb-0">Product Variants</h5>
+                {/* <button className="btn btn-primary btn-sm">Add Variant</button> */}
+              </div>
+
+              {product.variants?.length > 0 ? (
+                <Row className="g-3">
+                  {product.variants.map((v, idx) => (
+                    <Col xs={12} md={6} lg={4} key={idx}>
+                      <Card className="shadow-sm h-100">
+                        <Card.Body>
+                          <Card.Title>Size: {v.size}</Card.Title>
+                          <Card.Text>
+                            <strong>Stock:</strong> {v.stock}
+                            <br />
+                            <strong>Status:</strong>{" "}
+                            <Badge
+                              bg={
+                                v.status.toLowerCase() === "active"
+                                  ? "success"
+                                  : "secondary"
+                              }
+                            >
+                              {v.status}
+                            </Badge>
+                          </Card.Text>
+                        </Card.Body>
+                      </Card>
+                    </Col>
+                  ))}
+                </Row>
+              ) : (
+                <p className="text-muted">No variants available.</p>
+              )}
+            </Tab.Pane>
+
+            {/* Shipping */}
+            <Tab.Pane eventKey="shipping">
+              <p>
+                {product.shippingAndReturns?.description || "No shipping info."}
+              </p>
+            </Tab.Pane>
+
+            {/* FAQ */}
+            <Tab.Pane eventKey="faq">
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h5 className="mb-0">Frequently Asked Questions</h5>
+                {/* <button className="btn btn-primary btn-sm">Add FAQ</button> */}
+              </div>
+
+              {product.faq?.length > 0 ? (
+                <Accordion defaultActiveKey="">
+                  {product.faq.map((f, idx) => (
+                    <Accordion.Item eventKey={idx.toString()} key={idx}>
+                      <Accordion.Header>{f.question}</Accordion.Header>
+                      <Accordion.Body>{f.answer}</Accordion.Body>
+                    </Accordion.Item>
+                  ))}
+                </Accordion>
+              ) : (
+                <p className="text-muted">No FAQs available.</p>
+              )}
+            </Tab.Pane>
+
+            {/* Reviews */}
+            <Tab.Pane eventKey="reviews">
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h5 className="mb-0">Product Reviews</h5>
+                {/* <button className="btn btn-primary btn-sm">Add Review</button> */}
+              </div>
+
+              {product.reviews?.length > 0 ? (
+                product.reviews.map((r) => (
+                  <div
+                    key={r._id}
+                    className={`border rounded p-3 mb-2 shadow-sm ${
+                      r.isAdminReview ? "bg-light" : ""
+                    }`}
+                  >
+                    <div className="d-flex justify-content-between align-items-center mb-1">
+                      <div>
+                        <strong>{r.name}</strong>{" "}
+                        <span className="text-warning">{r.rating}★</span>
+                        {r.isAdminReview && (
+                          <span className="badge bg-info text-dark ms-2">
+                            Admin
+                          </span>
+                        )}
+                      </div>
+                      <div>
+                        <div>
+                          <button
+                            className={`btn btn-sm me-1 ${
+                              r.verified
+                                ? "btn-outline-success"
+                                : "btn-outline-secondary"
+                            }`}
+                            onClick={() => handleToggleVerify(r._id)}
+                          >
+                            {r.verified ? "Unverify" : "Verify"}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <p className="mb-0">{r.comment}</p>
+                    {r.media?.url && (
+                      <img
+                        src={r.media.url}
+                        alt={r.media.alt || "review image"}
+                        className="img-fluid mt-2 rounded"
+                        style={{ maxHeight: "150px" }}
+                      />
+                    )}
+                    <small className="text-muted d-block mt-1">
+                      {new Date(r.createdAt).toLocaleString()}
+                    </small>
+                  </div>
+                ))
+              ) : (
+                <p className="text-muted">No reviews yet.</p>
+              )}
+            </Tab.Pane>
+          </Tab.Content>
+        </Tab.Container>
+      </Modal.Body>
+
+      <Modal.Footer>
+        <Button variant="secondary" onClick={onHide}>
+          Close
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+};
 
 // -------------------- Media Edit Modal --------------------
 const MediaModal = ({ show, onHide, product }) => {
@@ -407,7 +683,11 @@ export default function AllProductAdmin() {
   const [loading, setLoading] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showModal, setShowModal] = useState(false);
-
+  const [review, setReview] = useState({
+    userName: "",
+    rating: 5,
+    comment: "",
+  });
   const [currentEditingProduct, setCurrentEditingProduct] = useState(null);
   const [showMediaModal, setShowMediaModal] = useState(false);
   const [selectedSaleProduct, setSelectedSaleProduct] = useState(null);
@@ -418,6 +698,8 @@ export default function AllProductAdmin() {
   const [status, setStatus] = useState("");
   const [showModalSele, setShowModalSale] = useState(false);
   const [showSaleModal, setShowSaleModal] = useState(false);
+  const [showReviewModel, setShowRevieModel] = useState(false);
+
   const [form, setForm] = useState({
     saleOn: false,
     salePrice: "",
@@ -444,6 +726,7 @@ export default function AllProductAdmin() {
         });
         setProducts(data.products || []);
         setPages(data.pages || 1);
+        console.log('data',data)
       } catch (err) {
         console.error("Failed to fetch products:", err);
       } finally {
@@ -454,6 +737,7 @@ export default function AllProductAdmin() {
   }, [page, search, title, itemNumber, status]);
 
   const handleDelete = (id) => console.log("Delete product:", id);
+
   const handleViewMore = (product) => {
     setSelectedProduct(product);
     setShowModal(true);
@@ -469,11 +753,69 @@ export default function AllProductAdmin() {
     setShowSaleModal(true);
   };
 
+  const handleAddReview = async (product) => {
+    setCurrentEditingProduct(product);
+    setShowRevieModel(true);
+  };
+  console.log("currentEditingProduct", currentEditingProduct);
+
   // save handler
   const handleSaveSale = async (data) => {
     console.log("Saving sale for product:", selectedSaleProduct._id, data);
     // 👉 here you call your API (e.g. updateProductSale API)
     setShowSaleModal(false);
+  };
+
+  const fileInputRef = useRef(null);
+
+  // cleanup object URL when file changes / component unmounts
+  useEffect(() => {
+    return () => {
+      if (review?.file && review.filePreview) {
+        URL.revokeObjectURL(review.filePreview);
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleFileSelected = (file) => {
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      alert("Please upload an image file.");
+      return;
+    }
+
+    // revoke previous preview
+    if (review.filePreview) URL.revokeObjectURL(review.filePreview);
+
+    const preview = URL.createObjectURL(file);
+    setReview({ ...review, file, filePreview: preview });
+  };
+
+  const onDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const files = e.dataTransfer?.files;
+    if (files && files.length > 0) {
+      handleFileSelected(files[0]); // single file only
+    }
+  };
+
+  const onDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // optionally add a class to indicate active drop zone
+  };
+
+  const handleFileInputChange = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (file) handleFileSelected(file);
+  };
+
+  const removeFile = () => {
+    if (review.filePreview) URL.revokeObjectURL(review.filePreview);
+    setReview({ ...review, file: null, filePreview: null });
+    if (fileInputRef.current) fileInputRef.current.value = null;
   };
 
   return (
@@ -541,7 +883,6 @@ export default function AllProductAdmin() {
       ) : (
         <>
           <Table
-            striped
             bordered
             hover
             responsive
@@ -552,9 +893,13 @@ export default function AllProductAdmin() {
               <tr>
                 <th>#</th>
                 <th>Item Number</th>
+                <th>Image</th>
                 <th>Title</th>
-                <th>Price</th>
+                <th>Category</th>
+                <th>MRP</th>
                 <th>On Sale</th>
+                <th>Stock</th>
+                <th>Sold</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
@@ -570,6 +915,7 @@ export default function AllProductAdmin() {
                   onDelete={handleDelete}
                   onViewMore={handleViewMore}
                   onEditMedia={handleEditMedia}
+                  onAddReview={handleAddReview}
                   onSale={handleOpenSaleModal}
                 />
               ))}
@@ -622,7 +968,11 @@ export default function AllProductAdmin() {
         </>
       )}
 
-      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+      <Modal
+        show={showSaleModal}
+        onHide={() => setShowSaleModal(false)}
+        centered
+      >
         <Modal.Header closeButton>
           <Modal.Title>
             {form.saleOn ? "Edit Sale" : "Put Product on Sale"}
@@ -706,6 +1056,168 @@ export default function AllProductAdmin() {
           </Button>
           <Button variant="success" onClick={handleSaveSale}>
             Save
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal
+        show={showReviewModel}
+        onHide={() => setShowRevieModel(false)}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Review Product - {selectedProduct?.title}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group className="mb-3">
+              <Form.Label>Rating</Form.Label>
+              <div>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <FaStar
+                    key={star}
+                    size={22}
+                    className="me-1"
+                    color={review.rating >= star ? "gold" : "lightgray"}
+                    style={{ cursor: "pointer" }}
+                    onClick={() => setReview({ ...review, rating: star })}
+                  />
+                ))}
+              </div>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Your Name</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter your name"
+                value={review.userName || ""}
+                onChange={(e) =>
+                  setReview({ ...review, userName: e.target.value })
+                }
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Upload Image (optional)</Form.Label>
+
+              <div
+                onDragOver={onDragOver}
+                onDrop={onDrop}
+                onClick={() =>
+                  fileInputRef.current && fileInputRef.current.click()
+                }
+                style={{
+                  border: "1px dashed #ced4da",
+                  borderRadius: 6,
+                  padding: 12,
+                  textAlign: "center",
+                  cursor: "pointer",
+                  position: "relative",
+                  background: "#fff",
+                }}
+              >
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  onChange={handleFileInputChange}
+                />
+
+                {review.filePreview ? (
+                  <div
+                    style={{ position: "relative", display: "inline-block" }}
+                  >
+                    <img
+                      src={review.filePreview}
+                      alt="Preview"
+                      style={{
+                        maxHeight: 150,
+                        borderRadius: 6,
+                        display: "block",
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeFile();
+                      }}
+                      aria-label="Remove image"
+                      style={{
+                        position: "absolute",
+                        top: 6,
+                        right: 6,
+                        border: "none",
+                        background: "rgba(0,0,0,0.6)",
+                        color: "#fff",
+                        borderRadius: "50%",
+                        width: 28,
+                        height: 28,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <FaTimes size={12} />
+                    </button>
+                  </div>
+                ) : (
+                  <p className="m-0">
+                    Drag & drop an image here, or <u>click to select</u>
+                  </p>
+                )}
+              </div>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Comment</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                placeholder="Write your review..."
+                value={review.comment}
+                onChange={(e) =>
+                  setReview({ ...review, comment: e.target.value })
+                }
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowRevieModel(false)}>
+            Cancel
+          </Button>
+          <Button
+            variant="success"
+            onClick={async () => {
+              if (!review.comment && review.rating < 1) {
+                alert("Please provide a rating or comment.");
+                return;
+              }
+
+              console.log("review", review);
+
+              try {
+                // Call backend API
+                const response = await addOrUpdateReview(
+                  currentEditingProduct?._id,
+                  review
+                );
+                alert(response.message); // "Review added" or "Review updated"
+
+                // Reset form
+                setReview({ rating: 5, userName: "", comment: "" });
+                setShowRevieModel(false);
+              } catch (err) {
+                console.error("Review error:", err);
+                alert(err.message);
+              }
+            }}
+          >
+            Submit Review
           </Button>
         </Modal.Footer>
       </Modal>

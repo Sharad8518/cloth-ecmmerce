@@ -141,17 +141,171 @@
 
   .tshirt-card {
   width: 160px;
-  height:200px;
+  height:250px;
   background-color: #fff;
   border-radius: 10px;
   overflow: hidden;
 
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-    font-family: "Inter", sans-serif;
+  font-family: "Inter", sans-serif;
   perspective: 1000px;
   transform-style: preserve-3d;
   will-change: transform;
   transition: 5s;
 }
 
+.tshirt-card:hover {
+  transform: rotateY(6deg) rotateX(6deg) scale(1.03);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+.card-image{
+  overflow: hidden;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.fav-circle-card{
+  width: 35px;
+  height: 35px;
+  background-color: #fff;
+  position: absolute;
+  border-radius: 100px;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+}
+.icon-heart{
+  font-size: 20px;
+}
+
+.tshirt-card .overlaybox {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+  pointer-events: none; /* optional, allows clicks to pass through */
+  transition: 0.2s;
+  overflow: hidden;
+}
+.tshirt-image {
+  width: 100%;
+   height: 400px;
+  object-fit: cover;
+  object-position: center; 
+  transition: transform 0.3s ease;
+}
+
+.tshirt-card:hover .tshirt-image {
+  transform: scale(1.05);
+}
+.tshirt-card:hover .tshirt-content {
+  padding: 16px;
+  backface-visibility: hidden;
+  position: absolute;
+  bottom: 0px;
+  transition: 0.5s;
+}
+
+.tshirt-content {
+  padding: 16px;
+  backface-visibility: hidden;
+  position: absolute;
+  bottom: 00px;
+  transition: 0.5s;
+
+}
+
+.tshirt-title {
+  font-size: 14px;
+  margin-bottom: 8px;
+  font-weight: 700;
+  color: #ffffff;
+   font-family: "Inter", sans-serif;
+}
+
+.tshirt-description {
+  font-size: 0.85rem;
+  color: #fff;
+  margin-bottom: 16px;
+  display: none;
+   font-family: "Inter", sans-serif;
+}
+
+.tshirt-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tshirt-price {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #fff ;
+}
+
+.buy-button {
+  background-color: #bc0a0a;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+}
+
+.cart-button {
+  background-color: #ffffff;
+  color: black;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+}
+
+.buy-button:hover {
+  background-color: #0056b3;
+}
+
+}
+
+@media (max-width: 375px) {
+  .tshirt-card {
+    width: 140px;
+    height: 250px;
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    font-family: "Inter", sans-serif;
+    perspective: 1000px;
+    transform-style: preserve-3d;
+    will-change: transform;
+  }
+}
+
+@media (max-width: 390px) {
+  .tshirt-card {
+    width: 140px;
+    height: 250px;
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    font-family: "Inter", sans-serif;
+    perspective: 1000px;
+    transform-style: preserve-3d;
+    will-change: transform;
+  }
 }

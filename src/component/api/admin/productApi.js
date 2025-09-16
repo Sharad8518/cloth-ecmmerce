@@ -8,9 +8,10 @@ if (token) {
 /* ---------------- Add Product ---------------- */
 export const addProduct = async (productData) => {
   const formData = new FormData();
+
   // --- Simple fields ---
-  formData.append("title", productData.title || "");
   formData.append("itemNumber", productData.itemNumber || "");
+  formData.append("title", productData.title || "");
   formData.append("description", productData.description || "");
   formData.append("mrp", productData.mrp || "");
   formData.append("costPrice", productData.costPrice || "");
@@ -21,7 +22,10 @@ export const addProduct = async (productData) => {
   formData.append("fulfillmentType", productData.fulfillmentType || "");
   formData.append("productType", productData.productType || "");
   formData.append("occasion", productData.occasion || "");
-  formData.append("estimatedShippingDays", productData.estimatedShippingDays || "");
+  formData.append(
+    "estimatedShippingDays",
+    productData.estimatedShippingDays || ""
+  );
   formData.append("productSpeciality", productData.productSpeciality || "");
   formData.append("styleNo", productData.styleNo || "");
   formData.append("fabric", productData.fabric || "");
@@ -31,8 +35,11 @@ export const addProduct = async (productData) => {
   formData.append("note", productData.note || "");
   formData.append("plating", productData.plating || "");
   formData.append("shortDescription", productData.shortDescription || "");
-  formData.append("dupatta", productData.dupatta || "");
-  formData.append("productionDetail", productData.productionDetail || "");
+  formData.append("dupatta", JSON.stringify(productData.dupatta || {}));
+  formData.append(
+    "productionDetail",
+    JSON.stringify(productData.productionDetail || {})
+  );
   formData.append("styleAndFit", productData.styleAndFit || "");
 
   // --- Arrays (convert to JSON) ---
@@ -44,32 +51,35 @@ export const addProduct = async (productData) => {
     formData.append("variants", JSON.stringify(productData.variants));
   }
 
- if (productData.categories?.length) {
-  productData.categories.forEach((cat) => {
-    formData.append("categories[]", cat);
-  });
-}
+  if (productData.categories?.length) {
+    productData.categories.forEach((cat) => {
+      formData.append("categories[]", cat);
+    });
+  }
 
-// --- SubCategories ---
-if (productData.subCategories?.length) {
-  productData.subCategories.forEach((sub) => {
-    formData.append("subCategories[]", sub);
-  });
-}
+  // --- SubCategories ---
+  if (productData.subCategories?.length) {
+    productData.subCategories.forEach((sub) => {
+      formData.append("subCategories[]", sub);
+    });
+  }
 
-// --- Collections ---
-if (productData.collections?.length) {
-  productData.collections.forEach((col) => {
-    formData.append("collections[]", col);
-  });
-}
+  // --- Collections ---
+  if (productData.collections?.length) {
+    productData.collections.forEach((col) => {
+      formData.append("collections[]", col);
+    });
+  }
   if (productData.faq?.length) {
     formData.append("faq", JSON.stringify(productData.faq));
   }
 
   // --- Objects ---
   if (productData.shippingAndReturns) {
-    formData.append("shippingAndReturns", JSON.stringify(productData.shippingAndReturns));
+    formData.append(
+      "shippingAndReturns",
+      JSON.stringify(productData.shippingAndReturns)
+    );
   }
 
   if (productData.seo) {
@@ -94,7 +104,6 @@ if (productData.collections?.length) {
 
   return response.data;
 };
-
 
 export const editProduct = async (productId, productData) => {
   const response = await axios.put(
@@ -223,4 +232,47 @@ export const removeCollectionFromProducts = async (collection, productIds) => {
     productIds,
   });
   return response.data;
+};
+
+export const addOrUpdateReview = async (productId, review) => {
+  try {
+    const formData = new FormData();
+    formData.append("rating", review.rating);
+    formData.append("comment", review.comment);
+    formData.append("userName", review.userName);
+    if (review.file instanceof File) formData.append("image", review.file);
+
+    const res = await axios.post(
+      `/admin/products/${productId}/review`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("hfz-a_tkn_238x")}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response?.data?.message || "Failed to submit review");
+  }
+};
+
+export const verifyReview = async (productId, reviewId) => {
+  try {
+    const res = await axios.put(
+      `/admin/products/${productId}/reviews/${reviewId}/verify`,
+      {}, // no body needed, or you can send optional data
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("hfz-a_tkn_238x")}`,
+        },
+      }
+    );
+
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response?.data?.message || "Failed to verify review");
+  }
 };

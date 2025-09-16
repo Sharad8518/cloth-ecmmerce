@@ -235,7 +235,7 @@ export default function Collections() {
         </div>
         <Row>
           {/* Left Filters */}
-        <Col
+          <Col
             md={2}
             style={{ background: "#f8f9fa", padding: "20px" }}
             className={styles.filterBox}
@@ -393,7 +393,7 @@ export default function Collections() {
                 </Accordion.Body>
               </Accordion.Item>
 
-               <Accordion.Item eventKey="7">
+              <Accordion.Item eventKey="7">
                 <Accordion.Header>Include Dupatta</Accordion.Header>
                 <Accordion.Body>
                   {["Yes", "No"].map((val) => (
@@ -429,30 +429,28 @@ export default function Collections() {
               <Accordion.Item eventKey="2">
                 <Accordion.Header>Size</Accordion.Header>
                 <Accordion.Body>
-                  {["XS", "S", "M", "L", "XL","XXL","3XL","4XL"].map((val) => (
-                    <Form.Check
-                      key={val}
-                      type="checkbox"
-                      label={val}
-                      checked={filters.size.includes(val)}
-                      onChange={() => handleFilterChange("size", val)}
-                    />
-                  ))}
+                  {["XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL"].map(
+                    (val) => (
+                      <Form.Check
+                        key={val}
+                        type="checkbox"
+                        label={val}
+                        checked={filters.size.includes(val)}
+                        onChange={() => handleFilterChange("size", val)}
+                      />
+                    )
+                  )}
                 </Accordion.Body>
               </Accordion.Item>
 
               {/* Occasion */}
 
               {/* Include Dupatta */}
-             
             </Accordion>
           </Col>
 
           {/* Right Product Section */}
           <Col md={10}>
-          
-           
-                
             {/* Sorting + Pagination */}
             <div
               style={{

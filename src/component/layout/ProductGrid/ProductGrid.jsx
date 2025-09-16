@@ -19,7 +19,7 @@ const ProductGrid = ({ products }) => {
   };
 
   return (
-    <Container className="my-2">
+    <Container className="my-1" >
       <Row>
         {products.map((product, index) => (
           <Col

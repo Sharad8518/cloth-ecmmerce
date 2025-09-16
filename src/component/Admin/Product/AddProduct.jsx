@@ -40,7 +40,6 @@ export default function AddProduct() {
   const [specialityInput, setSpecialityInput] = useState("");
   const [product, setProduct] = useState({
     title: "",
-    itemNumber: "",
     mrp: "",
     costPrice: "",
     marginPercent: "",
@@ -71,7 +70,7 @@ export default function AddProduct() {
     fabric: "",
     work: "",
     packContains: "",
-    plating:"",
+    plating: "",
     occasion: "",
     care: "",
     note: "",
@@ -145,7 +144,6 @@ export default function AddProduct() {
 
     setCategories(filtered);
     setSubCategories([]);
-   
   };
   const navigate = useNavigate();
 
@@ -156,7 +154,6 @@ export default function AddProduct() {
     const filtered = (res || []).filter((s) => s?.category?._id === categoryId);
 
     setSubCategories(filtered);
- 
   };
 
   const loadCollections = async () => {
@@ -290,8 +287,6 @@ export default function AddProduct() {
     }));
   };
 
-
-
   // Add speciality
   const addSpeciality = () => {
     if (specialityInput.trim()) {
@@ -346,7 +341,6 @@ export default function AddProduct() {
 
       setProduct({
         title: "",
-        itemNumber: "",
         mrp: "",
         costPrice: "",
         marginPercent: "",
@@ -405,10 +399,6 @@ export default function AddProduct() {
   return (
     <Container className="my-4">
       <h2 style={{ fontWeight: "700", fontSize: 20 }}>Add New Product</h2>
-      <p className="text-muted" style={{ fontSize: 13 }}>
-        Fill in the details below to add a new product.
-      </p>
-
       <Form onSubmit={handleSubmit}>
         <Row className="g-4">
           {/* Product Classification */}
@@ -428,11 +418,32 @@ export default function AddProduct() {
                     onChange={async (e) => {
                       const headerTitle = e.target.value;
 
-                      // Store only the title
-                      setProduct((p) => ({
-                        ...p,
+                      // Store header
+                      let newProduct = {
+                        ...product,
                         header: headerTitle || "",
-                      }));
+                      };
+
+                      // Generate itemNumber + styleNo (temporary, backend will finalize uniqueness)
+                      if (headerTitle) {
+                        const prefix = headerTitle.slice(0, 2).toUpperCase(); // e.g. Kurta -> KU
+                        const categoryCode = "A";
+
+                        // simple random 3-digit (frontend placeholder)
+                        const randomNum = String(
+                          Math.floor(Math.random() * 999) + 1
+                        ).padStart(3, "0");
+
+                        const generatedCode = `${prefix}-${categoryCode}${randomNum}`;
+
+                        newProduct = {
+                          ...newProduct,
+                          itemNumber: generatedCode,
+                          styleNo: generatedCode,
+                        };
+                      }
+
+                      setProduct(newProduct);
 
                       // Load categories using _id of selected header
                       const selectedHeader = headers.find(
@@ -589,14 +600,10 @@ export default function AddProduct() {
                             const randomNum = Math.floor(
                               1000 + Math.random() * 9000
                             );
-                            const itemNumber = `${sc.name
-                              .replace(/\s+/g, "")
-                              .toUpperCase()}-${randomNum}`;
 
                             setProduct((p) => ({
                               ...p,
                               subCategories: newSubCategories,
-                              itemNumber,
                             }));
 
                             if (sc?._id) {
@@ -975,14 +982,15 @@ export default function AddProduct() {
                       Product Select
                     </option>
                     <option value="Women_Cloths">Women Cloths</option>
-                      <option value="Men_Cloths">Men Cloths</option>
+                    <option value="Men_Cloths">Men Cloths</option>
                     <option value="Jewellery">Jewellery</option>
                     <option value="Other">Other</option>
                   </Form.Select>
                 </Form.Group>
               </Card.Body>
             </Card>
-            {(product.productType === "Women_Cloths" || product?.productType === "Men_Cloths") && (
+            {(product.productType === "Women_Cloths" ||
+              product?.productType === "Men_Cloths") && (
               <Card className="mt-3" style={{ padding: "20px" }}>
                 <VariantsCard
                   product={product}
@@ -991,7 +999,7 @@ export default function AddProduct() {
                   updateVariant={updateVariant}
                   removeVariant={removeVariant}
                 />
-                <br/>
+                <br />
                 <Form.Group className="mb-3">
                   <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
                     Additional Measurement Required?
@@ -1014,31 +1022,26 @@ export default function AddProduct() {
                 </Form.Group>
               </Card>
             )}
-           
-            
-                {(product?.productType === "Jewellery" || product?.productType === "Other") && (
-                  <Card className="mt-3" style={{ padding: "20px" }}>
-                    <Form.Group className="mb-3">
-                      <Form.Label style={{ fontWeight: "600", fontSize: 15 }}>
-                        Quantity <span style={{ color: "red" }}>*</span>
-                      </Form.Label>
-                      <Form.Control
-                        type="number"
-                        name="quantity"
-                        value={product?.quantity || ""}
-                        style={{ fontSize: 14 }}
-                        onChange={(e) =>
-                          handleChange("quantity", e.target.value)
-                        }
-                        required={product?.productType === "Jewellery"} // ✅ required only for Jewellery
-                      />
-                    </Form.Group>
-                  </Card>
-                )}
-             
-          
 
-           
+            {(product?.productType === "Jewellery" ||
+              product?.productType === "Other") && (
+              <Card className="mt-3" style={{ padding: "20px" }}>
+                <Form.Group className="mb-3">
+                  <Form.Label style={{ fontWeight: "600", fontSize: 15 }}>
+                    Quantity <span style={{ color: "red" }}>*</span>
+                  </Form.Label>
+                  <Form.Control
+                    type="number"
+                    name="quantity"
+                    value={product?.quantity || ""}
+                    style={{ fontSize: 14 }}
+                    onChange={(e) => handleChange("quantity", e.target.value)}
+                    required={product?.productType === "Jewellery"} // ✅ required only for Jewellery
+                  />
+                </Form.Group>
+              </Card>
+            )}
+
             <Card style={{ marginTop: "20px" }}>
               <Card.Header>Pricing</Card.Header>
               <Card.Body>
@@ -1063,7 +1066,7 @@ export default function AddProduct() {
                     </Form.Group>
                   </Col>
                   <Col md={6}>
-                    <Form.Group>
+                    {/* <Form.Group>
                       <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
                         Margin %
                       </Form.Label>
@@ -1079,12 +1082,7 @@ export default function AddProduct() {
                         min="0"
                         max="100"
                       />
-                    </Form.Group>
-                  </Col>
-                </Row>
-
-                <Row className="mb-3">
-                  <Col md={12}>
+                    </Form.Group> */}
                     <Form.Group>
                       <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
                         MRP <span style={{ color: "red" }}>*</span>
@@ -1101,8 +1099,8 @@ export default function AddProduct() {
                       />
                     </Form.Group>
                   </Col>
-                 
                 </Row>
+
                 <GstApplicationForm
                   product={product}
                   handleChange={handleChange}
@@ -1156,44 +1154,49 @@ export default function AddProduct() {
                   />
                 </Form.Group> */}
                 {/* <ColourDropdown product={product} setProduct={setProduct} /> */}
-                <Form.Group>
-                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
-                    Fulfillment Type <span style={{ color: "red" }}>*</span>
-                  </Form.Label>
-                  <Form.Select
-                    name="fulfillmentType"
-                    value={product.fulfillmentType}
-                    onChange={(e) =>
-                      handleChange("fulfillmentType", e.target.value)
-                    }
-                  >
-                    <option value="" disabled>
-                      Fulfillment Select
-                    </option>
-                    <option value="READY_TO_SHIP">Ready to Ship</option>
-                    <option value="MADE_TO_ORDER">Made to Order</option>
-                  </Form.Select>
-                </Form.Group>
-                <br />
-                <Form.Group className="mb-3">
-                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
-                    Estimated Shipping (in days)
-                  </Form.Label>
-                  <Form.Control
-                    type="number"
-                    name="estimatedShippingDays"
-                    style={{ fontSize: 14 }}
-                    min={1}
-                    value={product.estimatedShippingDays || ""}
-                    onChange={(e) =>
-                      handleChange(
-                        "estimatedShippingDays",
-                        Number(e.target.value)
-                      )
-                    }
-                    // placeholder="Enter number of days (e.g. 5)"
-                  />
-                </Form.Group>
+                <Row>
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                        Fulfillment Type <span style={{ color: "red" }}>*</span>
+                      </Form.Label>
+                      <Form.Select
+                        name="fulfillmentType"
+                        value={product.fulfillmentType}
+                        onChange={(e) =>
+                          handleChange("fulfillmentType", e.target.value)
+                        }
+                      >
+                        <option value="" disabled>
+                          Fulfillment Select
+                        </option>
+                        <option value="READY_TO_SHIP">Ready to Ship</option>
+                        <option value="MADE_TO_ORDER">Made to Order</option>
+                      </Form.Select>
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group className="mb-3">
+                      <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                        Estimated Shipping (in days)
+                      </Form.Label>
+                      <Form.Control
+                        type="number"
+                        name="estimatedShippingDays"
+                        style={{ fontSize: 14 }}
+                        min={1}
+                        value={product.estimatedShippingDays || ""}
+                        onChange={(e) =>
+                          handleChange(
+                            "estimatedShippingDays",
+                            Number(e.target.value)
+                          )
+                        }
+                        // placeholder="Enter number of days (e.g. 5)"
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
               </Card.Body>
             </Card>
           </Col>
@@ -1282,40 +1285,37 @@ export default function AddProduct() {
 
                 <Row>
                   <Col md={6}>
-                   <Form.Group className="mb-3">
-                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
-                    Pack Contains
-                  </Form.Label>
-                  <Form.Control
-                    style={{ fontSize: 14 }}
-                    value={product.packContains || ""}
-                    onChange={(e) =>
-                      handleChange("packContains", e.target.value)
-                    }
-                    // placeholder="Enter items (e.g. Kurta, Dupatta, Bottom)"
-                  />
-                </Form.Group>
+                    <Form.Group className="mb-3">
+                      <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                        Pack Contains
+                      </Form.Label>
+                      <Form.Control
+                        style={{ fontSize: 14 }}
+                        value={product.packContains || ""}
+                        onChange={(e) =>
+                          handleChange("packContains", e.target.value)
+                        }
+                        // placeholder="Enter items (e.g. Kurta, Dupatta, Bottom)"
+                      />
+                    </Form.Group>
                   </Col>
 
-                    <Col md={6}>
-                   <Form.Group className="mb-3">
-                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
-                    Jewellery Plating
-                  </Form.Label>
-                  <Form.Control
-                    style={{ fontSize: 14 }}
-                    value={product.plating || ""}
-                    onChange={(e) =>
-                      handleChange("plating", e.target.value)
-                    }
-                    // placeholder="Enter items (e.g. Kurta, Dupatta, Bottom)"
-                  />
-                </Form.Group>
+                  <Col md={6}>
+                    <Form.Group className="mb-3">
+                      <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                        Jewellery Plating
+                      </Form.Label>
+                      <Form.Control
+                        style={{ fontSize: 14 }}
+                        value={product.plating || ""}
+                        onChange={(e) =>
+                          handleChange("plating", e.target.value)
+                        }
+                        // placeholder="Enter items (e.g. Kurta, Dupatta, Bottom)"
+                      />
+                    </Form.Group>
                   </Col>
-
                 </Row>
-
-               
 
                 <Row>
                   <Col md={6}>
@@ -1537,6 +1537,7 @@ export default function AddProduct() {
                 </Form.Group>
               </Card.Body>
             </Card>
+            <FAQForm product={product} setProduct={setProduct} />
 
             <Card style={{ marginTop: "20px" }}>
               <Card.Header>Product Status</Card.Header>
@@ -1558,8 +1559,6 @@ export default function AddProduct() {
                 </Form.Group>
               </Card.Body>
             </Card>
-
-            <FAQForm product={product} setProduct={setProduct} />
 
             <SEOForm seoData={product} setSeoData={setProduct} />
           </Col>

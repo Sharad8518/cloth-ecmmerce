@@ -32,6 +32,8 @@ const OrderList = ({ orders, totalPages = 1, onPageChange }) => {
     setCurrentPage(pageNumber);
     if (onPageChange) onPageChange(pageNumber);
   };
+  
+  console.log('orders',orders)
 
   const renderPagination = () => {
     let items = [];
@@ -107,58 +109,71 @@ const OrderList = ({ orders, totalPages = 1, onPageChange }) => {
                           SKU: {item?.variant?.sku}
                           <br />
                           Qty: {item?.quantity}
-                         {order.orderStatus === "delivered" && (
-  <div className="mt-2">
-    {item.product.userReview ? (
-      // ✅ Show existing review
-      <div
-        className="p-3 rounded shadow-sm"
-        style={{
-          backgroundColor: "#f9f9f9",
-          border: "1px solid #eee",
-        }}
-      >
-        {/* Rating Stars */}
-        <div className="d-flex align-items-center mb-1">
-          {[...Array(5)].map((_, i) => (
-            <span
-              key={i}
-              style={{
-                color:
-                  i < item.product.userReview.rating ? "#f4b400" : "#ddd",
-                fontSize: "1rem",
-              }}
-            >
-              ★
-            </span>
-          ))}
-        </div>
+                          {order.orderStatus === "delivered" && (
+                            <div className="mt-2">
+                              {item.product.userReview ? (
+                                // ✅ Show existing review
+                                <div
+                                  className="p-3 rounded shadow-sm"
+                                  style={{
+                                    backgroundColor: "#f9f9f9",
+                                    border: "1px solid #eee",
+                                  }}
+                                >
+                                  {/* Rating Stars */}
+                                  <div className="d-flex align-items-center mb-1">
+                                    {[...Array(5)].map((_, i) => (
+                                      <span
+                                        key={i}
+                                        style={{
+                                          color:
+                                            i < item.product.userReview.rating
+                                              ? "#f4b400"
+                                              : "#ddd",
+                                          fontSize: "1rem",
+                                        }}
+                                      >
+                                        ★
+                                      </span>
+                                    ))}
+                                  </div>
 
-        {/* Comment */}
-        <p className="mb-2" style={{ fontSize: "0.9rem", color: "#333" }}>
-          {item.product.userReview.comment}
-        </p>
+                                  {/* Comment */}
+                                  <p
+                                    className="mb-2"
+                                    style={{
+                                      fontSize: "0.9rem",
+                                      color: "#333",
+                                    }}
+                                  >
+                                    {item.product.userReview.comment}
+                                  </p>
 
-        {/* User + Date */}
-        <small className="text-muted">
-          by <strong>{item.product.userReview.name}</strong> •{" "}
-          {new Date(item.product.userReview.createdAt).toLocaleDateString()}
-        </small>
-      </div>
-    ) : (
-      // ✅ Show review button if none exists
-      <Button
-        size="sm"
-        variant="success"
-        className="fw-semibold shadow-sm"
-        onClick={() => setReviewItem(item)}
-      >
-        + Write a Review
-      </Button>
-    )}
-  </div>
-)}
-
+                                  {/* User + Date */}
+                                  <small className="text-muted">
+                                    by{" "}
+                                    <strong>
+                                      {item.product.userReview.name}
+                                    </strong>{" "}
+                                    •{" "}
+                                    {new Date(
+                                      item.product.userReview.createdAt
+                                    ).toLocaleDateString()}
+                                  </small>
+                                </div>
+                              ) : (
+                                // ✅ Show review button if none exists
+                                <Button
+                                  size="sm"
+                                  variant="success"
+                                  className="fw-semibold shadow-sm"
+                                  onClick={() => setReviewItem(item)}
+                                >
+                                  + Write a Review
+                                </Button>
+                              )}
+                            </div>
+                          )}
                         </td>
                         <td>₹ {item?.subtotal}</td>
                       </tr>

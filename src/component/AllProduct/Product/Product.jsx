@@ -112,7 +112,7 @@ export default function Product() {
   }
 
   return (
-    <Container className="my-4">
+    <Container className="my-1" fluid>
       <ProductGrid products={products} />
 
       <div className="d-flex justify-content-center mt-4">

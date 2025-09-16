@@ -48,6 +48,11 @@ const images = [
 ];
 
 export default function ProductDetail() {
+
+     useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const [selectedImage, setSelectedImage] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const {
@@ -59,6 +64,9 @@ export default function ProductDetail() {
     handleDecrease,
     handleRemove,
   } = useCart();
+
+ 
+
   const navigate = useNavigate();
   const [cartOpen, setCartOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);

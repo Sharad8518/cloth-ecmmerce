@@ -123,18 +123,18 @@ export default function EditProduct() {
     }
   };
   // ✅ If editing, load product into state
- useEffect(() => {
-  if (getProduct) {
-    setProduct((prev) => ({
-      ...prev,
-      ...getProduct,
-      faq: getProduct.faq || [], // ← add this
-      categories: parseStringifiedArray(getProduct.categories),
-      subCategories: parseStringifiedArray(getProduct.subCategories),
-      collections: parseStringifiedArray(getProduct.collections),
-    }));
-  }
-}, [getProduct]);
+  useEffect(() => {
+    if (getProduct) {
+      setProduct((prev) => ({
+        ...prev,
+        ...getProduct,
+        faq: getProduct.faq || [], // ← add this
+        categories: parseStringifiedArray(getProduct.categories),
+        subCategories: parseStringifiedArray(getProduct.subCategories),
+        collections: parseStringifiedArray(getProduct.collections),
+      }));
+    }
+  }, [getProduct]);
   // Pure updater function
   const updateNestedField = (obj, path, value) => {
     const keys = path.split(".");
@@ -395,9 +395,9 @@ export default function EditProduct() {
   return (
     <Container className="my-4">
       <h2 style={{ fontWeight: "700", fontSize: 20 }}>Edit Product</h2>
-      <p className="text-muted" style={{ fontSize: 13 }}>
+      {/* <p className="text-muted" style={{ fontSize: 13 }}>
         Fill in the details below to add a new product.
-      </p>
+      </p> */}
 
       <Form onSubmit={handleSubmit}>
         <Row className="g-4">
@@ -454,6 +454,11 @@ export default function EditProduct() {
                       padding: "8px",
                     }}
                   >
+                    {categories.length <= 0 && (
+                      <h6 style={{ marginTop: 5, fontSize: 14 }}>
+                        Select a Header to See Category
+                      </h6>
+                    )}
                     {categories?.map((c) =>
                       c ? (
                         <Form.Check
@@ -546,6 +551,11 @@ export default function EditProduct() {
                       padding: "8px",
                     }}
                   >
+                    {subCategories.length <= 0 && (
+                      <h6 style={{ marginTop: 5, fontSize: 14 }}>
+                        Select a Category to see Subcategories
+                      </h6>
+                    )}
                     {subCategories.filter(Boolean).map((sc) => (
                       <Form.Check
                         key={sc._id}
@@ -967,7 +977,8 @@ export default function EditProduct() {
               </Card.Body>
             </Card>
 
-           {(product.productType === "Women_Cloths" || product?.productType === "Men_Cloths") && (
+            {(product.productType === "Women_Cloths" ||
+              product?.productType === "Men_Cloths") && (
               <Card className="mt-3" style={{ padding: "20px" }}>
                 <VariantsCard
                   product={product}
@@ -976,7 +987,7 @@ export default function EditProduct() {
                   updateVariant={updateVariant}
                   removeVariant={removeVariant}
                 />
-                <br/>
+                <br />
                 <Form.Group className="mb-3">
                   <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
                     Additional Measurement Required?
@@ -999,28 +1010,25 @@ export default function EditProduct() {
                 </Form.Group>
               </Card>
             )}
-           
-            
-                {(product?.productType === "Jewellery" || product?.productType === "Other") && (
-                  <Card className="mt-3" style={{ padding: "20px" }}>
-                    <Form.Group className="mb-3">
-                      <Form.Label style={{ fontWeight: "600", fontSize: 15 }}>
-                        Quantity <span style={{ color: "red" }}>*</span>
-                      </Form.Label>
-                      <Form.Control
-                        type="number"
-                        name="quantity"
-                        value={product?.quantity || ""}
-                        style={{ fontSize: 14 }}
-                        onChange={(e) =>
-                          handleChange("quantity", e.target.value)
-                        }
-                        required={product?.productType === "Jewellery"} // ✅ required only for Jewellery
-                      />
-                    </Form.Group>
-                  </Card>
-                )}
-             
+
+            {(product?.productType === "Jewellery" ||
+              product?.productType === "Other") && (
+              <Card className="mt-3" style={{ padding: "20px" }}>
+                <Form.Group className="mb-3">
+                  <Form.Label style={{ fontWeight: "600", fontSize: 15 }}>
+                    Quantity <span style={{ color: "red" }}>*</span>
+                  </Form.Label>
+                  <Form.Control
+                    type="number"
+                    name="quantity"
+                    value={product?.quantity || ""}
+                    style={{ fontSize: 14 }}
+                    onChange={(e) => handleChange("quantity", e.target.value)}
+                    required={product?.productType === "Jewellery"} // ✅ required only for Jewellery
+                  />
+                </Form.Group>
+              </Card>
+            )}
 
             <Card style={{ marginTop: "20px" }}>
               <Card.Header>Pricing</Card.Header>
@@ -1048,28 +1056,6 @@ export default function EditProduct() {
                   <Col md={6}>
                     <Form.Group>
                       <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
-                        Margin %
-                      </Form.Label>
-                      <Form.Control
-                        type="number"
-                        name="marginPercent"
-                        style={{ fontSize: 14 }}
-                        value={product.marginPercent || ""}
-                        onChange={(e) =>
-                          handleChange("marginPercent", e.target.value)
-                        }
-                        // placeholder="Enter margin %"
-                        min="0"
-                        max="100"
-                      />
-                    </Form.Group>
-                  </Col>
-                </Row>
-
-                <Row className="mb-3">
-                  <Col md={12}>
-                    <Form.Group>
-                      <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
                         MRP <span style={{ color: "red" }}>*</span>
                       </Form.Label>
                       <Form.Control
@@ -1085,6 +1071,7 @@ export default function EditProduct() {
                     </Form.Group>
                   </Col>
                 </Row>
+
                 <GstApplicationForm
                   product={product}
                   handleChange={handleChange}
@@ -1138,44 +1125,49 @@ export default function EditProduct() {
                   />
                 </Form.Group> */}
                 {/* <ColourDropdown product={product} setProduct={setProduct} /> */}
-                <Form.Group>
-                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
-                    Fulfillment Type <span style={{ color: "red" }}>*</span>
-                  </Form.Label>
-                  <Form.Select
-                    name="fulfillmentType"
-                    value={product.fulfillmentType}
-                    onChange={(e) =>
-                      handleChange("fulfillmentType", e.target.value)
-                    }
-                  >
-                    <option value="" disabled>
-                      Fulfillment Select
-                    </option>
-                    <option value="READY_TO_SHIP">Ready to Ship</option>
-                    <option value="MADE_TO_ORDER">Made to Order</option>
-                  </Form.Select>
-                </Form.Group>
-                <br />
-                <Form.Group className="mb-3">
-                  <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
-                    Estimated Shipping (in days)
-                  </Form.Label>
-                  <Form.Control
-                    type="number"
-                    name="estimatedShippingDays"
-                    style={{ fontSize: 14 }}
-                    min={1}
-                    value={product.estimatedShippingDays || ""}
-                    onChange={(e) =>
-                      handleChange(
-                        "estimatedShippingDays",
-                        Number(e.target.value)
-                      )
-                    }
-                    // placeholder="Enter number of days (e.g. 5)"
-                  />
-                </Form.Group>
+                <Row>
+                  <Col>
+                    <Form.Group>
+                      <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                        Fulfillment Type <span style={{ color: "red" }}>*</span>
+                      </Form.Label>
+                      <Form.Select
+                        name="fulfillmentType"
+                        value={product.fulfillmentType}
+                        onChange={(e) =>
+                          handleChange("fulfillmentType", e.target.value)
+                        }
+                      >
+                        <option value="" disabled>
+                          Fulfillment Select
+                        </option>
+                        <option value="READY_TO_SHIP">Ready to Ship</option>
+                        <option value="MADE_TO_ORDER">Made to Order</option>
+                      </Form.Select>
+                    </Form.Group>
+                  </Col>
+                  <Col>
+                    <Form.Group className="mb-3">
+                      <Form.Label style={{ fontWeight: 500, fontSize: 14 }}>
+                        Estimated Shipping (in days)
+                      </Form.Label>
+                      <Form.Control
+                        type="number"
+                        name="estimatedShippingDays"
+                        style={{ fontSize: 14 }}
+                        min={1}
+                        value={product.estimatedShippingDays || ""}
+                        onChange={(e) =>
+                          handleChange(
+                            "estimatedShippingDays",
+                            Number(e.target.value)
+                          )
+                        }
+                        // placeholder="Enter number of days (e.g. 5)"
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
               </Card.Body>
             </Card>
           </Col>
@@ -1497,6 +1489,8 @@ export default function EditProduct() {
               </Card.Body>
             </Card>
 
+            <FAQForm product={product} setProduct={setProduct} />
+
             <Card style={{ marginTop: "20px" }}>
               <Card.Header>Product Status</Card.Header>
               <Card.Body>
@@ -1518,7 +1512,7 @@ export default function EditProduct() {
               </Card.Body>
             </Card>
 
-            <FAQForm product={product} setProduct={setProduct} />
+           
 
             <SEOForm seoData={product} setSeoData={setProduct} />
           </Col>
