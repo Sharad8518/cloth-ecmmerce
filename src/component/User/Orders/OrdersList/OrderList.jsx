@@ -33,7 +33,7 @@ const OrderList = ({ orders, totalPages = 1, onPageChange }) => {
     if (onPageChange) onPageChange(pageNumber);
   };
   
-  console.log('orders',orders)
+
 
   const renderPagination = () => {
     let items = [];
