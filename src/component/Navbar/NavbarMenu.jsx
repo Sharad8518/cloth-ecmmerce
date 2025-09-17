@@ -407,6 +407,10 @@ const handleUserClick = () => {
                     category.image && (
                     <img
                       src={category.image} // replace with your image URL
+                      onClick={() => {
+                        navigate(`${activeHeader.slug}/${category.name}`);
+                        
+                      }}
                       alt="Promo"
                       style={{
                         maxWidth: "100%",

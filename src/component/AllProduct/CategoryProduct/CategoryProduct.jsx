@@ -100,33 +100,52 @@ export default function CategoryProduct() {
     }
 
     // 🧣 Dupatta (⚠️ not in backend code — you may need to add)
-    if (filters.dupatta.length) {
-      params.dupatta = normalize(filters.dupatta)
+     if (filters.dupatta.length) {
+      if (filters.dupatta.includes("Yes")) {
+        params.dupatta = true;
+      } else if (filters.dupatta.includes("No")) {
+        params.dupatta = false;
+      }
+     
     }
 
     // 💰 Price buckets → map labels to minPrice / maxPrice
-    if (filters.price.length) {
+   if (filters.price.length) {
       filters.price.forEach((range) => {
-        if (range === "Under ₹500") {
+        if (range === "Under ₹3000") {
           params.minPrice = 0;
-          params.maxPrice = 500;
-        } else if (range === "₹500 - ₹1000") {
-          params.minPrice = 500;
-          params.maxPrice = 1000;
-        } else if (range === "₹1000 - ₹2000") {
-          params.minPrice = 1000;
-          params.maxPrice = 2000;
-        } else if (range === "Above ₹2000") {
-          params.minPrice = 2000;
+          params.maxPrice = 3000;
+        } else if (range === "₹3000 - ₹6000") {
+          params.minPrice = 3000;
+          params.maxPrice = 6000;
+        } else if (range === "₹6000 - ₹10000") {
+          params.minPrice = 6000;
+          params.maxPrice = 10000;
+        } else if (range === "Above ₹10000") {
+          params.minPrice = 10000;
         }
       });
     }
 
+
     // 🔖 Discount
     if (filters.discount.length) {
-      params.minDiscount = filters.discount[0];
+      filters.discount.forEach((range) => {
+        if (range === "Upto 10%") {
+          params.minDiscount = 0;
+          params.maxDiscount = 10;
+        } else if (range === "10% - 25%") {
+          params.minDiscount = 10;
+          params.maxDiscount = 25;
+        } else if (range === "25% - 50%") {
+          params.minDiscount = 25;
+          params.maxDiscount = 50;
+        } else if (range === "Above 50%") {
+          params.minDiscount = 50;
+        }
+      });
     }
-
+  
     return params;
   };
   // 🔹 Fetch products from API
@@ -447,63 +466,7 @@ export default function CategoryProduct() {
 
           {/* Right Product Section */}
           <Col md={10}>
-            {/* Selected filters */}
-            {selectedFilters?.length > 0 && (
-              <div style={{ marginBottom: 20 }}>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 10,
-                    flexWrap: "wrap",
-                  }}
-                >
-                  <strong>Selected Filters:</strong>
-                  {selectedFilters?.map((filter, idx) => (
-                    <Badge
-                      key={idx}
-                      bg="secondary"
-                      style={{
-                        padding: "6px 10px",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "6px",
-                        cursor: "pointer",
-                      }}
-                    >
-                      {filter.value}
-                      <span
-                        onClick={() =>
-                          setFilters((prev) => ({
-                            ...prev,
-                            [filter.type]: prev[filter.type].filter(
-                              (v) => v !== filter.value
-                            ),
-                          }))
-                        }
-                        style={{
-                          marginLeft: 4,
-                          fontWeight: "bold",
-                          color: "#fff",
-                          cursor: "pointer",
-                        }}
-                      >
-                        &times;
-                      </span>
-                    </Badge>
-                  ))}
-                  <Button
-                    variant="outline-danger"
-                    size="sm"
-                    onClick={clearAllFilters}
-                  >
-                    Clear All
-                  </Button>
-                </div>
-              </div>
-            )}
-
-            {/* Sorting + Pagination */}
+           
             <div
               style={{
                 display: "flex",

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef,useCallback } from "react";
 import {
   Container,
   Table,
@@ -24,6 +24,7 @@ import {
   getProducts,
   addOrUpdateReview,
   verifyReview,
+  onSaleProduct
 } from "../../../api/admin/productApi";
 import { MdReviews } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
@@ -712,29 +713,55 @@ export default function AllProductAdmin() {
   const limit = 20;
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        const data = await getProducts({
-          page,
-          limit,
-          search,
-          title,
-          itemNumber,
-          status,
-        });
-        setProducts(data.products || []);
-        setPages(data.pages || 1);
-        console.log('data',data)
-      } catch (err) {
-        console.error("Failed to fetch products:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProducts();
-  }, [page, search, title, itemNumber, status]);
+  // useEffect(() => {
+  //   const fetchProducts = async () => {
+  //     try {
+  //       setLoading(true);
+  //       const data = await getProducts({
+  //         page,
+  //         limit,
+  //         search,
+  //         title,
+  //         itemNumber,
+  //         status,
+  //       });
+  //       setProducts(data.products || []);
+  //       setPages(data.pages || 1);
+  //       console.log('data',data)
+  //     } catch (err) {
+  //       console.error("Failed to fetch products:", err);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //   fetchProducts();
+  // }, [page, search, title, itemNumber, status]);
+
+  const fetchProducts = useCallback(async () => {
+  try {
+    setLoading(true);
+    const data = await getProducts({
+      page,
+      limit,
+      search,
+      title,
+      itemNumber,
+      status,
+    });
+    setProducts(data.products || []);
+    setPages(data.pages || 1);
+    console.log("data", data);
+  } catch (err) {
+    console.error("Failed to fetch products:", err);
+  } finally {
+    setLoading(false);
+  }
+}, [page, limit, search, title, itemNumber, status]);
+
+// 🔹 call when deps change
+useEffect(() => {
+  fetchProducts();
+}, [fetchProducts]);
 
   const handleDelete = (id) => console.log("Delete product:", id);
 
@@ -754,17 +781,27 @@ export default function AllProductAdmin() {
   };
 
   const handleAddReview = async (product) => {
+    console.log('product',product)
     setCurrentEditingProduct(product);
     setShowRevieModel(true);
   };
   console.log("currentEditingProduct", currentEditingProduct);
 
+  const [isSaving, setIsSaving] = useState(false);
   // save handler
-  const handleSaveSale = async (data) => {
-    console.log("Saving sale for product:", selectedSaleProduct._id, data);
-    // 👉 here you call your API (e.g. updateProductSale API)
+  const handleSaveSale = async () => {
+  try {
+    setIsSaving(true); // show loader/spinner if you have on
+    await onSaleProduct(selectedSaleProduct._id, form);
     setShowSaleModal(false);
-  };
+  } catch (error) {
+    console.error("❌ Failed to save sale:", error);
+    alert("Something went wrong while saving the sale. Please try again.");
+  } finally {
+    setIsSaving(false); // always stop loader
+    fetchProducts(); // refresh product list to show updated sale info
+  }
+};
 
   const fileInputRef = useRef(null);
 
@@ -1054,8 +1091,8 @@ export default function AllProductAdmin() {
           <Button variant="secondary" onClick={() => setShowModal(false)}>
             Cancel
           </Button>
-          <Button variant="success" onClick={handleSaveSale}>
-            Save
+          <Button variant="success" onClick={handleSaveSale} disabled={isSaving}>
+            {isSaving ? "Saving..." : "Save"}
           </Button>
         </Modal.Footer>
       </Modal>

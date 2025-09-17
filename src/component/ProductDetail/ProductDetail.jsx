@@ -48,13 +48,14 @@ const images = [
 ];
 
 export default function ProductDetail() {
-
-     useEffect(() => {
+  useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   const [selectedImage, setSelectedImage] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedFrequently, setSelectedFrequently] = useState([]);
+  console.log("selectedFrequently", selectedFrequently);
   const {
     cart,
     handleAddToCart,
@@ -64,8 +65,6 @@ export default function ProductDetail() {
     handleDecrease,
     handleRemove,
   } = useCart();
-
- 
 
   const navigate = useNavigate();
   const [cartOpen, setCartOpen] = useState(false);
@@ -549,7 +548,6 @@ export default function ProductDetail() {
                       handleSelect(e.target.checked ? "yes" : "");
                     }}
                   />
-                 
                 </div>
               </div>
             )}
@@ -653,6 +651,7 @@ export default function ProductDetail() {
                       alert("This size is not available");
                       return;
                     }
+                    console.log("selectedSize", selectedSize);
                     const generatePaddingSku = (baseSku, padding) => {
                       if (!padding) return baseSku;
                       return `${baseSku}-W${padding.waist || "0"}-L${
@@ -662,14 +661,11 @@ export default function ProductDetail() {
                     const sku =
                       product.productType === "Jewellery"
                         ? generateJewellerySku(product.title)
-                        : variant.sku;
-                    const skuWithPadding = generatePaddingSku(
-                      sku,
-                      savedPaddingDetails
-                    );
+                        : selectedSize?.sku;
+                   
                     handleAddToCart({
                       productId: product._id,
-                      sku: skuWithPadding,
+                      sku: sku,
                       size:
                         product.productType !== "Jewellery"
                           ? selectedSize.size
@@ -710,17 +706,14 @@ export default function ProductDetail() {
                     product.productType === "Jewellery"
                       ? generateJewellerySku(product.title)
                       : variant.sku;
-                  const skuWithPadding = generatePaddingSku(
-                    sku,
-                    savedPaddingDetails
-                  );
+                 
                   const buyNowItem = {
                     productId: product._id,
                     title: product.title,
                     media: product.media,
                     quantity: 1,
                     variant: {
-                      sku: skuWithPadding,
+                      sku: sku,
                       size:
                         product.productType !== "Jewellery"
                           ? selectedSize.size
@@ -730,8 +723,8 @@ export default function ProductDetail() {
                       paddingDetails: savedPaddingDetails,
                     },
                   };
-
-                  navigate("/checkout", { state: { buyNowItem } });
+                      const allItems = [buyNowItem, ...selectedFrequently];
+                  navigate("/checkout", { state: { buyNowItems: allItems } });
                 }}
               >
                 Buy Now
@@ -931,7 +924,7 @@ export default function ProductDetail() {
                 </Accordion.Body>
               </Accordion.Item>
               {product?.faq?.length > 0 && (
-                <Accordion.Item eventKey="4" style={{ border: "none" }}>
+                <Accordion.Item eventKey="4" className="border-0">
                   <Accordion.Header onClick={() => toggleKey("4")}>
                     <FaQuestion
                       size={20}
@@ -939,24 +932,58 @@ export default function ProductDetail() {
                         fontWeight: "bold",
                         marginTop: -3,
                         marginRight: 10,
+                        color: "#4f46e5", // Indigo accent
                       }}
                     />
-                    <div className={styles.productDetailHeading}>FAQ </div>
+                    <div className={styles.productDetailHeading}>FAQ</div>
                   </Accordion.Header>
                   <Accordion.Body>
-                    {product.faq.map((item) => (
-                      <div
-                        key={item._id}
-                        style={{ marginTop: 5, paddingLeft: 10 }}
-                      >
-                        <p style={{ marginBottom: 2 }}>
-                          <strong>Q:</strong> {item.question}
-                        </p>
-                        <p style={{ marginBottom: 5 }}>
-                          <strong>A:</strong> {item.answer}
-                        </p>
-                      </div>
-                    ))}
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "12px",
+                      }}
+                    >
+                      {product.faq.map((item) => (
+                        <div
+                          key={item._id}
+                          style={{
+                            background: "#f9fafb", // light gray background
+                            border: "1px solid #e5e7eb",
+                            borderRadius: "8px",
+                            padding: "12px 16px",
+                            transition: "box-shadow 0.2s ease",
+                          }}
+                          onMouseEnter={(e) =>
+                            (e.currentTarget.style.boxShadow =
+                              "0 2px 8px rgba(0,0,0,0.08)")
+                          }
+                          onMouseLeave={(e) =>
+                            (e.currentTarget.style.boxShadow = "none")
+                          }
+                        >
+                          <p
+                            style={{
+                              marginBottom: "6px",
+                              fontWeight: 600,
+                              color: "#111827",
+                            }}
+                          >
+                            Q: {item.question}
+                          </p>
+                          <p
+                            style={{
+                              margin: 0,
+                              color: "#374151",
+                              lineHeight: 1.5,
+                            }}
+                          >
+                            A: {item.answer}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
                   </Accordion.Body>
                 </Accordion.Item>
               )}
@@ -966,7 +993,13 @@ export default function ProductDetail() {
       </Container>
       {product?.frequentlyBoughtTogether.length > 0 && (
         <div style={{ backgroundColor: "#f9f9f9" }}>
-          <Frequently items={product?.frequentlyBoughtTogether} />
+           <Frequently
+      items={product?.frequentlyBoughtTogether}
+      onSelectionChange={(selectedIds) => {
+        // keep track of selected extra items
+        setSelectedFrequently(selectedIds);
+      }}
+    />
         </div>
       )}
       <br />

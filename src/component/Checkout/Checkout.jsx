@@ -11,6 +11,8 @@ export default function Checkout() {
   const { cart } = useCart();
   const location = useLocation();
 
+  console.log("Location state:", location.state);
+
   const navigator = useNavigate();
 
   const [editing, setEditing] = useState(false);
@@ -18,7 +20,7 @@ export default function Checkout() {
   const [itemsToCheckout, setItemsToCheckout] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [editingPhone, setEditingPhone] = useState(false);
-  const [placeloading,setPlaceLoading] =useState(false)
+  const [placeloading, setPlaceLoading] = useState(false);
 
   console.log("itemsToCheckout Address:", itemsToCheckout);
 
@@ -57,8 +59,8 @@ export default function Checkout() {
 
   useEffect(() => {
     fetchProfile();
-    if (location.state?.buyNowItem) {
-      setItemsToCheckout([location.state.buyNowItem]);
+    if (location.state?.buyNowItems) {
+      setItemsToCheckout([location.state.buyNowItems].flat());
     } else {
       setItemsToCheckout(cart.items || []);
     }
@@ -144,9 +146,17 @@ export default function Checkout() {
     }
 
     try {
-      setPlaceLoading(true)
+      setPlaceLoading(true);
+
+      const hasBuyNowItems = location.state?.buyNowItems?.length > 0;
+
       const orderPayload = {
-        buyNow: !!location.state?.buyNowItem,
+        buyNow: hasBuyNowItems ? "BUY_NOW" : null,
+        ...(hasBuyNowItems && {
+          buyNowItems: Array.isArray(location.state.buyNowItems)
+            ? location.state.buyNowItems
+            : [location.state.buyNowItems],
+        }),
         shippingAddress: {
           name: userDetails?.name,
           email: userDetails?.email,
@@ -158,13 +168,7 @@ export default function Checkout() {
           country: selectedAddress.country || "India",
         },
         paymentMethod,
-        ...(location.state?.buyNowItem && {
-          productId: location.state.buyNowItem.productId,
-          variant: location.state.buyNowItem.variant,
-          quantity: location.state.buyNowItem.quantity,
-        }),
       };
-
       const res = await placeOrder(orderPayload);
 
       if (!res.success) {
@@ -214,8 +218,8 @@ export default function Checkout() {
     } catch (err) {
       console.error(err);
       alert(err.message || "Something went wrong");
-    }finally{
-     setPlaceLoading(false)
+    } finally {
+      setPlaceLoading(false);
     }
   };
 
@@ -486,43 +490,33 @@ export default function Checkout() {
           <h4 style={{ marginBottom: 20 }}>
             Order Summary ({itemsToCheckout.length} items)
           </h4>
-          {itemsToCheckout.map((item) => (
-            <div
-              key={item.productId || item._id}
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                marginBottom: 15,
-                alignItems: "center",
-                borderBottom: "1px solid #ddd",
-                paddingBottom: 10,
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: 15 }}>
+          {itemsToCheckout.map((item, index) => {
+            const mediaUrl =
+              item.product?.media?.[0]?.url ||
+              item?.media?.[0]?.url ||
+              "/placeholder.png";
+            const title = item.product?.title || item.title;
+            const price =
+              (item.variant?.price ||
+                item.product?.salePrice ||
+                item.product?.mrp ||
+                0) * item.quantity;
+
+            return (
+              <div key={item.productId || item._id || index}>
                 <img
-                  src={item.product?.media?.[0]?.url || item?.media[0].url}
-                  alt={item.title}
-                  style={{
-                    width: 60,
-                    height: 60,
-                    objectFit: "cover",
-                    borderRadius: 6,
-                  }}
+                  src={mediaUrl}
+                  alt={title}
+                  style={{ width: 60, height: 60, objectFit: "cover" }}
                 />
                 <div>
-                  <p style={{ margin: 0, fontWeight: 500 }}>
-                    {item?.product?.title || item?.title}
-                  </p>
-                  <small style={{ color: "#555" }}>Qty: {item.quantity}</small>
+                  <p>{title}</p>
+                  <small>Qty: {item.quantity}</small>
                 </div>
+                <span>₹{price}</span>
               </div>
-              <span style={{ fontWeight: 600 }}>
-                ₹
-                {(item.product?.salePrice || item.variant.price) *
-                  item.quantity}
-              </span>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Sticky Footer */}

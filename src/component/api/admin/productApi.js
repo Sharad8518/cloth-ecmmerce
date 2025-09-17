@@ -10,6 +10,7 @@ export const addProduct = async (productData) => {
   const formData = new FormData();
 
   // --- Simple fields ---
+  formData.append("header", productData.header || "");
   formData.append("itemNumber", productData.itemNumber || "");
   formData.append("title", productData.title || "");
   formData.append("description", productData.description || "");
@@ -22,10 +23,7 @@ export const addProduct = async (productData) => {
   formData.append("fulfillmentType", productData.fulfillmentType || "");
   formData.append("productType", productData.productType || "");
   formData.append("occasion", productData.occasion || "");
-  formData.append(
-    "estimatedShippingDays",
-    productData.estimatedShippingDays || ""
-  );
+  formData.append("estimatedShippingDays",productData.estimatedShippingDays || "");
   formData.append("productSpeciality", productData.productSpeciality || "");
   formData.append("styleNo", productData.styleNo || "");
   formData.append("fabric", productData.fabric || "");
@@ -34,6 +32,7 @@ export const addProduct = async (productData) => {
   formData.append("care", productData.care || "");
   formData.append("note", productData.note || "");
   formData.append("plating", productData.plating || "");
+  formData.append("status", productData.status || "");
   formData.append("shortDescription", productData.shortDescription || "");
   formData.append("dupatta", JSON.stringify(productData.dupatta || {}));
   formData.append(

@@ -8,6 +8,8 @@ import {
   Badge,
   Button,
   Spinner,
+  Offcanvas,
+  Carousel
 } from "react-bootstrap";
 import NavbarMenu from "../Navbar/NavbarMenu";
 import ProductList from "../ProductList/ProductList";
@@ -20,21 +22,26 @@ import Lottie from "lottie-react";
 import loadingAnimation from "../../assets/Anim/loading.json";
 import { useLocation } from "react-router-dom";
 import { useParams } from "react-router-dom";
-
+import { FiFilter } from "react-icons/fi";
 
 export default function Jewellery() {
-  const { category,subName } = useParams();
+  const { category, subName } = useParams();
+  const [showFilters, setShowFilters] = useState(false);
+
+  const handleCloseFilters = () => setShowFilters(false);
+  const handleShowFilters = () => setShowFilters(true);
   // State to track filters
   const [filters, setFilters] = useState({
-   header: ["Jwellery"],
-    subCategories:Array.isArray(subName) ? subName : subName ? [subName] : [],
-    categories:Array.isArray(category) ? category : category ? [category] : [],
+    header: ["Jwellery"],
+    subCategories: Array.isArray(subName) ? subName : subName ? [subName] : [],
+    categories: Array.isArray(category) ? category : category ? [category] : [],
     collections: [],
     price: [],
     size: [],
     color: [],
     fabric: [],
     craft: [],
+    plating: [],
     occasion: [],
     dupatta: [],
     discount: [], // example: [10, 50] → between 10% and 50%
@@ -78,17 +85,16 @@ export default function Jewellery() {
     }
 
     if (filters.header) {
-    params.header = normalize(filters.header); // pass directly
-  }
-  
-  if (filters.categories.length) {
+      params.header = normalize(filters.header); // pass directly
+    }
+
+    if (filters.categories.length) {
       params.categories = normalize(filters.categories);
     }
 
-  if (filters.subCategories.length) {
+    if (filters.subCategories.length) {
       params.subCategories = normalize(filters.subCategories);
     }
-
 
     // 📏 Size
     if (filters.size.length) {
@@ -106,6 +112,10 @@ export default function Jewellery() {
     }
 
     // 🎉 Occasion → backend expects `occasion`
+    if (filters.plating.length) {
+      params.plating = normalize(filters.plating);
+    }
+
     if (filters.occasion.length) {
       params.occasion = normalize(filters.occasion);
     }
@@ -115,8 +125,8 @@ export default function Jewellery() {
       params.collections = normalize(filters.collections);
     }
 
-      // 👗 Collection → backend expects `categories`
-    
+    // 👗 Collection → backend expects `categories`
+
     // 🧣 Dupatta (⚠️ not in backend code — you may need to add)
     if (filters.dupatta.length) {
       params.dupatta = filters.dupatta;
@@ -128,25 +138,39 @@ export default function Jewellery() {
         if (range === "Under ₹500") {
           params.minPrice = 0;
           params.maxPrice = 500;
-        } else if (range === "₹500 - ₹1000") {
+        } else if (range === "₹500 - ₹1500") {
           params.minPrice = 500;
-          params.maxPrice = 1000;
-        } else if (range === "₹1000 - ₹2000") {
-          params.minPrice = 1000;
-          params.maxPrice = 2000;
-        } else if (range === "Above ₹2000") {
-          params.minPrice = 2000;
+          params.maxPrice = 1500;
+        } else if (range === "₹1500 - ₹3000") {
+          params.minPrice = 1500;
+          params.maxPrice = 3000;
+        } else if (range === "Above ₹3000") {
+          params.minPrice = 3000;
         }
       });
     }
 
     // 🔖 Discount
     if (filters.discount.length) {
-      params.minDiscount = filters.discount[0];
+      filters.discount.forEach((range) => {
+        if (range === "Upto 10%") {
+          params.minDiscount = 0;
+          params.maxDiscount = 10;
+        } else if (range === "10% - 25%") {
+          params.minDiscount = 10;
+          params.maxDiscount = 25;
+        } else if (range === "25% - 50%") {
+          params.minDiscount = 25;
+          params.maxDiscount = 50;
+        } else if (range === "Above 50%") {
+          params.minDiscount = 50;
+        }
+      });
     }
 
     return params;
   };
+
   // 🔹 Fetch products from API
   const fetchProducts = async () => {
     try {
@@ -190,6 +214,7 @@ export default function Jewellery() {
       size: [],
       color: [],
       fabric: [],
+      plating: [],
       craft: [],
       occasion: [],
       dupatta: [],
@@ -235,22 +260,29 @@ export default function Jewellery() {
     <div>
       <NavbarMenu />
       <br />
-      <div
+       <div
         style={{ width: "100%", boxSizing: "border-box" }}
         className={styles.CategoryProductBanner}
       >
-        <img
-          src={banner[0]?.imageUrl}
-          style={{ width: "100%", height: "100%" }}
-          alt="Banner"
-        />
+        <Carousel>
+          {banner.map((item, index) => (
+            <Carousel.Item key={index}>
+              <img
+                className="d-block w-100"
+                src={item.imageUrl}
+                alt={`Banner ${index + 1}`}
+                style={{ height: "100%", objectFit: "cover" }}
+              />
+            </Carousel.Item>
+          ))}
+        </Carousel>
       </div>
       <br />
       <Container fluid className={styles.categoryProductContainer}>
         <div style={{ display: "flex" }}>
           <BreadcrumbSinglePage />
-          <span style={{ marginTop: 10, marginLeft: 5 }}>  / Indo Western</span>
-          <span style={{ marginTop: 10, marginLeft: 5 }}>  / {subName}</span>
+          <span style={{ marginTop: 10, marginLeft: 5 }}> / Indo Western</span>
+          <span style={{ marginTop: 10, marginLeft: 5 }}> / {subName}</span>
         </div>
         <Row>
           {/* Left Filters */}
@@ -282,31 +314,35 @@ export default function Jewellery() {
                 </Accordion.Body>
               </Accordion.Item>
 
-                <Accordion.Item eventKey="8">
+              <Accordion.Item eventKey="8">
                 <Accordion.Header>Discount</Accordion.Header>
                 <Accordion.Body>
-                  {[
-                    "Upto - 10%",
-                    "10 - 25%",
-                    "25 - 50%",
-                    "Above 50%",
-                  ].map((val, idx) => (
-                    <Form.Check
-                      key={idx}
-                      type="checkbox"
-                      label={val}
-                      checked={filters.discount.includes(val)}
-                      onChange={() => handleFilterChange("discount", val)}
-                    />
-                  ))}
+                  {["Upto - 10%", "10 - 25%", "25 - 50%", "Above 50%"].map(
+                    (val, idx) => (
+                      <Form.Check
+                        key={idx}
+                        type="checkbox"
+                        label={val}
+                        checked={filters.discount.includes(val)}
+                        onChange={() => handleFilterChange("discount", val)}
+                      />
+                    )
+                  )}
                 </Accordion.Body>
               </Accordion.Item>
 
-                {/* Occasion */}
+              {/* Occasion */}
               <Accordion.Item eventKey="6">
                 <Accordion.Header>Occasion</Accordion.Header>
                 <Accordion.Body>
-                  {["Casual", "Workwear", "Everyday", "Party", "Festivel","Gifting"].map((val) => (
+                  {[
+                    "Casual",
+                    "Workwear",
+                    "Everyday",
+                    "Party",
+                    "Festivel",
+                    "Gifting",
+                  ].map((val) => (
                     <Form.Check
                       key={val}
                       type="checkbox"
@@ -318,11 +354,20 @@ export default function Jewellery() {
                 </Accordion.Body>
               </Accordion.Item>
 
-                 {/* Color */}
+              {/* Color */}
               <Accordion.Item eventKey="3">
                 <Accordion.Header>Color</Accordion.Header>
                 <Accordion.Body>
-                  {["Golden Finish", "Silver Finish", "Antique Finish", "Dual Stone Finish", "Green Stone","Blue Stone","Yellow Stone","Multicolor"].map((val) => (
+                  {[
+                    "Golden Finish",
+                    "Silver Finish",
+                    "Antique Finish",
+                    "Dual Stone Finish",
+                    "Green Stone",
+                    "Blue Stone",
+                    "Yellow Stone",
+                    "Multicolor",
+                  ].map((val) => (
                     <Form.Check
                       key={val}
                       type="checkbox"
@@ -337,13 +382,19 @@ export default function Jewellery() {
               <Accordion.Item eventKey="9">
                 <Accordion.Header>Material</Accordion.Header>
                 <Accordion.Body>
-                  {["Brass", "Cropper", "Nickel Silver", "Stainless Steel", "Alloy"].map((val) => (
+                  {[
+                    "Brass",
+                    "Cropper",
+                    "Nickel Silver",
+                    "Stainless Steel",
+                    "Alloy",
+                  ].map((val) => (
                     <Form.Check
                       key={val}
                       type="checkbox"
                       label={val}
                       checked={filters.color.includes(val)}
-                      onChange={() => handleFilterChange("material", val)}
+                      onChange={() => handleFilterChange("fabric", val)}
                     />
                   ))}
                 </Accordion.Body>
@@ -354,38 +405,195 @@ export default function Jewellery() {
               <Accordion.Item eventKey="1">
                 <Accordion.Header>Plating</Accordion.Header>
                 <Accordion.Body>
-                  {["Silver Plating", "Gold Plating", "Rose Gold Plating", "Rhodium Plating","Oxidized"].map((val) => (
+                  {[
+                    "Silver Plating",
+                    "Gold Plating",
+                    "Rose Gold Plating",
+                    "Rhodium Plating",
+                    "Oxidized",
+                  ].map((val) => (
                     <Form.Check
                       key={val}
                       type="checkbox"
                       label={val}
-                      checked={filters.collections.includes(val)}
-                      onChange={() => handleFilterChange("collections", val)}
+                      checked={filters.plating.includes(val)}
+                      onChange={() => handleFilterChange("plating", val)}
                     />
                   ))}
                 </Accordion.Body>
               </Accordion.Item>
-            
-             
-
-           
-
-             
-
-         
-            
-
-            
-             
-            
             </Accordion>
           </Col>
 
+          <div className="d-md-none mb-3 text-end">
+            <button
+              onClick={handleShowFilters}
+              style={{
+                background: "none",
+                border: "none",
+                color: "#333",
+                fontSize: "16px",
+                fontWeight: 500,
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                cursor: "pointer",
+              }}
+            >
+              <FiFilter size={20} />
+              Filters
+            </button>
+          </div>
+
+          {/* Offcanvas for Mobile */}
+          <Offcanvas
+            show={showFilters}
+            onHide={handleCloseFilters}
+            placement="start"
+            style={{ width: "70%" }}
+          >
+            <Offcanvas.Header closeButton>
+              <Offcanvas.Title>Filters</Offcanvas.Title>
+            </Offcanvas.Header>
+            <Offcanvas.Body>
+              <Accordion defaultActiveKey="0" alwaysOpen>
+                {/* Copy same Accordion.Items as desktop filters */}
+                {/* Price */}
+                <Accordion.Item eventKey="0">
+                  <Accordion.Header>Shop by Price</Accordion.Header>
+                  <Accordion.Body>
+                    {[
+                      "Under ₹500",
+                      "₹500 - ₹1500",
+                      "₹1500 - ₹3000",
+                      "Above ₹3000",
+                    ].map((val) => (
+                      <Form.Check
+                        key={val}
+                        type="checkbox"
+                        label={val}
+                        checked={filters.price.includes(val)}
+                        onChange={() => handleFilterChange("price", val)}
+                      />
+                    ))}
+                  </Accordion.Body>
+                </Accordion.Item>
+
+                <Accordion.Item eventKey="8">
+                  <Accordion.Header>Discount</Accordion.Header>
+                  <Accordion.Body>
+                    {["Upto - 10%", "10 - 25%", "25 - 50%", "Above 50%"].map(
+                      (val, idx) => (
+                        <Form.Check
+                          key={idx}
+                          type="checkbox"
+                          label={val}
+                          checked={filters.discount.includes(val)}
+                          onChange={() => handleFilterChange("discount", val)}
+                        />
+                      )
+                    )}
+                  </Accordion.Body>
+                </Accordion.Item>
+
+                {/* Occasion */}
+                <Accordion.Item eventKey="6">
+                  <Accordion.Header>Occasion</Accordion.Header>
+                  <Accordion.Body>
+                    {[
+                      "Casual",
+                      "Workwear",
+                      "Everyday",
+                      "Party",
+                      "Festivel",
+                      "Gifting",
+                    ].map((val) => (
+                      <Form.Check
+                        key={val}
+                        type="checkbox"
+                        label={val}
+                        checked={filters.occasion.includes(val)}
+                        onChange={() => handleFilterChange("occasion", val)}
+                      />
+                    ))}
+                  </Accordion.Body>
+                </Accordion.Item>
+
+                {/* Color */}
+                <Accordion.Item eventKey="3">
+                  <Accordion.Header>Color</Accordion.Header>
+                  <Accordion.Body>
+                    {[
+                      "Golden Finish",
+                      "Silver Finish",
+                      "Antique Finish",
+                      "Dual Stone Finish",
+                      "Green Stone",
+                      "Blue Stone",
+                      "Yellow Stone",
+                      "Multicolor",
+                    ].map((val) => (
+                      <Form.Check
+                        key={val}
+                        type="checkbox"
+                        label={val}
+                        checked={filters.color.includes(val)}
+                        onChange={() => handleFilterChange("color", val)}
+                      />
+                    ))}
+                  </Accordion.Body>
+                </Accordion.Item>
+
+                <Accordion.Item eventKey="9">
+                  <Accordion.Header>Material</Accordion.Header>
+                  <Accordion.Body>
+                    {[
+                      "Brass",
+                      "Cropper",
+                      "Nickel Silver",
+                      "Stainless Steel",
+                      "Alloy",
+                    ].map((val) => (
+                      <Form.Check
+                        key={val}
+                        type="checkbox"
+                        label={val}
+                        checked={filters.color.includes(val)}
+                        onChange={() => handleFilterChange("fabric", val)}
+                      />
+                    ))}
+                  </Accordion.Body>
+                </Accordion.Item>
+
+                {/* Other filter sections (category, size, color, etc.) */}
+                {/* Example for Category */}
+                <Accordion.Item eventKey="1">
+                  <Accordion.Header>Plating</Accordion.Header>
+                  <Accordion.Body>
+                    {[
+                      "Silver Plating",
+                      "Gold Plating",
+                      "Rose Gold Plating",
+                      "Rhodium Plating",
+                      "Oxidized",
+                    ].map((val) => (
+                      <Form.Check
+                        key={val}
+                        type="checkbox"
+                        label={val}
+                        checked={filters.plating.includes(val)}
+                        onChange={() => handleFilterChange("plating", val)}
+                      />
+                    ))}
+                  </Accordion.Body>
+                </Accordion.Item>
+
+                {/* Add other filters here same as desktop */}
+              </Accordion>
+            </Offcanvas.Body>
+          </Offcanvas>
           {/* Right Product Section */}
           <Col md={10}>
-           
-            
-
             {/* Sorting + Pagination */}
             <div
               style={{

@@ -86,7 +86,7 @@ export default function FrequentlyBought() {
         &#8592; Back
       </Button>
 
-      <h2 className="mb-4">Complete the Look </h2>
+      <h2 className="mb-4">Complete the Look  </h2>
 
       {/* Current Product */}
       {productDetails && (

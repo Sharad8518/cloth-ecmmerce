@@ -19,7 +19,7 @@ const ProductGrid = ({ products }) => {
   };
 
   return (
-    <Container className="my-1" >
+    <Container className="my-1">
       <Row>
         {products.map((product, index) => (
           <Col
@@ -60,27 +60,27 @@ const ProductGrid = ({ products }) => {
                   )}
                 </div>
                 {product?.saleOn && (
-  <div
-    style={{
-      position: "absolute",
-      top: "10px",
-      left: "10px",
-      background: "linear-gradient(135deg, #ff4e50, #f9d423)", // gradient for modern look
-      color: "#fff",
-      padding: "4px 10px",
-      borderRadius: "50px", // pill shape
-      fontSize: "0.75rem",
-      fontWeight: "600",
-      letterSpacing: "0.5px",
-      boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
-      textTransform: "uppercase",
-    }}
-  >
-    {product?.discountType === "percent"
-      ? `${product?.discountValue}% OFF`
-      : "Sale"}
-  </div>
-)}
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "10px",
+                      left: "10px",
+                      background: "linear-gradient(135deg, #ff4e50, #f9d423)", // gradient for modern look
+                      color: "#fff",
+                      padding: "4px 10px",
+                      borderRadius: "50px", // pill shape
+                      fontSize: "0.75rem",
+                      fontWeight: "600",
+                      letterSpacing: "0.5px",
+                      boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {product?.discountType === "percent"
+                      ? `${product?.discountValue}% OFF`
+                      : "Sale"}
+                  </div>
+                )}
               </div>
               <div className="custom-card-body">
                 <h5 className="custom-card-title">{product?.title}</h5>

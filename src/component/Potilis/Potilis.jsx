@@ -8,6 +8,8 @@ import {
   Badge,
   Button,
   Spinner,
+  Offcanvas,
+  Carousel,
 } from "react-bootstrap";
 import NavbarMenu from "../Navbar/NavbarMenu";
 import ProductList from "../ProductList/ProductList";
@@ -20,9 +22,14 @@ import Lottie from "lottie-react";
 import loadingAnimation from "../../assets/Anim/loading.json";
 import { useLocation } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import { FiFilter } from "react-icons/fi";
 
 export default function Potilis() {
   const { category, subName } = useParams();
+  const [showFilters, setShowFilters] = useState(false);
+
+  const handleCloseFilters = () => setShowFilters(false);
+  const handleShowFilters = () => setShowFilters(true);
   // State to track filters
   const [filters, setFilters] = useState({
     header: ["Potilis"],
@@ -123,24 +130,37 @@ export default function Potilis() {
     // 💰 Price buckets → map labels to minPrice / maxPrice
     if (filters.price.length) {
       filters.price.forEach((range) => {
-        if (range === "Under ₹500") {
+        if (range === "Under ₹1000") {
           params.minPrice = 0;
-          params.maxPrice = 500;
-        } else if (range === "₹500 - ₹1000") {
-          params.minPrice = 500;
           params.maxPrice = 1000;
         } else if (range === "₹1000 - ₹2000") {
           params.minPrice = 1000;
           params.maxPrice = 2000;
-        } else if (range === "Above ₹2000") {
+        } else if (range === "₹2000 - ₹3000") {
           params.minPrice = 2000;
+          params.maxPrice = 3000;
+        } else if (range === "Above ₹3000") {
+          params.minPrice = 3000;
         }
       });
     }
 
     // 🔖 Discount
-    if (filters.discount.length) {
-      params.minDiscount = filters.discount[0];
+     if (filters.discount.length) {
+      filters.discount.forEach((range) => {
+        if (range === "Upto 10%") {
+          params.minDiscount = 0;
+          params.maxDiscount = 10;
+        } else if (range === "10% - 25%") {
+          params.minDiscount = 10;
+          params.maxDiscount = 25;
+        } else if (range === "25% - 50%") {
+          params.minDiscount = 25;
+          params.maxDiscount = 50;
+        } else if (range === "Above 50%") {
+          params.minDiscount = 50;
+        }
+      });
     }
 
     return params;
@@ -233,16 +253,18 @@ export default function Potilis() {
     <div>
       <NavbarMenu />
       <br />
-      <div
-        style={{ width: "100%", boxSizing: "border-box" }}
-        className={styles.CategoryProductBanner}
-      >
-        <img
-          src={banner[0]?.imageUrl}
-          style={{ width: "100%", height: "100%" }}
-          alt="Banner"
-        />
-      </div>
+      <Carousel>
+        {banner.map((item, index) => (
+          <Carousel.Item key={index}>
+            <img
+              className="d-block w-100"
+              src={item.imageUrl}
+              alt={`Banner ${index + 1}`}
+              style={{ height: "100%", objectFit: "cover" }}
+            />
+          </Carousel.Item>
+        ))}
+      </Carousel>
       <br />
       <Container fluid className={styles.categoryProductContainer}>
         <div style={{ display: "flex" }}>
@@ -252,7 +274,7 @@ export default function Potilis() {
         </div>
         <Row>
           {/* Left Filters */}
-            <Col
+          <Col
             md={2}
             style={{ background: "#f8f9fa", padding: "20px" }}
             className={styles.filterBox}
@@ -386,22 +408,171 @@ export default function Potilis() {
                   ))}
                 </Accordion.Body>
               </Accordion.Item>
-
-              
-             
-              
-
-         
-             
             </Accordion>
           </Col>
+          <div className="d-md-none mb-3 text-end">
+            <button
+              onClick={handleShowFilters}
+              style={{
+                background: "none",
+                border: "none",
+                color: "#333",
+                fontSize: "16px",
+                fontWeight: 500,
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                cursor: "pointer",
+              }}
+            >
+              <FiFilter size={20} />
+              Filters
+            </button>
+          </div>
+          <Offcanvas
+            show={showFilters}
+            onHide={handleCloseFilters}
+            placement="start"
+            style={{ width: "70%" }}
+          >
+            <Offcanvas.Header closeButton>
+              <Offcanvas.Title>Filters</Offcanvas.Title>
+            </Offcanvas.Header>
+            <Offcanvas.Body>
+              <Accordion defaultActiveKey="0" alwaysOpen>
+                {/* Price */}
+                <Accordion.Item eventKey="0">
+                  <Accordion.Header>Shop by Price</Accordion.Header>
+                  <Accordion.Body>
+                    {[
+                      "Under ₹1000",
+                      "₹1000 - ₹2000",
+                      "₹2000 - ₹3000",
+                      "Above ₹3000",
+                    ].map((val) => (
+                      <Form.Check
+                        key={val}
+                        type="checkbox"
+                        label={val}
+                        checked={filters.price.includes(val)}
+                        onChange={() => handleFilterChange("price", val)}
+                      />
+                    ))}
+                  </Accordion.Body>
+                </Accordion.Item>
 
-          
+                <Accordion.Item eventKey="8">
+                  <Accordion.Header>Discount</Accordion.Header>
+                  <Accordion.Body>
+                    {["Upto - 10%", "10 - 25%", "25 - 50%", "Above 50%"].map(
+                      (val, idx) => (
+                        <Form.Check
+                          key={idx}
+                          type="checkbox"
+                          label={val}
+                          checked={filters.discount.includes(val)}
+                          onChange={() => handleFilterChange("discount", val)}
+                        />
+                      )
+                    )}
+                  </Accordion.Body>
+                </Accordion.Item>
+
+                {/* Color */}
+                <Accordion.Item eventKey="3">
+                  <Accordion.Header>Color Shades</Accordion.Header>
+                  <Accordion.Body>
+                    {[
+                      "White",
+                      "Pink",
+                      "Red",
+                      "Black",
+                      "Green",
+                      "Blue",
+                      "Yellow",
+                      "Purple",
+                      "Multicolour",
+                    ].map((val) => (
+                      <Form.Check
+                        key={val}
+                        type="checkbox"
+                        label={val}
+                        checked={filters.color.includes(val)}
+                        onChange={() => handleFilterChange("color", val)}
+                      />
+                    ))}
+                  </Accordion.Body>
+                </Accordion.Item>
+
+                {/* Fabric */}
+                <Accordion.Item eventKey="4">
+                  <Accordion.Header>Fabric</Accordion.Header>
+                  <Accordion.Body>
+                    {[
+                      "Silk",
+                      "Modal Silk",
+                      "Glass Silk",
+                      "Shimmer Silk",
+                      "Organza Silk",
+                      "Viscose Silk",
+                      "Cotton Silk",
+                      ,
+                      "Tissue",
+                      "Geogett",
+                      "Crepe",
+                      "Shaneel(Chenille)",
+                      "Velvet",
+                      "Chanderi",
+                      "Linen",
+                      "Cotton",
+                    ].map((val) => (
+                      <Form.Check
+                        key={val}
+                        type="checkbox"
+                        label={val}
+                        checked={filters.fabric.includes(val)}
+                        onChange={() => handleFilterChange("fabric", val)}
+                      />
+                    ))}
+                  </Accordion.Body>
+                </Accordion.Item>
+
+                {/* Craft */}
+                <Accordion.Item eventKey="5">
+                  <Accordion.Header>Craft</Accordion.Header>
+                  <Accordion.Body>
+                    {[
+                      "Dabka Work",
+                      "Mirror Work",
+                      "Resham Work",
+                      "Sequins Work",
+                      "Bead Work",
+                      "Pearl Work",
+                      "Sarahi Work",
+                      "Kahmiri Tilla",
+                      "Pitta Work",
+                      "Zardosi",
+                      "Anchor Threads",
+                      "Machine Threads",
+                      "Hand Painting",
+                      "Block Painting",
+                    ].map((val) => (
+                      <Form.Check
+                        key={val}
+                        type="checkbox"
+                        label={val}
+                        checked={filters.craft.includes(val)}
+                        onChange={() => handleFilterChange("craft", val)}
+                      />
+                    ))}
+                  </Accordion.Body>
+                </Accordion.Item>
+              </Accordion>
+            </Offcanvas.Body>
+          </Offcanvas>
 
           {/* Right Product Section */}
           <Col md={10}>
-            
-           
             {/* Sorting + Pagination */}
             <div
               style={{

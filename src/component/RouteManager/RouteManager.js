@@ -61,11 +61,11 @@ export default function RouteManager() {
       <Route path="/termCondition" element={<TermCondition />} />
       <Route path="/returnExchange" element={<ReturnExchange />} />
       <Route path="/cookiesPolicy" element={<CookiesPolicy />} />
-      <Route path="/indoWestern/:category/:subName" element={<IndoWestern />} />
-      <Route path="/jewellery/:category/:subName" element={<Jewellery />} />
-      <Route path="/kurtaSet/:category/:subName" element={<KurtaSet />} />
-      <Route path="/potilis/:category/:subName" element={<Potilis />} />
-      <Route path="/designerSuit/:category/:subName" element={<DesignerSuit />} />
+      <Route path="/indoWestern/:category/:subName?" element={<IndoWestern />} />
+      <Route path="/jewellery/:category/:subName?" element={<Jewellery />} />
+      <Route path="/kurtaSet/:category/:subName?" element={<KurtaSet />} />
+      <Route path="/potilis/:category/:subName?" element={<Potilis />} />
+      <Route path="/designerSuit/:category/:subName?" element={<DesignerSuit />} />
       {/* Protected Admin Routes */}
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<AdminDashboard />}>
