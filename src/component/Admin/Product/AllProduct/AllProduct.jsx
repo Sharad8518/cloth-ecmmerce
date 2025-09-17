@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef,useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   Container,
   Table,
@@ -24,7 +24,7 @@ import {
   getProducts,
   addOrUpdateReview,
   verifyReview,
-  onSaleProduct
+  onSaleProduct,
 } from "../../../api/admin/productApi";
 import { MdReviews } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
@@ -80,7 +80,7 @@ const ProductRow = ({
           )}
         </td>
         <td>{product.availableStock}</td>
-         <td>{product.sold}</td>
+        <td>{product.sold}</td>
         <td>
           <Badge pill bg={product.status === "ACTIVE" ? "success" : "warning"}>
             {product.status || "-"}
@@ -187,16 +187,15 @@ const ProductModal = ({ product, show, onHide }) => {
         : `₹${product.discountValue} OFF`
       : null;
 
- const handleToggleVerify = async (reviewId) => {
-  try {
-    const response = await verifyReview(product._id, reviewId);
-    alert(response.message);
-  } catch (err) {
-    console.error(err);
-    alert(err.message);
-  }
-};
- 
+  const handleToggleVerify = async (reviewId) => {
+    try {
+      const response = await verifyReview(product._id, reviewId);
+      alert(response.message);
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    }
+  };
 
   return (
     <Modal show={show} onHide={onHide} size="lg" centered>
@@ -738,30 +737,30 @@ export default function AllProductAdmin() {
   // }, [page, search, title, itemNumber, status]);
 
   const fetchProducts = useCallback(async () => {
-  try {
-    setLoading(true);
-    const data = await getProducts({
-      page,
-      limit,
-      search,
-      title,
-      itemNumber,
-      status,
-    });
-    setProducts(data.products || []);
-    setPages(data.pages || 1);
-    console.log("data", data);
-  } catch (err) {
-    console.error("Failed to fetch products:", err);
-  } finally {
-    setLoading(false);
-  }
-}, [page, limit, search, title, itemNumber, status]);
+    try {
+      setLoading(true);
+      const data = await getProducts({
+        page,
+        limit,
+        search,
+        title,
+        itemNumber,
+        status,
+      });
+      setProducts(data.products || []);
+      setPages(data.pages || 1);
+      console.log("data", data);
+    } catch (err) {
+      console.error("Failed to fetch products:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [page, limit, search, title, itemNumber, status]);
 
-// 🔹 call when deps change
-useEffect(() => {
-  fetchProducts();
-}, [fetchProducts]);
+  // 🔹 call when deps change
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
 
   const handleDelete = (id) => console.log("Delete product:", id);
 
@@ -781,7 +780,7 @@ useEffect(() => {
   };
 
   const handleAddReview = async (product) => {
-    console.log('product',product)
+    console.log("product", product);
     setCurrentEditingProduct(product);
     setShowRevieModel(true);
   };
@@ -790,18 +789,18 @@ useEffect(() => {
   const [isSaving, setIsSaving] = useState(false);
   // save handler
   const handleSaveSale = async () => {
-  try {
-    setIsSaving(true); // show loader/spinner if you have on
-    await onSaleProduct(selectedSaleProduct._id, form);
-    setShowSaleModal(false);
-  } catch (error) {
-    console.error("❌ Failed to save sale:", error);
-    alert("Something went wrong while saving the sale. Please try again.");
-  } finally {
-    setIsSaving(false); // always stop loader
-    fetchProducts(); // refresh product list to show updated sale info
-  }
-};
+    try {
+      setIsSaving(true); // show loader/spinner if you have on
+      await onSaleProduct(selectedSaleProduct._id, form);
+      setShowSaleModal(false);
+    } catch (error) {
+      console.error("❌ Failed to save sale:", error);
+      alert("Something went wrong while saving the sale. Please try again.");
+    } finally {
+      setIsSaving(false); // always stop loader
+      fetchProducts(); // refresh product list to show updated sale info
+    }
+  };
 
   const fileInputRef = useRef(null);
 
@@ -1027,24 +1026,31 @@ useEffect(() => {
 
             {form.saleOn && (
               <>
-                <Form.Group className="mb-3">
-                  <Form.Label>Sale Price</Form.Label>
-                  <Form.Control
-                    type="number"
-                    value={form.salePrice}
-                    onChange={(e) =>
-                      setForm({ ...form, salePrice: e.target.value })
-                    }
-                  />
-                </Form.Group>
+                <div className="alert alert-info mt-3" style={{ fontSize: 12 }}>
+                  <strong>Note:</strong> Sale price is auto-calculated from MRP
+                  (₹
+                  {selectedSaleProduct?.mrp || 0}) based on discount.
+                </div>
 
                 <Form.Group className="mb-3">
                   <Form.Label>Discount Type</Form.Label>
                   <Form.Select
                     value={form.discountType}
-                    onChange={(e) =>
-                      setForm({ ...form, discountType: e.target.value })
-                    }
+                    onChange={(e) => {
+                      const discountType = e.target.value;
+                      let salePrice = form.salePrice;
+
+                      if (selectedSaleProduct?.mrp) {
+                        const mrp = selectedSaleProduct.mrp;
+                        if (discountType === "percent") {
+                          salePrice = mrp - (mrp * form.discountValue) / 100;
+                        } else {
+                          salePrice = mrp - form.discountValue;
+                        }
+                      }
+
+                      setForm({ ...form, discountType, salePrice });
+                    }}
                   >
                     <option value="percent">Percent</option>
                     <option value="flat">Flat</option>
@@ -1055,10 +1061,33 @@ useEffect(() => {
                   <Form.Label>Discount Value</Form.Label>
                   <Form.Control
                     type="number"
+                    required
                     value={form.discountValue}
-                    onChange={(e) =>
-                      setForm({ ...form, discountValue: e.target.value })
-                    }
+                    onChange={(e) => {
+                      const discountValue = Number(e.target.value);
+                      let salePrice = form.salePrice;
+
+                      if (selectedSaleProduct?.mrp) {
+                        const mrp = selectedSaleProduct.mrp;
+                        if (form.discountType === "percent") {
+                          salePrice = mrp - (mrp * discountValue) / 100;
+                        } else {
+                          salePrice = mrp - discountValue;
+                        }
+                      }
+
+                      setForm({ ...form, discountValue, salePrice });
+                    }}
+                  />
+                </Form.Group>
+
+                <Form.Group className="mb-3">
+                  <Form.Label>Sale Price</Form.Label>
+                  <Form.Control
+                    type="number"
+                    required
+                    value={form.salePrice}
+                    readOnly // ✅ make it readonly since it's auto-calculated
                   />
                 </Form.Group>
 
@@ -1091,7 +1120,11 @@ useEffect(() => {
           <Button variant="secondary" onClick={() => setShowModal(false)}>
             Cancel
           </Button>
-          <Button variant="success" onClick={handleSaveSale} disabled={isSaving}>
+          <Button
+            variant="success"
+            onClick={handleSaveSale}
+            disabled={isSaving}
+          >
             {isSaving ? "Saving..." : "Save"}
           </Button>
         </Modal.Footer>
