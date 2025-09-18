@@ -40,6 +40,7 @@ import { FaQuestion } from "react-icons/fa6";
 import "./ProductDetail.css";
 import ImageMagnifier from "./ImageMagnifier";
 import { IoClose } from "react-icons/io5";
+import { GrSubtract ,GrAdd } from "react-icons/gr";
 
 const images = [
   "https://img.theloom.in/pwa/catalog/product/cache/e442fb943037550e0d70cca304324ade/v/j/vj304fs25-01kpfuchsiavj30_7_.jpg?tr=c-at_max,w-800,h-1066",
@@ -57,6 +58,11 @@ export default function ProductDetail() {
   const [selectedImage, setSelectedImage] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [selectedFrequently, setSelectedFrequently] = useState([]);
+   const [zoom, setZoom] = useState(1); // 1 = normal size
+
+const zoomIn = () => setZoom((prev) => prev + 0.2);    // keep increasing, no max
+const zoomOut = () => setZoom((prev) => prev - 0.2, 1);   // keep decreasing, no min
+
   console.log("selectedFrequently", selectedFrequently);
   const {
     cart,
@@ -434,7 +440,7 @@ export default function ProductDetail() {
                     <div
                       key={index}
                       style={{ height: "100%" }}
-                      onClick={() => setFullscreenImage(true)}
+                      onClick={() => {setFullscreenImage(true); setSelectedImage(m.url)}}
                     >
                       <ImageMagnifier
                         src={m.url}
@@ -1212,29 +1218,14 @@ export default function ProductDetail() {
         removeFromCart={handleRemove}
       />
       <MobileLoginOTP isOpen={isOpen} closeModal={closeModal} />
-
       {fullscreenImage && (
-  <div
-    className={styles.fullscreenImageOverlay}
-    onClick={() => setFullscreenImage(false)} // click outside closes
-  >
-    <div className={styles.fullscreenImageWrapper} onClick={(e) => e.stopPropagation()}>
-      
-      {/* Close button */}
-      <div className={styles.closeButtonWrapper}>
-        <IoClose
-          size={35}
-          onClick={() => setFullscreenImage(false)}
-          className={styles.closeButton}
-        />
-      </div>
-
-      {/* Content: left thumbnails + right big image */}
-      <div className={styles.fullscreenImageContent}>
-        
-        {/* Left thumbnails */}
-        <div className={styles.leftColumn}>
-          {product?.media.map((img, index) => (
+        <div
+          className={styles.fullscreenImageOverlay}
+          // onClick={() => setFullscreenImage(false)} // click outside closes
+        >
+          <div className={styles.fullSizeImageSection}>
+            <div className={styles.leftImageFullSection}>
+                 {product?.media.map((img, index) => (
             <img
               key={index}
               src={img.url}
@@ -1243,21 +1234,50 @@ export default function ProductDetail() {
               onClick={() => setSelectedImage(img.url)}
             />
           ))}
-        </div>
-
-        {/* Right big image */}
-        <div className={styles.rightColumn}>
-          <img
-            src={selectedImage}
-            alt="Fullscreen product"
-            className={styles.bigImage}
+            </div>
+            <div className={styles.rightImageFullSection}>
+              <img
+                src={selectedImage}
+                style={{ 
+                 transform: `scale(${zoom})`,
+                  transition: "transform 0.3s ease",
+                  objectFit: "cover", 
+                  width: "100%"
+                 }}
+              />
+              <div
+                style={{
+                  position: "fixed",
+                  bottom: 0,
+                  left: 0,
+                  width: "100%",
+                  zIndex: 1000, // keep above other elements
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "100%",
+                    height: "60px",
+                    marginBottom: 10,
+                  }}
+                >
+                  <button style={{marginLeft:10,width:50,height:50,borderRadius:100,border:"none"}}  onClick={zoomIn}><GrAdd/></button>
+                  <button  style={{marginLeft:10,width:50,height:50,borderRadius:100,border:"none"}} onClick={zoomOut}><GrSubtract/></button>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* Close button */}
+          <IoClose
+            size={35}
+            onClick={() => setFullscreenImage(false)}
+            className={styles.closeButton}
           />
         </div>
-
-      </div>
-    </div>
-  </div>
-)}
+      )}
     </>
   );
 }
