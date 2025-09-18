@@ -38,6 +38,8 @@ import "slick-carousel/slick/slick-theme.css";
 import MobileBackButton from "../layout/BackButton/MobileBackButton";
 import { FaQuestion } from "react-icons/fa6";
 import "./ProductDetail.css";
+import ImageMagnifier from "./ImageMagnifier";
+import { IoClose } from "react-icons/io5";
 
 const images = [
   "https://img.theloom.in/pwa/catalog/product/cache/e442fb943037550e0d70cca304324ade/v/j/vj304fs25-01kpfuchsiavj30_7_.jpg?tr=c-at_max,w-800,h-1066",
@@ -278,6 +280,7 @@ export default function ProductDetail() {
 
   const { id } = useParams(); // ✅ get product id from URL
   const [product, setProduct] = useState(null);
+  const [fullscreenImage, setFullscreenImage] = useState(false);
   const [loading, setLoading] = useState(true);
   const [paddingRequired, setPaddingRequired] = useState("No");
   const [isPaddingModalOpen, setIsPaddingModalOpen] = useState(false);
@@ -375,11 +378,18 @@ export default function ProductDetail() {
     <>
       <NavbarMenu />
       <br /> <br />
-      <Container className={styles.ProductDetailContainer}>
-        {/* <MobileBackButton /> */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <div className={styles.ProductDetailContainer}>
+          {/* <MobileBackButton /> */}
 
-        <Row className={styles.productDetailRow}>
-          {/* <Col md={1} className={styles.vericalImage}>
+          <Row className={styles.productDetailRow}>
+            {/* <Col md={1} className={styles.vericalImage}>
             {product?.media?.length > 0 && ( // ✅ check if media exists
               <VerticalImageSelector
                 images={product?.media?.map((m) => m?.url)} // ✅ use product media URLs
@@ -388,171 +398,179 @@ export default function ProductDetail() {
               />
             )}
           </Col> */}
-          <Col
-            md={6}
-            style={{
-              height: "100%",
-              boxSizing: "border-box",
-              display: "flex",
-              justifyContent: "space-between",
-            }}
-          >
-            <div className={styles.imagevericaldesktop}>
-              {product?.media?.length > 0 && ( // ✅ check if media exists
-                <VerticalImageSelector
+            <Col
+              md={6}
+              sm={12}
+              style={{
+                height: "100%",
+                boxSizing: "border-box",
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <div className={styles.imagevericaldesktop}>
+                {product?.media?.length > 0 && ( // ✅ check if media exists
+                  <VerticalImageSelector
+                    images={product?.media?.map((m) => m?.url)} // ✅ use product media URLs
+                    onSelect={handleSelectImage}
+                    selectedIndex={selectedIndex}
+                  />
+                )}
+              </div>
+              <div className={`${styles.imageBigSection} imageBigSection `}>
+                <Slider
+                  ref={sliderRef}
+                  dots={true} // show navigation dots
+                  infinite={true} // loop infinitely
+                  speed={500} // transition speed
+                  slidesToShow={1} // show 1 slide at a time
+                  slidesToScroll={1} // scroll 1 slide at a time
+                  swipeToSlide={true} // enable swipe
+                  arrows={false} // hide arrows if you want swipe only
+                  adaptiveHeight={true}
+                  afterChange={(current) => setSelectedIndex(current)} // sync selectedIndex
+                >
+                  {product?.media?.map((m, index) => (
+                    <div
+                      key={index}
+                      style={{ height: "100%" }}
+                      onClick={() => setFullscreenImage(true)}
+                    >
+                      <ImageMagnifier
+                        src={m.url}
+                        alt={m.alt || `Product image ${index + 1}`}
+                        zoom={3} // 🔍 zoom factor (try 2, 3, 5)
+                        lensSize={200} // 🔵 lens diameter in px
+                      />
+                    </div>
+                  ))}
+                </Slider>
+              </div>
+            </Col>
+            <Col md={6} sm={12} className={styles.productContentBox}>
+              <br />
+              <div className={styles.mobileHorizantal}>
+                <HorizontalImageSelector
                   images={product?.media?.map((m) => m?.url)} // ✅ use product media URLs
                   onSelect={handleSelectImage}
                   selectedIndex={selectedIndex}
                 />
-              )}
-            </div>
-            <div className={`${styles.imageBigSection} imageBigSection `}>
-              <Slider
-                ref={sliderRef}
-                dots={true} // show navigation dots
-                infinite={true} // loop infinitely
-                speed={500} // transition speed
-                slidesToShow={1} // show 1 slide at a time
-                slidesToScroll={1} // scroll 1 slide at a time
-                swipeToSlide={true} // enable swipe
-                arrows={false} // hide arrows if you want swipe only
-                adaptiveHeight={true}
-                afterChange={(current) => setSelectedIndex(current)} // sync selectedIndex
-              >
-                {product?.media?.map((m, index) => (
-                  <div key={index} style={{ height: "100%" }}>
-                    <img
-                      src={m.url}
-                      alt={m.alt || `Product image ${index + 1}`}
-                      className={styles.productDetailImg}
-                    />
-                  </div>
-                ))}
-              </Slider>
-            </div>
-          </Col>
-          <Col md={6} className={styles.productContentBox}>
-            <br />
-            <div className={styles.mobileHorizantal}>
-              <HorizontalImageSelector
-                images={product?.media?.map((m) => m?.url)} // ✅ use product media URLs
-                onSelect={handleSelectImage}
-                selectedIndex={selectedIndex}
-              />
-            </div>
+              </div>
 
-            <h3 className={styles.detailProductTitle}>{product?.title} </h3>
-            <div className={styles.detailProductDiscreaption}>
-              {product?.description}
-            </div>
-            <div className={styles.detailPrice}>
-              {product?.saleOn ? (
-                <>
-                  <span
-                    style={{
-                      textDecoration: "line-through",
-                      color: "#888",
-                      marginRight: "8px",
-                      fontSize: "0.9rem",
-                    }}
-                  >
-                    Rs. {product?.mrp} /-
-                  </span>
-                  <span
-                    style={{
-                      color: "red",
-                      fontWeight: "bold",
-                      fontSize: "1.1rem",
-                    }}
-                  >
-                    Rs. {product?.salePrice} /-
-                  </span>
-                  {product?.discountType === "percent" && (
+              <h3 className={styles.detailProductTitle}>{product?.title} </h3>
+              <div className={styles.detailProductDiscreaption}>
+                {product?.description}
+              </div>
+              <div className={styles.detailPrice}>
+                {product?.saleOn ? (
+                  <>
                     <span
                       style={{
-                        background: "rgba(0, 128, 0, 0.1)", // light green background
-                        color: "#2e7d32", // professional deep green
-                        marginLeft: "8px",
-                        padding: "2px 6px",
-                        borderRadius: "12px", // pill shape
-                        fontSize: "0.75rem",
-                        fontWeight: "600",
-                        letterSpacing: "0.3px",
-                        display: "inline-block",
+                        textDecoration: "line-through",
+                        color: "#888",
+                        marginRight: "8px",
+                        fontSize: "0.9rem",
                       }}
                     >
-                      {product?.discountValue}% OFF
+                      Rs. {product?.mrp} /-
                     </span>
-                  )}
-                </>
-              ) : (
-                <span style={{ fontWeight: "600" }}>Rs. {product?.mrp} /-</span>
-              )}
-            </div>
-            <div className={styles.detailMRP}>Price Inclusive of Tax</div>
-            <hr />
-            {product?.fulfillmentType === "MADE_TO_ORDER" ? (
-              <div className={styles.detailMadeToOrderText}>
-                <BiCloset size={20} /> Made To Order
-              </div>
-            ) : (
-              <div className={styles.detailMadeToOrderText}>
-                <BiCloset size={20} /> Ready To Shipment
-              </div>
-            )}
-
-            <div className={styles.detailShip}>
-              Ship by {getDateAfterDays(product?.estimatedShippingDays)}
-            </div>
-            {product?.productType !== "Jewellery" && (
-              <>
-                <div className={styles.detailSizeText}>
-                  SELECT YOUR SIZE
-                  <div className={styles.detailSizeGuideText}>Size Guide</div>
-                </div>
-                <div className={styles.container}>
-                  {product?.variants?.map((variant) => (
-                    <button
-                      key={variant?.size}
-                      className={`${styles.sizeButton} ${
-                        selectedSize?.size === variant?.size
-                          ? styles.active
-                          : ""
-                      }`}
-                      onClick={() => setSelectedSize(variant)}
+                    <span
+                      style={{
+                        color: "red",
+                        fontWeight: "bold",
+                        fontSize: "1.1rem",
+                      }}
                     >
-                      {variant.size}
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
-
-            {product?.fulfillmentType === "MADE_TO_ORDER" && (
-              <div style={{ display: "flex" }}>
-                <span style={{ fontWeight: "700" }}>
-                  Additional info for better fit
-                </span>
-
-                <div style={{ marginTop: "0px", marginLeft: 10 }}>
-                  <input
-                    type="checkbox"
-                    id="answer-yes"
-                    style={{ width: 25, height: 25, cursor: "pointer" }}
-                    checked={answer === "yes"}
-                    onChange={(e) => {
-                      if (!selectedSize) {
-                        alert("Please select a size");
-                        return;
-                      }
-                      handleSelect(e.target.checked ? "yes" : "");
-                    }}
-                  />
-                </div>
+                      Rs. {product?.salePrice} /-
+                    </span>
+                    {product?.discountType === "percent" && (
+                      <span
+                        style={{
+                          background: "rgba(0, 128, 0, 0.1)", // light green background
+                          color: "#2e7d32", // professional deep green
+                          marginLeft: "8px",
+                          padding: "2px 6px",
+                          borderRadius: "12px", // pill shape
+                          fontSize: "0.75rem",
+                          fontWeight: "600",
+                          letterSpacing: "0.3px",
+                          display: "inline-block",
+                        }}
+                      >
+                        {product?.discountValue}% OFF
+                      </span>
+                    )}
+                  </>
+                ) : (
+                  <span style={{ fontWeight: "600" }}>
+                    Rs. {product?.mrp} /-
+                  </span>
+                )}
               </div>
-            )}
+              <div className={styles.detailMRP}>Price Inclusive of Tax</div>
+              <hr />
+              {product?.fulfillmentType === "MADE_TO_ORDER" ? (
+                <div className={styles.detailMadeToOrderText}>
+                  <BiCloset size={20} /> Made To Order
+                </div>
+              ) : (
+                <div className={styles.detailMadeToOrderText}>
+                  <BiCloset size={20} /> Ready To Shipment
+                </div>
+              )}
 
-            {/* <button
+              <div className={styles.detailShip}>
+                Ship by {getDateAfterDays(product?.estimatedShippingDays)}
+              </div>
+              {product?.productType !== "Jewellery" && (
+                <>
+                  <div className={styles.detailSizeText}>
+                    SELECT YOUR SIZE
+                    <div className={styles.detailSizeGuideText}>Size Guide</div>
+                  </div>
+                  <div className={styles.container}>
+                    {product?.variants?.map((variant) => (
+                      <button
+                        key={variant?.size}
+                        className={`${styles.sizeButton} ${
+                          selectedSize?.size === variant?.size
+                            ? styles.active
+                            : ""
+                        }`}
+                        onClick={() => setSelectedSize(variant)}
+                      >
+                        {variant.size}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {product?.fulfillmentType === "MADE_TO_ORDER" && (
+                <div style={{ display: "flex" }}>
+                  <span style={{ fontWeight: "700" }}>
+                    Additional info for better fit
+                  </span>
+
+                  <div style={{ marginTop: "0px", marginLeft: 10 }}>
+                    <input
+                      type="checkbox"
+                      id="answer-yes"
+                      style={{ width: 25, height: 25, cursor: "pointer" }}
+                      checked={answer === "yes"}
+                      onChange={(e) => {
+                        if (!selectedSize) {
+                          alert("Please select a size");
+                          return;
+                        }
+                        handleSelect(e.target.checked ? "yes" : "");
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* <button
               className={styles.paddingButton}
               onClick={() => setIsPaddingModalOpen(true)}
             >
@@ -561,8 +579,8 @@ export default function ProductDetail() {
                 : "Additional info for better fit"}
             </button> */}
 
-            {/* Show saved values */}
-            {/* {savedPaddingDetails && (
+              {/* Show saved values */}
+              {/* {savedPaddingDetails && (
               <div style={{ marginTop: 10 }}>
                 <strong>Better fit:</strong> Waist: {savedPaddingDetails.waist}{" "}
                 {savedPaddingDetails.unit}, Length: {savedPaddingDetails.length}{" "}
@@ -581,56 +599,111 @@ export default function ProductDetail() {
                 </button>
               </div>
             )} */}
-            {savedPaddingDetails && (
-              <div style={{ width: 320, marginLeft: 10 }}>
-                <Row style={{ fontSize: 14, fontWeight: "600" }}>
-                  <Col>Bust Size </Col>
-                  <Col> : {savedPaddingDetails.bust}</Col>
-                </Row>
-                <Row style={{ fontSize: 14, fontWeight: "600" }}>
-                  <Col>Waist Size</Col>
-                  <Col> : {savedPaddingDetails.waist}</Col>
-                </Row>
-                <Row style={{ fontSize: 14, fontWeight: "600" }}>
-                  <Col>Hip Size</Col>
-                  <Col> : {savedPaddingDetails.hip}</Col>
-                </Row>
-                <Row style={{ fontSize: 14, fontWeight: "600" }}>
-                  <Col>Full Length</Col>
-                  <Col> : {savedPaddingDetails.length}</Col>
-                </Row>
-                <Row style={{ fontSize: 14, fontWeight: "600" }}>
-                  <Col>Height with heel</Col>
-                  <Col> : {savedPaddingDetails.height}</Col>
-                </Row>
+              {savedPaddingDetails && (
+                <div style={{ width: 320, marginLeft: 10 }}>
+                  <Row style={{ fontSize: 14, fontWeight: "600" }}>
+                    <Col>Bust Size </Col>
+                    <Col> : {savedPaddingDetails.bust}</Col>
+                  </Row>
+                  <Row style={{ fontSize: 14, fontWeight: "600" }}>
+                    <Col>Waist Size</Col>
+                    <Col> : {savedPaddingDetails.waist}</Col>
+                  </Row>
+                  <Row style={{ fontSize: 14, fontWeight: "600" }}>
+                    <Col>Hip Size</Col>
+                    <Col> : {savedPaddingDetails.hip}</Col>
+                  </Row>
+                  <Row style={{ fontSize: 14, fontWeight: "600" }}>
+                    <Col>Full Length</Col>
+                    <Col> : {savedPaddingDetails.length}</Col>
+                  </Row>
+                  <Row style={{ fontSize: 14, fontWeight: "600" }}>
+                    <Col>Height with heel</Col>
+                    <Col> : {savedPaddingDetails.height}</Col>
+                  </Row>
+                  <button
+                    style={{
+                      marginLeft: -5,
+                      color: "red",
+                      backgroundColor: "#fff",
+                      border: "none",
+                    }}
+                    onClick={() => setSavedPaddingDetails(null)}
+                  >
+                    Remove
+                  </button>
+                </div>
+              )}
+              <div className={styles.detailButtonBar}>
+                {(cart?.items || []).some(
+                  (item) =>
+                    item.variant?.sku === selectedSize?.sku ||
+                    item.variant?.sku === product._id
+                ) ? (
+                  <button
+                    className={styles.detailAddCartButton}
+                    onClick={() => handleOpenCart()}
+                  >
+                    Proceed to Checkout
+                  </button>
+                ) : (
+                  <button
+                    className={styles.detailAddCartButton}
+                    onClick={() => {
+                      if (!token) {
+                        openModal();
+                        return;
+                      }
+
+                      if (
+                        product.productType !== "Jewellery" &&
+                        !selectedSize
+                      ) {
+                        alert("Please select a size");
+                        return;
+                      }
+
+                      // Find the variant by size
+                      const variant = product.variants.find(
+                        (v) => v.size === selectedSize.size
+                      );
+
+                      if (product.productType !== "Jewellery" && !variant) {
+                        alert("This size is not available");
+                        return;
+                      }
+                      console.log("selectedSize", selectedSize);
+                      const generatePaddingSku = (baseSku, padding) => {
+                        if (!padding) return baseSku;
+                        return `${baseSku}-W${padding.waist || "0"}-L${
+                          padding.length || "0"
+                        }-H${padding.height || "0"}-${padding.unit || "cm"}`;
+                      };
+                      const sku =
+                        product.productType === "Jewellery"
+                          ? generateJewellerySku(product.title)
+                          : selectedSize?.sku;
+
+                      handleAddToCart({
+                        productId: product._id,
+                        sku: sku,
+                        size:
+                          product.productType !== "Jewellery"
+                            ? selectedSize.size
+                            : "N/A",
+                        color: selectedColor || "N/A",
+                        quantity: 1,
+                        paddingDetails: savedPaddingDetails,
+                        price: product.saleOn ? product.salePrice : product.mrp,
+                      });
+                    }}
+                  >
+                    Add To Cart
+                  </button>
+                )}
+
                 <button
-                  style={{
-                    marginLeft: -5,
-                    color: "red",
-                    backgroundColor: "#fff",
-                    border: "none",
-                  }}
-                  onClick={() => setSavedPaddingDetails(null)}
-                >
-                  Remove
-                </button>
-              </div>
-            )}
-            <div className={styles.detailButtonBar}>
-              {(cart?.items || []).some(
-                (item) =>
-                  item.variant?.sku === selectedSize?.sku ||
-                  item.variant?.sku === product._id
-              ) ? (
-                <button
-                  className={styles.detailAddCartButton}
-                  onClick={() => handleOpenCart()}
-                >
-                  Proceed to Checkout
-                </button>
-              ) : (
-                <button
-                  className={styles.detailAddCartButton}
+                  className={styles.detailBuyButton}
                   onClick={() => {
                     if (!token) {
                       openModal();
@@ -642,7 +715,6 @@ export default function ProductDetail() {
                       return;
                     }
 
-                    // Find the variant by size
                     const variant = product.variants.find(
                       (v) => v.size === selectedSize.size
                     );
@@ -651,229 +723,180 @@ export default function ProductDetail() {
                       alert("This size is not available");
                       return;
                     }
-                    console.log("selectedSize", selectedSize);
-                    const generatePaddingSku = (baseSku, padding) => {
-                      if (!padding) return baseSku;
-                      return `${baseSku}-W${padding.waist || "0"}-L${
-                        padding.length || "0"
-                      }-H${padding.height || "0"}-${padding.unit || "cm"}`;
-                    };
                     const sku =
                       product.productType === "Jewellery"
                         ? generateJewellerySku(product.title)
-                        : selectedSize?.sku;
-                   
-                    handleAddToCart({
+                        : variant.sku;
+
+                    const buyNowItem = {
                       productId: product._id,
-                      sku: sku,
-                      size:
-                        product.productType !== "Jewellery"
-                          ? selectedSize.size
-                          : "N/A",
-                      color: selectedColor || "N/A",
+                      title: product.title,
+                      media: product.media,
                       quantity: 1,
-                      paddingDetails: savedPaddingDetails,
-                      price: product.saleOn ? product.salePrice : product.mrp,
-                    });
+                      variant: {
+                        sku: sku,
+                        size:
+                          product.productType !== "Jewellery"
+                            ? selectedSize.size
+                            : "N/A",
+                        color: selectedColor || "N/A",
+                        price: product.saleOn ? product.salePrice : product.mrp, // ✅ use salePrice if on sale
+                        paddingDetails: savedPaddingDetails,
+                      },
+                    };
+                    const allItems = [buyNowItem, ...selectedFrequently];
+                    navigate("/checkout", { state: { buyNowItems: allItems } });
                   }}
                 >
-                  Add To Cart
+                  Buy Now
                 </button>
-              )}
+              </div>
 
-              <button
-                className={styles.detailBuyButton}
-                onClick={() => {
-                  if (!token) {
-                    openModal();
-                    return;
-                  }
-
-                  if (product.productType !== "Jewellery" && !selectedSize) {
-                    alert("Please select a size");
-                    return;
-                  }
-
-                  const variant = product.variants.find(
-                    (v) => v.size === selectedSize.size
-                  );
-
-                  if (product.productType !== "Jewellery" && !variant) {
-                    alert("This size is not available");
-                    return;
-                  }
-                  const sku =
-                    product.productType === "Jewellery"
-                      ? generateJewellerySku(product.title)
-                      : variant.sku;
-                 
-                  const buyNowItem = {
-                    productId: product._id,
-                    title: product.title,
-                    media: product.media,
-                    quantity: 1,
-                    variant: {
-                      sku: sku,
-                      size:
-                        product.productType !== "Jewellery"
-                          ? selectedSize.size
-                          : "N/A",
-                      color: selectedColor || "N/A",
-                      price: product.saleOn ? product.salePrice : product.mrp, // ✅ use salePrice if on sale
-                      paddingDetails: savedPaddingDetails,
-                    },
-                  };
-                      const allItems = [buyNowItem, ...selectedFrequently];
-                  navigate("/checkout", { state: { buyNowItems: allItems } });
-                }}
+              <div className={styles.detailProductInfo}>
+                Product Information
+              </div>
+              <Accordion
+                activeKey={activeKeys}
+                style={{ marginTop: 10, border: "none" }}
               >
-                Buy Now
-              </button>
-            </div>
-
-            <div className={styles.detailProductInfo}>Product Information</div>
-            <Accordion
-              activeKey={activeKeys}
-              style={{ marginTop: 10, border: "none" }}
-            >
-              <Accordion.Item eventKey="0" style={{ border: "none" }}>
-                <Accordion.Header onClick={() => toggleKey("0")}>
-                  <BiDetail
-                    size={20}
-                    style={{
-                      fontWeight: "bold",
-                      marginTop: -3,
-                      marginRight: 10,
-                    }}
-                  />
-                  <div className={styles.productDetailHeading}>
-                    {" "}
-                    Product Details
-                  </div>
-                </Accordion.Header>
-                <Accordion.Body>
-                  {/* <p>
+                <Accordion.Item eventKey="0" style={{ border: "none" }}>
+                  <Accordion.Header onClick={() => toggleKey("0")}>
+                    <BiDetail
+                      size={20}
+                      style={{
+                        fontWeight: "bold",
+                        marginTop: -3,
+                        marginRight: 10,
+                      }}
+                    />
+                    <div className={styles.productDetailHeading}>
+                      {" "}
+                      Product Details
+                    </div>
+                  </Accordion.Header>
+                  <Accordion.Body>
+                    {/* <p>
                     <strong>Colour:</strong> {product?.colour}
                   </p>
                   <p>{product?.description}</p> */}
 
-                  {/* <hr /> */}
-                  <p>{product?.shortDescription}</p>
-                  {(product?.packContains ||
-                    product?.fabric ||
-                    (product?.productType === "Cloths" && product?.dupatta) ||
-                    product?.work ||
-                    product?.care ||
-                    product?.occasion ||
-                    product?.Note) && (
-                    <>
-                      <strong style={{ color: "#0984e3" }}>Other Info</strong>
+                    {/* <hr /> */}
+                    <p>{product?.shortDescription}</p>
+                    {(product?.packContains ||
+                      product?.fabric ||
+                      (product?.productType === "Cloths" && product?.dupatta) ||
+                      product?.work ||
+                      product?.care ||
+                      product?.occasion ||
+                      product?.Note) && (
+                      <>
+                        <strong style={{ color: "#0984e3" }}>Other Info</strong>
 
-                      {product?.packContains && (
-                        <Row style={{ marginTop: 10 }}>
-                          <Col>
-                            <strong>Pack Contains</strong>
-                          </Col>
-                          <Col>: {product.packContains}</Col>
-                        </Row>
-                      )}
-
-                      {product?.fabric && (
-                        <Row style={{ marginTop: 10 }}>
-                          <Col>
-                            <strong>Fabric</strong>
-                          </Col>
-                          <Col>: {product.fabric}</Col>
-                        </Row>
-                      )}
-
-                      {product?.colour && (
-                        <Row style={{ marginTop: 10 }}>
-                          <Col>
-                            <strong>Colour</strong>
-                          </Col>
-                          <Col>: {product.colour}</Col>
-                        </Row>
-                      )}
-
-                      {product?.productType === "Cloths" &&
-                        product?.dupatta && (
+                        {product?.packContains && (
                           <Row style={{ marginTop: 10 }}>
                             <Col>
-                              <strong>Dupatta</strong>
+                              <strong>Pack Contains</strong>
                             </Col>
-                            <Col>
-                              : {product.dupatta.enabled ? "Yes" : "No"}
-                            </Col>
+                            <Col>: {product.packContains}</Col>
                           </Row>
                         )}
 
-                      {product?.work && (
-                        <Row style={{ marginTop: 10 }}>
-                          <Col>
-                            <strong>Work / Craft</strong>
-                          </Col>
-                          <Col>: {product.work}</Col>
-                        </Row>
-                      )}
+                        {product?.fabric && (
+                          <Row style={{ marginTop: 10 }}>
+                            <Col>
+                              <strong>Fabric</strong>
+                            </Col>
+                            <Col>: {product.fabric}</Col>
+                          </Row>
+                        )}
 
-                      {product?.care && (
-                        <Row style={{ marginTop: 10 }}>
-                          <Col>
-                            <strong>Care</strong>
-                          </Col>
-                          <Col>: {product.care}</Col>
-                        </Row>
-                      )}
+                        {product?.colour && (
+                          <Row style={{ marginTop: 10 }}>
+                            <Col>
+                              <strong>Colour</strong>
+                            </Col>
+                            <Col>: {product.colour}</Col>
+                          </Row>
+                        )}
 
-                      {product?.occasion && (
-                        <Row style={{ marginTop: 10 }}>
-                          <Col>
-                            <strong>Occasion</strong>
-                          </Col>
-                          <Col>: {product.occasion}</Col>
-                        </Row>
-                      )}
+                        {product?.productType === "Cloths" &&
+                          product?.dupatta && (
+                            <Row style={{ marginTop: 10 }}>
+                              <Col>
+                                <strong>Dupatta</strong>
+                              </Col>
+                              <Col>
+                                : {product.dupatta.enabled ? "Yes" : "No"}
+                              </Col>
+                            </Row>
+                          )}
 
-                      {product?.Note && (
-                        <Row style={{ marginTop: 10 }}>
-                          <Col>
-                            <strong>Note</strong>
-                          </Col>
-                          <Col>: {product.Note}</Col>
-                        </Row>
-                      )}
-                    </>
-                  )}
-                </Accordion.Body>
-              </Accordion.Item>
-              <Accordion.Item eventKey="1" style={{ border: "none" }}>
-                <Accordion.Header onClick={() => toggleKey("1")}>
-                  <BsPatchExclamation
-                    size={20}
-                    style={{
-                      fontWeight: "bold",
-                      marginTop: -3,
-                      marginRight: 10,
-                    }}
-                  />
-                  <div className={styles.productDetailHeading}>
-                    Product Specialty{" "}
-                  </div>
-                </Accordion.Header>
-                <Accordion.Body>
-                  {product?.productSpeciality}
-                  {product?.styleAndFit && (
-                    <p style={{ marginTop: 10 }}>
-                      <strong style={{ color: "#0984e3" }}>
-                        Style And Fit{" "}
-                      </strong>{" "}
-                      : {product?.styleAndFit}
-                    </p>
-                  )}
-                </Accordion.Body>
-              </Accordion.Item>
-              {/* <Accordion.Item eventKey="2" style={{ border: "none" }}>
+                        {product?.work && (
+                          <Row style={{ marginTop: 10 }}>
+                            <Col>
+                              <strong>Work / Craft</strong>
+                            </Col>
+                            <Col>: {product.work}</Col>
+                          </Row>
+                        )}
+
+                        {product?.care && (
+                          <Row style={{ marginTop: 10 }}>
+                            <Col>
+                              <strong>Care</strong>
+                            </Col>
+                            <Col>: {product.care}</Col>
+                          </Row>
+                        )}
+
+                        {product?.occasion && (
+                          <Row style={{ marginTop: 10 }}>
+                            <Col>
+                              <strong>Occasion</strong>
+                            </Col>
+                            <Col>: {product.occasion}</Col>
+                          </Row>
+                        )}
+
+                        {product?.Note && (
+                          <Row style={{ marginTop: 10 }}>
+                            <Col>
+                              <strong>Note</strong>
+                            </Col>
+                            <Col>: {product.Note}</Col>
+                          </Row>
+                        )}
+                      </>
+                    )}
+                  </Accordion.Body>
+                </Accordion.Item>
+                <Accordion.Item eventKey="1" style={{ border: "none" }}>
+                  <Accordion.Header onClick={() => toggleKey("1")}>
+                    <BsPatchExclamation
+                      size={20}
+                      style={{
+                        fontWeight: "bold",
+                        marginTop: -3,
+                        marginRight: 10,
+                      }}
+                    />
+                    <div className={styles.productDetailHeading}>
+                      Product Specialty{" "}
+                    </div>
+                  </Accordion.Header>
+                  <Accordion.Body>
+                    {product?.productSpeciality}
+                    {product?.styleAndFit && (
+                      <p style={{ marginTop: 10 }}>
+                        <strong style={{ color: "#0984e3" }}>
+                          Style And Fit{" "}
+                        </strong>{" "}
+                        : {product?.styleAndFit}
+                      </p>
+                    )}
+                  </Accordion.Body>
+                </Accordion.Item>
+                {/* <Accordion.Item eventKey="2" style={{ border: "none" }}>
                 <Accordion.Header onClick={() => toggleKey("2")}>
                   <div className={styles.productDetailHeading}>
                     <FaRegUser
@@ -899,107 +922,108 @@ export default function ProductDetail() {
                 </Accordion.Body>
               </Accordion.Item> */}
 
-              <Accordion.Item
-                eventKey="3"
-                style={{ border: "none" }}
-                onClick={() => toggleKey("3")}
-              >
-                <Accordion.Header>
-                  <div className={styles.productDetailHeading}>
-                    <LuArrowRightLeft
-                      size={20}
-                      style={{
-                        fontWeight: "bold",
-                        marginTop: -3,
-                        marginRight: 10,
-                      }}
-                    />
-                    Return and exchanges policy
-                  </div>
-                </Accordion.Header>
-                <Accordion.Body>
-                  <strong>{product?.shippingAndReturns?.title}</strong>
-                  <br />
-                  {product?.shippingAndReturns?.description}
-                </Accordion.Body>
-              </Accordion.Item>
-              {product?.faq?.length > 0 && (
-                <Accordion.Item eventKey="4" className="border-0">
-                  <Accordion.Header onClick={() => toggleKey("4")}>
-                    <FaQuestion
-                      size={20}
-                      style={{
-                        fontWeight: "bold",
-                        marginTop: -3,
-                        marginRight: 10,
-                        color: "#4f46e5", // Indigo accent
-                      }}
-                    />
-                    <div className={styles.productDetailHeading}>FAQ</div>
+                <Accordion.Item
+                  eventKey="3"
+                  style={{ border: "none" }}
+                  onClick={() => toggleKey("3")}
+                >
+                  <Accordion.Header>
+                    <div className={styles.productDetailHeading}>
+                      <LuArrowRightLeft
+                        size={20}
+                        style={{
+                          fontWeight: "bold",
+                          marginTop: -3,
+                          marginRight: 10,
+                        }}
+                      />
+                      Return and exchanges policy
+                    </div>
                   </Accordion.Header>
                   <Accordion.Body>
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "12px",
-                      }}
-                    >
-                      {product.faq.map((item) => (
-                        <div
-                          key={item._id}
-                          style={{
-                            background: "#f9fafb", // light gray background
-                            border: "1px solid #e5e7eb",
-                            borderRadius: "8px",
-                            padding: "12px 16px",
-                            transition: "box-shadow 0.2s ease",
-                          }}
-                          onMouseEnter={(e) =>
-                            (e.currentTarget.style.boxShadow =
-                              "0 2px 8px rgba(0,0,0,0.08)")
-                          }
-                          onMouseLeave={(e) =>
-                            (e.currentTarget.style.boxShadow = "none")
-                          }
-                        >
-                          <p
-                            style={{
-                              marginBottom: "6px",
-                              fontWeight: 600,
-                              color: "#111827",
-                            }}
-                          >
-                            Q: {item.question}
-                          </p>
-                          <p
-                            style={{
-                              margin: 0,
-                              color: "#374151",
-                              lineHeight: 1.5,
-                            }}
-                          >
-                            A: {item.answer}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
+                    <strong>{product?.shippingAndReturns?.title}</strong>
+                    <br />
+                    {product?.shippingAndReturns?.description}
                   </Accordion.Body>
                 </Accordion.Item>
-              )}
-            </Accordion>
-          </Col>
-        </Row>
-      </Container>
+                {product?.faq?.length > 0 && (
+                  <Accordion.Item eventKey="4" className="border-0">
+                    <Accordion.Header onClick={() => toggleKey("4")}>
+                      <FaQuestion
+                        size={20}
+                        style={{
+                          fontWeight: "bold",
+                          marginTop: -3,
+                          marginRight: 10,
+                          color: "#4f46e5", // Indigo accent
+                        }}
+                      />
+                      <div className={styles.productDetailHeading}>FAQ</div>
+                    </Accordion.Header>
+                    <Accordion.Body>
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "12px",
+                        }}
+                      >
+                        {product.faq.map((item) => (
+                          <div
+                            key={item._id}
+                            style={{
+                              background: "#f9fafb", // light gray background
+                              border: "1px solid #e5e7eb",
+                              borderRadius: "8px",
+                              padding: "12px 16px",
+                              transition: "box-shadow 0.2s ease",
+                            }}
+                            onMouseEnter={(e) =>
+                              (e.currentTarget.style.boxShadow =
+                                "0 2px 8px rgba(0,0,0,0.08)")
+                            }
+                            onMouseLeave={(e) =>
+                              (e.currentTarget.style.boxShadow = "none")
+                            }
+                          >
+                            <p
+                              style={{
+                                marginBottom: "6px",
+                                fontWeight: 600,
+                                color: "#111827",
+                              }}
+                            >
+                              Q: {item.question}
+                            </p>
+                            <p
+                              style={{
+                                margin: 0,
+                                color: "#374151",
+                                lineHeight: 1.5,
+                              }}
+                            >
+                              A: {item.answer}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </Accordion.Body>
+                  </Accordion.Item>
+                )}
+              </Accordion>
+            </Col>
+          </Row>
+        </div>
+      </div>
       {product?.frequentlyBoughtTogether.length > 0 && (
         <div style={{ backgroundColor: "#f9f9f9" }}>
-           <Frequently
-      items={product?.frequentlyBoughtTogether}
-      onSelectionChange={(selectedIds) => {
-        // keep track of selected extra items
-        setSelectedFrequently(selectedIds);
-      }}
-    />
+          <Frequently
+            items={product?.frequentlyBoughtTogether}
+            onSelectionChange={(selectedIds) => {
+              // keep track of selected extra items
+              setSelectedFrequently(selectedIds);
+            }}
+          />
         </div>
       )}
       <br />
@@ -1188,6 +1212,52 @@ export default function ProductDetail() {
         removeFromCart={handleRemove}
       />
       <MobileLoginOTP isOpen={isOpen} closeModal={closeModal} />
+
+      {fullscreenImage && (
+  <div
+    className={styles.fullscreenImageOverlay}
+    onClick={() => setFullscreenImage(false)} // click outside closes
+  >
+    <div className={styles.fullscreenImageWrapper} onClick={(e) => e.stopPropagation()}>
+      
+      {/* Close button */}
+      <div className={styles.closeButtonWrapper}>
+        <IoClose
+          size={35}
+          onClick={() => setFullscreenImage(false)}
+          className={styles.closeButton}
+        />
+      </div>
+
+      {/* Content: left thumbnails + right big image */}
+      <div className={styles.fullscreenImageContent}>
+        
+        {/* Left thumbnails */}
+        <div className={styles.leftColumn}>
+          {product?.media.map((img, index) => (
+            <img
+              key={index}
+              src={img.url}
+              alt={`Thumbnail ${index + 1}`}
+              className={`${styles.thumbnailImg} ${selectedImage === img.url ? styles.active : ""}`}
+              onClick={() => setSelectedImage(img.url)}
+            />
+          ))}
+        </div>
+
+        {/* Right big image */}
+        <div className={styles.rightColumn}>
+          <img
+            src={selectedImage}
+            alt="Fullscreen product"
+            className={styles.bigImage}
+          />
+        </div>
+
+      </div>
+    </div>
+  </div>
+)}
     </>
   );
 }

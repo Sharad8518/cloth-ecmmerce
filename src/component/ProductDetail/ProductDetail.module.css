@@ -17,9 +17,11 @@
 
 
 .ProductDetailContainer {
-  padding: 40px;
+  padding: 20px;
   height: 100%;
+  width: 100%;
   margin-top: 60px;
+
 }
 
 .vericalImage {
@@ -358,6 +360,79 @@
   border-color: #007bff;
 }
 
+.fullscreenImageOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+ 
+  background-color: rgba(255, 255, 255, 1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.fullscreenImageWrapper {
+  width: 90%;
+  max-width: 1400px;
+  
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.closeButtonWrapper {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px;
+}
+
+.closeButton {
+  cursor: pointer;
+  color: #333;
+}
+
+.fullscreenImageContent {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Left column: thumbnails */
+.leftColumn {
+  width: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+/* Right column: big image */
+.rightColumn {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  background-color: #f9f9f9;
+  align-items: center;
+ 
+  /* Allow horizontal scrolling */
+  overflow-x: auto;
+  overflow-y: hidden;  /* hide vertical scroll */
+  scroll-behavior: smooth; /* optional smooth scrolling */
+}
+
+/* Optional: prevent image from shrinking */
+.bigImage {
+  flex-shrink: 0;      /* prevents the image from shrinking */
+   height: 100%;
+  width: 100%;         /* natural width */
+  object-fit: cover;  /* maintain aspect ratio */
+  border-radius: 8px;
+}
 
 /* Fade-in animation */
 @keyframes fadeIn {
@@ -369,6 +444,35 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+
+
+
+
+@media (min-width: 1400px) {
+.ProductDetailContainer{
+  width: 90%;
+}
+}
+
+
+@media (min-width: 1024px) {
+.ProductDetailContainer{
+  width: 80%;
+}
+}
+
+@media (max-width: 1300px) {
+.ProductDetailContainer{
+  width: 100%;
+}
+}
+
+@media (max-width: 1200px) {
+.ProductDetailContainer{
+  width: 100%;
+}
 }
 
 @media (max-width: 768px) {
