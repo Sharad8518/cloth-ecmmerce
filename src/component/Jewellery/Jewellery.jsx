@@ -9,7 +9,7 @@ import {
   Button,
   Spinner,
   Offcanvas,
-  Carousel
+  Carousel,
 } from "react-bootstrap";
 import NavbarMenu from "../Navbar/NavbarMenu";
 import ProductList from "../ProductList/ProductList";
@@ -54,6 +54,8 @@ export default function Jewellery() {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState("popularity");
   const [loading, setLoading] = useState(true);
+    const [showSort, setShowSort] = useState(false);
+  
 
   useEffect(() => {
     const fetchBanner = async () => {
@@ -260,7 +262,7 @@ export default function Jewellery() {
     <div>
       <NavbarMenu />
       <br />
-       <div
+      <div
         style={{ width: "100%", boxSizing: "border-box" }}
         className={styles.CategoryProductBanner}
       >
@@ -278,186 +280,25 @@ export default function Jewellery() {
         </Carousel>
       </div>
       <br />
-      <Container fluid className={styles.categoryProductContainer}>
-        <div style={{ display: "flex" }}>
-          <BreadcrumbSinglePage />
-          <span style={{ marginTop: 10, marginLeft: 5 }}> / Indo Western</span>
-          <span style={{ marginTop: 10, marginLeft: 5 }}> / {subName}</span>
-        </div>
-        <Row>
-          {/* Left Filters */}
-          <Col
-            md={2}
-            style={{ background: "#f8f9fa", padding: "20px" }}
-            className={styles.filterBox}
-          >
-            <h5>Filters</h5>
-            <Accordion defaultActiveKey="0" alwaysOpen>
-              {/* Price */}
-              <Accordion.Item eventKey="0">
-                <Accordion.Header>Shop by Price</Accordion.Header>
-                <Accordion.Body>
-                  {[
-                    "Under ₹500",
-                    "₹500 - ₹1500",
-                    "₹1500 - ₹3000",
-                    "Above ₹3000",
-                  ].map((val) => (
-                    <Form.Check
-                      key={val}
-                      type="checkbox"
-                      label={val}
-                      checked={filters.price.includes(val)}
-                      onChange={() => handleFilterChange("price", val)}
-                    />
-                  ))}
-                </Accordion.Body>
-              </Accordion.Item>
-
-              <Accordion.Item eventKey="8">
-                <Accordion.Header>Discount</Accordion.Header>
-                <Accordion.Body>
-                  {["Upto - 10%", "10 - 25%", "25 - 50%", "Above 50%"].map(
-                    (val, idx) => (
-                      <Form.Check
-                        key={idx}
-                        type="checkbox"
-                        label={val}
-                        checked={filters.discount.includes(val)}
-                        onChange={() => handleFilterChange("discount", val)}
-                      />
-                    )
-                  )}
-                </Accordion.Body>
-              </Accordion.Item>
-
-              {/* Occasion */}
-              <Accordion.Item eventKey="6">
-                <Accordion.Header>Occasion</Accordion.Header>
-                <Accordion.Body>
-                  {[
-                    "Casual",
-                    "Workwear",
-                    "Everyday",
-                    "Party",
-                    "Festivel",
-                    "Gifting",
-                  ].map((val) => (
-                    <Form.Check
-                      key={val}
-                      type="checkbox"
-                      label={val}
-                      checked={filters.occasion.includes(val)}
-                      onChange={() => handleFilterChange("occasion", val)}
-                    />
-                  ))}
-                </Accordion.Body>
-              </Accordion.Item>
-
-              {/* Color */}
-              <Accordion.Item eventKey="3">
-                <Accordion.Header>Color</Accordion.Header>
-                <Accordion.Body>
-                  {[
-                    "Golden Finish",
-                    "Silver Finish",
-                    "Antique Finish",
-                    "Dual Stone Finish",
-                    "Green Stone",
-                    "Blue Stone",
-                    "Yellow Stone",
-                    "Multicolor",
-                  ].map((val) => (
-                    <Form.Check
-                      key={val}
-                      type="checkbox"
-                      label={val}
-                      checked={filters.color.includes(val)}
-                      onChange={() => handleFilterChange("color", val)}
-                    />
-                  ))}
-                </Accordion.Body>
-              </Accordion.Item>
-
-              <Accordion.Item eventKey="9">
-                <Accordion.Header>Material</Accordion.Header>
-                <Accordion.Body>
-                  {[
-                    "Brass",
-                    "Cropper",
-                    "Nickel Silver",
-                    "Stainless Steel",
-                    "Alloy",
-                  ].map((val) => (
-                    <Form.Check
-                      key={val}
-                      type="checkbox"
-                      label={val}
-                      checked={filters.color.includes(val)}
-                      onChange={() => handleFilterChange("fabric", val)}
-                    />
-                  ))}
-                </Accordion.Body>
-              </Accordion.Item>
-
-              {/* Other filter sections (category, size, color, etc.) */}
-              {/* Example for Category */}
-              <Accordion.Item eventKey="1">
-                <Accordion.Header>Plating</Accordion.Header>
-                <Accordion.Body>
-                  {[
-                    "Silver Plating",
-                    "Gold Plating",
-                    "Rose Gold Plating",
-                    "Rhodium Plating",
-                    "Oxidized",
-                  ].map((val) => (
-                    <Form.Check
-                      key={val}
-                      type="checkbox"
-                      label={val}
-                      checked={filters.plating.includes(val)}
-                      onChange={() => handleFilterChange("plating", val)}
-                    />
-                  ))}
-                </Accordion.Body>
-              </Accordion.Item>
-            </Accordion>
-          </Col>
-
-          <div className="d-md-none mb-3 text-end">
-            <button
-              onClick={handleShowFilters}
-              style={{
-                background: "none",
-                border: "none",
-                color: "#333",
-                fontSize: "16px",
-                fontWeight: 500,
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-                cursor: "pointer",
-              }}
-            >
-              <FiFilter size={20} />
-              Filters
-            </button>
+      <div className={styles.mainProductContainer}>
+        <div className={styles.categoryProductContainer}>
+          <div style={{ display: "flex" }}>
+            <BreadcrumbSinglePage />
+            <span style={{ marginTop: 10, marginLeft: 5 }}>
+              {" "}
+              / Indo Western
+            </span>
+            <span style={{ marginTop: 10, marginLeft: 5 }}> / {subName}</span>
           </div>
-
-          {/* Offcanvas for Mobile */}
-          <Offcanvas
-            show={showFilters}
-            onHide={handleCloseFilters}
-            placement="start"
-            style={{ width: "70%" }}
-          >
-            <Offcanvas.Header closeButton>
-              <Offcanvas.Title>Filters</Offcanvas.Title>
-            </Offcanvas.Header>
-            <Offcanvas.Body>
+          <Row>
+            {/* Left Filters */}
+            <Col
+              md={3}
+              style={{ background: "#f8f9fa", padding: "20px" }}
+              className={styles.filterBox}
+            >
+              <h5>Filters</h5>
               <Accordion defaultActiveKey="0" alwaysOpen>
-                {/* Copy same Accordion.Items as desktop filters */}
                 {/* Price */}
                 <Accordion.Item eventKey="0">
                   <Accordion.Header>Shop by Price</Accordion.Header>
@@ -587,67 +428,255 @@ export default function Jewellery() {
                     ))}
                   </Accordion.Body>
                 </Accordion.Item>
-
-                {/* Add other filters here same as desktop */}
               </Accordion>
-            </Offcanvas.Body>
-          </Offcanvas>
-          {/* Right Product Section */}
-          <Col md={10}>
-            {/* Sorting + Pagination */}
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "15px",
-              }}
+            </Col>
+
+          
+
+            {/* Offcanvas for Mobile */}
+            <Offcanvas
+              show={showFilters}
+              onHide={handleCloseFilters}
+              placement="start"
+              style={{ width: "70%" }}
             >
-              {/* Pagination buttons */}
-              <div>
-                {Array.from({ length: totalPages }, (_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setCurrentPage(i + 1)}
-                    style={{
-                      padding: "6px 10px",
-                      margin: "0 5px",
-                      background:
-                        currentPage === i + 1 ? "#cf3715ff" : "transparent",
-                      color: currentPage === i + 1 ? "#fff" : "#000",
-                      border: "none",
-                      borderRadius: 4,
-                      cursor: "pointer",
-                    }}
+              <Offcanvas.Header closeButton>
+                <Offcanvas.Title>Filters</Offcanvas.Title>
+              </Offcanvas.Header>
+              <Offcanvas.Body>
+                <Accordion defaultActiveKey="0" alwaysOpen>
+                  {/* Copy same Accordion.Items as desktop filters */}
+                  {/* Price */}
+                  <Accordion.Item eventKey="0">
+                    <Accordion.Header>Shop by Price</Accordion.Header>
+                    <Accordion.Body>
+                      {[
+                        "Under ₹500",
+                        "₹500 - ₹1500",
+                        "₹1500 - ₹3000",
+                        "Above ₹3000",
+                      ].map((val) => (
+                        <Form.Check
+                          key={val}
+                          type="checkbox"
+                          label={val}
+                          checked={filters.price.includes(val)}
+                          onChange={() => handleFilterChange("price", val)}
+                        />
+                      ))}
+                    </Accordion.Body>
+                  </Accordion.Item>
+
+                  <Accordion.Item eventKey="8">
+                    <Accordion.Header>Discount</Accordion.Header>
+                    <Accordion.Body>
+                      {["Upto - 10%", "10 - 25%", "25 - 50%", "Above 50%"].map(
+                        (val, idx) => (
+                          <Form.Check
+                            key={idx}
+                            type="checkbox"
+                            label={val}
+                            checked={filters.discount.includes(val)}
+                            onChange={() => handleFilterChange("discount", val)}
+                          />
+                        )
+                      )}
+                    </Accordion.Body>
+                  </Accordion.Item>
+
+                  {/* Occasion */}
+                  <Accordion.Item eventKey="6">
+                    <Accordion.Header>Occasion</Accordion.Header>
+                    <Accordion.Body>
+                      {[
+                        "Casual",
+                        "Workwear",
+                        "Everyday",
+                        "Party",
+                        "Festivel",
+                        "Gifting",
+                      ].map((val) => (
+                        <Form.Check
+                          key={val}
+                          type="checkbox"
+                          label={val}
+                          checked={filters.occasion.includes(val)}
+                          onChange={() => handleFilterChange("occasion", val)}
+                        />
+                      ))}
+                    </Accordion.Body>
+                  </Accordion.Item>
+
+                  {/* Color */}
+                  <Accordion.Item eventKey="3">
+                    <Accordion.Header>Color</Accordion.Header>
+                    <Accordion.Body>
+                      {[
+                        "Golden Finish",
+                        "Silver Finish",
+                        "Antique Finish",
+                        "Dual Stone Finish",
+                        "Green Stone",
+                        "Blue Stone",
+                        "Yellow Stone",
+                        "Multicolor",
+                      ].map((val) => (
+                        <Form.Check
+                          key={val}
+                          type="checkbox"
+                          label={val}
+                          checked={filters.color.includes(val)}
+                          onChange={() => handleFilterChange("color", val)}
+                        />
+                      ))}
+                    </Accordion.Body>
+                  </Accordion.Item>
+
+                  <Accordion.Item eventKey="9">
+                    <Accordion.Header>Material</Accordion.Header>
+                    <Accordion.Body>
+                      {[
+                        "Brass",
+                        "Cropper",
+                        "Nickel Silver",
+                        "Stainless Steel",
+                        "Alloy",
+                      ].map((val) => (
+                        <Form.Check
+                          key={val}
+                          type="checkbox"
+                          label={val}
+                          checked={filters.color.includes(val)}
+                          onChange={() => handleFilterChange("fabric", val)}
+                        />
+                      ))}
+                    </Accordion.Body>
+                  </Accordion.Item>
+
+                  {/* Other filter sections (category, size, color, etc.) */}
+                  {/* Example for Category */}
+                  <Accordion.Item eventKey="1">
+                    <Accordion.Header>Plating</Accordion.Header>
+                    <Accordion.Body>
+                      {[
+                        "Silver Plating",
+                        "Gold Plating",
+                        "Rose Gold Plating",
+                        "Rhodium Plating",
+                        "Oxidized",
+                      ].map((val) => (
+                        <Form.Check
+                          key={val}
+                          type="checkbox"
+                          label={val}
+                          checked={filters.plating.includes(val)}
+                          onChange={() => handleFilterChange("plating", val)}
+                        />
+                      ))}
+                    </Accordion.Body>
+                  </Accordion.Item>
+
+                  {/* Add other filters here same as desktop */}
+                </Accordion>
+              </Offcanvas.Body>
+            </Offcanvas>
+            {/* Right Product Section */}
+            <Col md={9}>
+              {/* Sorting + Pagination */}
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: "15px",
+                }}
+              >
+                {/* Pagination buttons */}
+                <div>
+                  {Array.from({ length: totalPages }, (_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setCurrentPage(i + 1)}
+                      style={{
+                        padding: "6px 10px",
+                        margin: "0 5px",
+                        background:
+                          currentPage === i + 1 ? "#cf3715ff" : "transparent",
+                        color: currentPage === i + 1 ? "#fff" : "#000",
+                        border: "none",
+                        borderRadius: 4,
+                        cursor: "pointer",
+                      }}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Sort By */}
+                <div className={styles.sortByContainer}>
+                  <select
+                    id="sortBy"
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    style={{ padding: 10, paddingRight: 5, outline: "none" }}
                   >
-                    {i + 1}
-                  </button>
-                ))}
+                    <option value="bestseller">Best Seller</option>
+                    <option value="newest">New Arrival</option>
+                    <option value="popularity">Popularity</option>
+                    <option value="highmrp">Price: High to Low</option>
+                    <option value="lowmrp">Price: Low to High</option>
+                  </select>
+                </div>
               </div>
 
-              {/* Sort By */}
-              <div>
-                <select
-                  id="sortBy"
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  style={{ padding: 10, paddingRight: 5, outline: "none" }}
-                >
-                  <option value="bestseller">Best Seller</option>
-                  <option value="newest">New Arrival</option>
-                  <option value="popularity">Popularity</option>
-                  <option value="highmrp">Price: High to Low</option>
-                  <option value="lowmrp">Price: Low to High</option>
-                </select>
-              </div>
-            </div>
-
-            <ProductList products={products} />
-          </Col>
-        </Row>
-      </Container>
+              <ProductList products={products} />
+            </Col>
+          </Row>
+        </div>
+      </div>
       <br />
       <Footer />
+      {showSort && (
+        <div
+          className={styles.sortDropdownOverlay}
+          onClick={() => setShowSort(false)} // click outside closes
+        >
+          <div
+            className={styles.sortDropdownContainer}
+            onClick={(e) => e.stopPropagation()} // prevent closing when clicking inside
+          >
+            <select
+              id="sortBy"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className={styles.sortDropdownSelect}
+            >
+              <option value="bestseller">Best Seller</option>
+              <option value="newest">New Arrival</option>
+              <option value="popularity">Popularity</option>
+              <option value="highmrp">Price: High to Low</option>
+              <option value="lowmrp">Price: Low to High</option>
+            </select>
+          </div>
+        </div>
+      )}
+
+      <div className={styles.mobileBottomBar}>
+        <button
+          className={styles.mobileBottomBarButton}
+          onClick={handleShowFilters}
+        >
+          Filter
+        </button>
+        <button
+          className={styles.mobileBottomBarButton}
+          // onClick={() => setShowSort(true)}
+          onClick={() => setShowSort(true)}
+        >
+          Sort By
+        </button>
+      </div>
     </div>
   );
 }

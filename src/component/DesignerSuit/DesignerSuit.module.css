@@ -104,13 +104,16 @@ display: none;
 
 @media (max-width: 1300px) {
 .categoryProductContainer{
-  width: 100%;
+  width: 97%;
 }
 }
 
 @media (max-width: 1200px) {
 .ProductDetailContainer{
   width: 100%;
+}
+.categoryProductContainer{
+  width: 97%;
 }
 }
 

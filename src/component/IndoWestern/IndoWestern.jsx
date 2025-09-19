@@ -28,7 +28,7 @@ export default function IndoWestern() {
 
   const handleCloseFilters = () => setShowFilters(false);
   const handleShowFilters = () => setShowFilters(true);
-
+ const [showSort, setShowSort] = useState(false);
   // State to track filters
   const [filters, setFilters] = useState({
     header: ["Indo Western"],
@@ -269,7 +269,8 @@ export default function IndoWestern() {
         </Carousel>
       </div>
       <br />
-      <Container fluid className={styles.categoryProductContainer}>
+      <div className={styles.mainProductContainer}>
+      <div className={styles.categoryProductContainer}>
         <div style={{ display: "flex" }}>
           <BreadcrumbSinglePage />
           <span style={{ marginTop: 10, marginLeft: 5 }}> / Indo Western</span>
@@ -278,7 +279,7 @@ export default function IndoWestern() {
         <Row>
           {/* Left Filters */}
           <Col
-            md={2}
+            md={3}
             style={{ background: "#f8f9fa", padding: "20px" }}
             className={styles.filterBox}
           >
@@ -489,25 +490,7 @@ export default function IndoWestern() {
              
             </Accordion>
           </Col>
-  <div className="d-md-none mb-3 text-end">
-            <button
-              onClick={handleShowFilters}
-              style={{
-                background: "none",
-                border: "none",
-                color: "#333",
-                fontSize: "16px",
-                fontWeight: 500,
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-                cursor: "pointer",
-              }}
-            >
-              <FiFilter size={20} />
-              Filters
-            </button>
-          </div>
+ 
 
           {/* Offcanvas for Mobile */}
           <Offcanvas
@@ -707,7 +690,7 @@ export default function IndoWestern() {
             </Offcanvas.Body>
           </Offcanvas>
           {/* Right Product Section */}
-          <Col md={10}>
+          <Col md={9}>
             {/* Sorting + Pagination */}
             <div
               style={{
@@ -740,7 +723,7 @@ export default function IndoWestern() {
               </div>
 
               {/* Sort By */}
-              <div>
+               <div className={styles.sortByContainer}>
                 <select
                   id="sortBy"
                   value={sortBy}
@@ -759,9 +742,51 @@ export default function IndoWestern() {
             <ProductList products={products} />
           </Col>
         </Row>
-      </Container>
+        
+      </div>
+      </div>
       <br />
       <Footer />
+      {showSort && (
+         <div
+                className={styles.sortDropdownOverlay}
+                onClick={() => setShowSort(false)} // click outside closes
+              >
+                <div
+                  className={styles.sortDropdownContainer}
+                  onClick={(e) => e.stopPropagation()} // prevent closing when clicking inside
+                >
+                  <select
+                    id="sortBy"
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className={styles.sortDropdownSelect}
+                  >
+                    <option value="bestseller">Best Seller</option>
+                    <option value="newest">New Arrival</option>
+                    <option value="popularity">Popularity</option>
+                    <option value="highmrp">Price: High to Low</option>
+                    <option value="lowmrp">Price: Low to High</option>
+                  </select>
+                </div>
+              </div>
+            )}
+      
+            <div className={styles.mobileBottomBar}>
+              <button
+                className={styles.mobileBottomBarButton}
+                onClick={handleShowFilters}
+              >
+                Filter
+              </button>
+              <button
+                className={styles.mobileBottomBarButton}
+                // onClick={() => setShowSort(true)}
+                onClick={() => setShowSort(true)}
+              >
+                Sort By
+              </button>
+            </div>
     </div>
   );
 }

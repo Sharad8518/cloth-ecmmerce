@@ -40,8 +40,9 @@ import { FaQuestion } from "react-icons/fa6";
 import "./ProductDetail.css";
 import ImageMagnifier from "./ImageMagnifier";
 import { IoClose } from "react-icons/io5";
-import { GrSubtract ,GrAdd } from "react-icons/gr";
-
+import { GrSubtract, GrAdd } from "react-icons/gr";
+import { FaPause } from "react-icons/fa6";
+import { FaPlay } from "react-icons/fa6";
 const images = [
   "https://img.theloom.in/pwa/catalog/product/cache/e442fb943037550e0d70cca304324ade/v/j/vj304fs25-01kpfuchsiavj30_7_.jpg?tr=c-at_max,w-800,h-1066",
   "https://img.theloom.in/pwa/catalog/product/cache/e442fb943037550e0d70cca304324ade/v/j/vj304fs25-01kpfuchsiavj30_2_.jpg?tr=c-at_max,w-800,h-1066",
@@ -58,10 +59,10 @@ export default function ProductDetail() {
   const [selectedImage, setSelectedImage] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [selectedFrequently, setSelectedFrequently] = useState([]);
-   const [zoom, setZoom] = useState(1); // 1 = normal size
+  const [zoom, setZoom] = useState(1); // 1 = normal size
 
-const zoomIn = () => setZoom((prev) => prev + 0.2);    // keep increasing, no max
-const zoomOut = () => setZoom((prev) => prev - 0.2, 1);   // keep decreasing, no min
+  const zoomIn = () => setZoom((prev) => prev + 0.2); // keep increasing, no max
+  const zoomOut = () => setZoom((prev) => prev - 0.2, 1); // keep decreasing, no min
 
   console.log("selectedFrequently", selectedFrequently);
   const {
@@ -341,8 +342,21 @@ const zoomOut = () => setZoom((prev) => prev - 0.2, 1);   // keep decreasing, no
     );
   };
 
+  const videoRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
   const token = localStorage.getItem("token");
   console.log("selectedSize", selectedSize);
+  const togglePlayPause = () => {
+    if (!videoRef.current) return;
+    if (isPlaying) {
+      videoRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      videoRef.current.play();
+      setIsPlaying(true);
+    }
+  };
+
   if (loading) {
     return (
       <div
@@ -417,7 +431,7 @@ const zoomOut = () => setZoom((prev) => prev - 0.2, 1);   // keep decreasing, no
               <div className={styles.imagevericaldesktop}>
                 {product?.media?.length > 0 && ( // ✅ check if media exists
                   <VerticalImageSelector
-                    images={product?.media?.map((m) => m?.url)} // ✅ use product media URLs
+                    media={product?.media}
                     onSelect={handleSelectImage}
                     selectedIndex={selectedIndex}
                   />
@@ -440,14 +454,58 @@ const zoomOut = () => setZoom((prev) => prev - 0.2, 1);   // keep decreasing, no
                     <div
                       key={index}
                       style={{ height: "100%" }}
-                      onClick={() => {setFullscreenImage(true); setSelectedImage(m.url)}}
+                      onClick={() => {
+                        setFullscreenImage(true);
+                        setSelectedImage(m);
+                      }}
                     >
-                      <ImageMagnifier
-                        src={m.url}
-                        alt={m.alt || `Product image ${index + 1}`}
-                        zoom={3} // 🔍 zoom factor (try 2, 3, 5)
-                        lensSize={200} // 🔵 lens diameter in px
-                      />
+                      {m.kind === "video" ? (
+                        <>
+                          <video
+                            src={selectedImage.url}
+                            controls
+                            autoPlay
+                            className={styles.fullSizeImage}
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "contain",
+                            }}
+                          />
+                          <button
+                            onClick={togglePlayPause}
+                            style={{
+                              position: "absolute",
+                              bottom: "20px",
+                              left: "50%",
+                              transform: "translateX(-50%)",
+                              background: "rgba(0,0,0,0.6)",
+                              color: "#fff",
+                              border: "none",
+                              borderRadius: "50%",
+                              width: 50,
+                              height: 50,
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              cursor: "pointer",
+                            }}
+                          >
+                            {isPlaying ? (
+                              <FaPause size={20} />
+                            ) : (
+                              <FaPlay size={20} />
+                            )}
+                          </button>
+                        </>
+                      ) : (
+                        <ImageMagnifier
+                          src={m.url}
+                          alt={m.alt || `Product image ${index + 1}`}
+                          zoom={3} // 🔍 zoom factor (try 2, 3, 5)
+                          lensSize={200} // 🔵 lens diameter in px
+                        />
+                      )}
                     </div>
                   ))}
                 </Slider>
@@ -456,11 +514,13 @@ const zoomOut = () => setZoom((prev) => prev - 0.2, 1);   // keep decreasing, no
             <Col md={6} sm={12} className={styles.productContentBox}>
               <br />
               <div className={styles.mobileHorizantal}>
-                <HorizontalImageSelector
-                  images={product?.media?.map((m) => m?.url)} // ✅ use product media URLs
-                  onSelect={handleSelectImage}
-                  selectedIndex={selectedIndex}
-                />
+                {product?.media?.length > 0 && (
+                  <HorizontalImageSelector
+                    media={product?.media} // ✅ use product media URLs
+                    onSelect={handleSelectImage}
+                    selectedIndex={selectedIndex}
+                  />
+                )}
               </div>
 
               <h3 className={styles.detailProductTitle}>{product?.title} </h3>
@@ -1225,26 +1285,64 @@ const zoomOut = () => setZoom((prev) => prev - 0.2, 1);   // keep decreasing, no
         >
           <div className={styles.fullSizeImageSection}>
             <div className={styles.leftImageFullSection}>
-                 {product?.media.map((img, index) => (
-            <img
-              key={index}
-              src={img.url}
-              alt={`Thumbnail ${index + 1}`}
-              className={`${styles.thumbnailImg} ${selectedImage === img.url ? styles.active : ""}`}
-              onClick={() => setSelectedImage(img.url)}
-            />
-          ))}
+              {product?.media.map((img, index) => (
+                <img
+                  key={index}
+                  src={img.url}
+                  alt={`Thumbnail ${index + 1}`}
+                  className={`${styles.thumbnailImg} ${
+                    selectedImage === img.url ? styles.active : ""
+                  }`}
+                  onClick={() => setSelectedImage(img)}
+                />
+              ))}
             </div>
             <div className={styles.rightImageFullSection}>
-              <img
-                src={selectedImage}
-                style={{ 
-                 transform: `scale(${zoom})`,
-                  transition: "transform 0.3s ease",
-                  objectFit: "cover", 
-                  width: "100%"
-                 }}
-              />
+              {selectedImage.kind === "video" ? (
+                <div className="relative w-full h-full">
+                  <video
+                    src={selectedImage.url}
+                    controls
+                    autoPlay
+                    className={styles.fullSizeImage}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                    }}
+                  />
+                  <button
+                    onClick={togglePlayPause}
+                    style={{
+                      position: "absolute",
+                      bottom: "20px",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      background: "rgba(0,0,0,0.6)",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "50%",
+                      width: 50,
+                      height: 50,
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {isPlaying ? <FaPause size={20} /> : <FaPlay size={20} />}
+                  </button>
+                </div>
+              ) : (
+                <img
+                  src={selectedImage.url}
+                  style={{
+                    transform: `scale(${zoom})`,
+                  }}
+                  className={styles.fullSizeImage}
+                />
+              )}
+
               <div
                 style={{
                   position: "fixed",
@@ -1264,8 +1362,86 @@ const zoomOut = () => setZoom((prev) => prev - 0.2, 1);   // keep decreasing, no
                     marginBottom: 10,
                   }}
                 >
-                  <button style={{marginLeft:10,width:50,height:50,borderRadius:100,border:"none"}}  onClick={zoomIn}><GrAdd/></button>
-                  <button  style={{marginLeft:10,width:50,height:50,borderRadius:100,border:"none"}} onClick={zoomOut}><GrSubtract/></button>
+                  <button
+                    onClick={() => {
+                      const currentIndex = product?.media.findIndex(
+                        (m) => m.url === selectedImage.url
+                      );
+                      if (currentIndex > 0) {
+                        setSelectedImage(product.media[currentIndex - 1]);
+                      }
+                    }}
+                    className="md:hidden"
+                    style={{
+                      position: "absolute",
+                      top: "50%",
+                      left: "10px",
+                      transform: "translateY(-50%)",
+                      background: "rgba(0,0,0,0.5)",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "50%",
+                      width: 40,
+                      height: 40,
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    ‹
+                  </button>
+                  <button
+                    style={{
+                      marginLeft: 10,
+                      width: 50,
+                      height: 50,
+                      borderRadius: 100,
+                      border: "none",
+                    }}
+                    onClick={zoomIn}
+                  >
+                    <GrAdd />
+                  </button>
+                  <button
+                    style={{
+                      marginLeft: 10,
+                      width: 50,
+                      height: 50,
+                      borderRadius: 100,
+                      border: "none",
+                    }}
+                    onClick={zoomOut}
+                  >
+                    <GrSubtract />
+                  </button>
+                  <button
+                    onClick={() => {
+                      const currentIndex = product?.media.findIndex(
+                        (m) => m.url === selectedImage.url
+                      );
+                      if (currentIndex < product.media.length - 1) {
+                        setSelectedImage(product.media[currentIndex + 1]);
+                      }
+                    }}
+                    className="md:hidden"
+                    style={{
+                      position: "absolute",
+                      top: "50%",
+                      right: "10px",
+                      transform: "translateY(-50%)",
+                      background: "rgba(0,0,0,0.5)",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "50%",
+                      width: 40,
+                      height: 40,
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    ›
+                  </button>
                 </div>
               </div>
             </div>
