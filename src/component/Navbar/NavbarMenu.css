@@ -54,6 +54,8 @@
 .navbar-left .logo {
   font-size: 1.5rem;
   font-weight: 700;
+  margin-left: 50px;
+
   color: #222;
     font-family: "Inter", sans-serif;
 }

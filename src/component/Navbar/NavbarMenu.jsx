@@ -221,8 +221,8 @@ const handleUserClick = () => {
         <nav
           className="navbar"
           style={{
-            paddingLeft: 20,
-            paddingRight: 20,
+            paddingLeft: 50,
+            paddingRight: 50,
             paddingTop: 20,
             paddingBottom: 10,
           }}
@@ -248,7 +248,14 @@ const handleUserClick = () => {
                   // }}
                   style={{ position: "relative" }}
                 >
-                  <Link >{header.title}</Link>
+                  {
+                    header?.title==="Home" ? (
+                      <Link to={`/`}>{header?.title}</Link>
+                    ) :(
+                       <Link>{header?.title}</Link>
+                    )
+                  }
+                 
 
                   {/* Submenu for categories & subcategories */}
                   {/* {activeHeader === header && header.categories.length > 0 && (
