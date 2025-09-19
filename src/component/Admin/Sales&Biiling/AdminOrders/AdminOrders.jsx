@@ -354,8 +354,8 @@ export default function AdminOrders() {
                 >
                   <option value="pending">Pending</option>
                   <option value="processing">Processing</option>
-                  <option value="Handcraft In Progress">Handcraft In Progress</option>
-                  <option value="Being Tailored For You">Being Tailored For You</option>
+                  <option value="handcraft_in_progress">Handcraft In Progress</option>
+                  <option value="being_tailored_for_you">Being Tailored For You</option>
                   <option value="shipped">Shipped</option>
                   <option value="delivered">Delivered</option>
                   <option value="cancelled">Cancelled</option>
