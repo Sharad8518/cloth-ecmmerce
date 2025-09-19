@@ -70,7 +70,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.1rem;
 }
 
 .avatar {
@@ -95,7 +95,7 @@
 .stars {
   color: #f5a623;
   font-size: 1.2rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.1rem;
 }
 
 .comment {

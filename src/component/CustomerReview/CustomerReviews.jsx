@@ -9,7 +9,7 @@ const CustomerReviews = ({ reviews }) => {
   {reviews.map((review) => (
     <div key={review.id} className={styles.card}>
       <div className={styles.userInfo}>
-        <img src={review.image} alt={review.name} className={styles.avatar} />
+        {/* <img src={review.image} alt={review.name} className={styles.avatar} /> */}
         <div>
           <h4 className={styles.name}>{review.name}</h4>
           <p className={styles.date}>{review.date}</p>

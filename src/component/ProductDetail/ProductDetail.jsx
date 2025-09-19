@@ -1101,7 +1101,7 @@ export default function ProductDetail() {
       <br />
       <div style={{ backgroundColor: "#f9f9f9", padding: 10, paddingTop: 20 }}>
         <div className={styles.customerHeading}>Customer Review</div>
-        <CustomerReviews reviews={reviews} />
+        <CustomerReviews reviews={product?.reviews} />
       </div>
       <br />
       <Footer />
