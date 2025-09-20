@@ -29,16 +29,13 @@ display: none;
   left: 0;
   width: 100%;
   height: 60px;
-padding: 5px;
+ 
   background: #fff;
   display: flex;
-  
   align-items: center;
- 
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
   z-index: 1000;
 }
-
 .mobileBottomBarButton {
   flex: 1;
   margin: 0 5px;

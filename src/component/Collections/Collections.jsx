@@ -759,7 +759,13 @@ export default function Collections() {
         </div>
       )}
 
-      <div className={styles.mobileBottomBar}>
+      <div style={{height:60,backgroundColor:"red",position:"fixed",bottom:"0",
+       width:"100%",zIndex:1000
+      }}>
+        sdf
+      </div>
+
+      {/* <div className={styles.mobileBottomBar}>
         <button
           className={styles.mobileBottomBarButton}
           onClick={handleShowFilters}
@@ -773,7 +779,7 @@ export default function Collections() {
         >
           Sort By
         </button>
-      </div>
+      </div> */}
     </div>
   );
 }

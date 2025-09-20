@@ -22,8 +22,8 @@ export default function VerticalImageSelector({
           {item.kind === "video" ? (
             <div className="video-thumbnail-wrapper">
               {/* Static preview for video */}
-              <img
-                src={item.thumbnail || "/default-video-thumb.jpg"}
+              <video
+                src={item.url || "/default-video-thumb.jpg"}
                 alt={`Video ${i + 1}`}
                 className="video-thumbnail"
               />

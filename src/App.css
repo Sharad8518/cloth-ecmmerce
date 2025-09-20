@@ -8,3 +8,7 @@
 h6{
   font-family: "DM Sans", sans-serif;
 }
+
+.parent {
+  transform: translateZ(0); /* or any transform */
+}

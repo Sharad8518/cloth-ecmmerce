@@ -84,6 +84,7 @@ export default function ProductDetail() {
   const handleOpenCart = () => setCartOpen(true);
   const sliderRef = useRef(null);
   const handleSelectImage = (index) => {
+    console.log("index", index);
     setSelectedIndex(index);
     sliderRef.current?.slickGoTo(index); // ✅ correct usage
   };
@@ -346,15 +347,37 @@ export default function ProductDetail() {
   const [isPlaying, setIsPlaying] = useState(false);
   const token = localStorage.getItem("token");
   console.log("selectedSize", selectedSize);
+
+  const [isLoading, setIsLoading] = useState(true);
   const togglePlayPause = () => {
     if (!videoRef.current) return;
-    if (isPlaying) {
-      videoRef.current.pause();
-      setIsPlaying(false);
-    } else {
-      videoRef.current.play();
-      setIsPlaying(true);
+
+    try {
+      if (videoRef.current.paused) {
+        videoRef.current.play();
+        setIsPlaying(true);
+      } else {
+        videoRef.current.pause();
+        setIsPlaying(false);
+      }
+    } catch (err) {
+      console.warn("Video play interrupted:", err);
     }
+  };
+
+  const handleCanPlay = () => {
+    setIsLoading(false); // hide loading
+    if (isPlaying && videoRef.current) {
+      try {
+        videoRef.current.play();
+      } catch (err) {
+        console.warn("Play interrupted:", err);
+      }
+    }
+  };
+
+  const handleWaiting = () => {
+    setIsLoading(true); // buffering/loading
   };
 
   if (loading) {
@@ -451,60 +474,75 @@ export default function ProductDetail() {
                   afterChange={(current) => setSelectedIndex(current)} // sync selectedIndex
                 >
                   {product?.media?.map((m, index) => (
-                    <div
-                      key={index}
-                      style={{ height: "100%" }}
-                      onClick={() => {
-                        setFullscreenImage(true);
-                        setSelectedImage(m);
-                      }}
-                    >
+                    <div key={index} style={{ height: "100%" }}>
                       {m.kind === "video" ? (
-                        <>
+                        <div style={{ height: "100%", position: "relative" }}>
                           <video
-                            src={selectedImage.url}
-                            controls
-                            autoPlay
-                            className={styles.fullSizeImage}
+                            ref={videoRef}
+                            src={m.url}
+                            preload="auto"
+                            onCanPlay={handleCanPlay}
+                            onWaiting={handleWaiting}
+                            onEnded={() => setIsPlaying(false)}
                             style={{
                               width: "100%",
                               height: "100%",
                               objectFit: "contain",
                             }}
                           />
-                          <button
-                            onClick={togglePlayPause}
+                          <div
                             style={{
                               position: "absolute",
-                              bottom: "20px",
-                              left: "50%",
-                              transform: "translateX(-50%)",
-                              background: "rgba(0,0,0,0.6)",
-                              color: "#fff",
-                              border: "none",
-                              borderRadius: "50%",
-                              width: 50,
-                              height: 50,
+                              height: "100%",
+                              width: "100%",
+                              background: "rgba(0, 0, 0, 0)",
                               display: "flex",
                               justifyContent: "center",
                               alignItems: "center",
                               cursor: "pointer",
+                              left: 0,
+                              top: 0,
                             }}
                           >
-                            {isPlaying ? (
-                              <FaPause size={20} />
-                            ) : (
-                              <FaPlay size={20} />
+                            {isPlaying == false && (
+                              <button
+                                onClick={togglePlayPause}
+                                style={{
+                                  height: 60,
+                                  width: 60,
+                                  borderRadius: 30,
+                                  background: "rgba(0,0,0,0.5)",
+                                  border: "none",
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                  color: "#fff",
+                                }}
+                              >
+                                {isPlaying ? (
+                                  <FaPause size={20} />
+                                ) : (
+                                  <FaPlay size={20} />
+                                )}
+                              </button>
                             )}
-                          </button>
-                        </>
+                          </div>
+                        </div>
                       ) : (
-                        <ImageMagnifier
-                          src={m.url}
-                          alt={m.alt || `Product image ${index + 1}`}
-                          zoom={3.5} // 🔍 zoom factor (try 2, 3, 5)
-                          lensSize={200} // 🔵 lens diameter in px
-                        />
+                        <div
+                          onClick={() => {
+                            setFullscreenImage(true);
+                            setSelectedImage(m);
+                          }}
+                          style={{ height: "100%" }}
+                        >
+                          <ImageMagnifier
+                            src={m.url}
+                            alt={m.alt || `Product image ${index + 1}`}
+                            zoom={3.5} // 🔍 zoom factor (try 2, 3, 5)
+                            lensSize={200} // 🔵 lens diameter in px
+                          />
+                        </div>
                       )}
                     </div>
                   ))}
@@ -1298,6 +1336,29 @@ export default function ProductDetail() {
               ))}
             </div>
             <div className={styles.rightImageFullSection}>
+              {isLoading && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    background: "rgba(0,0,0,0.3)",
+                    zIndex: 10,
+                  }}
+                >
+                  <Lottie
+                    animationData={loadingAnimation}
+                    loop
+                    autoplay
+                    style={{ width: 100, height: 100 }}
+                  />
+                </div>
+              )}
               {selectedImage.kind === "video" ? (
                 <div className="relative w-full h-full">
                   <video
