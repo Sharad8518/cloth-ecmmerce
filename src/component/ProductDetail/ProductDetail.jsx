@@ -1336,63 +1336,59 @@ export default function ProductDetail() {
               ))}
             </div>
             <div className={styles.rightImageFullSection}>
-              {isLoading && (
-                <div
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "100%",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    background: "rgba(0,0,0,0.3)",
-                    zIndex: 10,
-                  }}
-                >
-                  <Lottie
-                    animationData={loadingAnimation}
-                    loop
-                    autoplay
-                    style={{ width: 100, height: 100 }}
-                  />
-                </div>
-              )}
+            
               {selectedImage.kind === "video" ? (
                 <div className="relative w-full h-full">
                   <video
+                      ref={videoRef}
                     src={selectedImage.url}
-                    controls
-                    autoPlay
+                     onCanPlay={handleCanPlay}
+                            onWaiting={handleWaiting}
+                            onEnded={() => setIsPlaying(false)}
                     className={styles.fullSizeImage}
                     style={{
                       width: "100%",
-                      height: "100%",
-                      objectFit: "contain",
+                      height: "100vh",
+                      objectFit: "cover",
                     }}
                   />
-                  <button
-                    onClick={togglePlayPause}
-                    style={{
-                      position: "absolute",
-                      bottom: "20px",
-                      left: "50%",
-                      transform: "translateX(-50%)",
-                      background: "rgba(0,0,0,0.6)",
-                      color: "#fff",
-                      border: "none",
-                      borderRadius: "50%",
-                      width: 50,
-                      height: 50,
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      cursor: "pointer",
-                    }}
-                  >
-                    {isPlaying ? <FaPause size={20} /> : <FaPlay size={20} />}
-                  </button>
+                  <div
+                            style={{
+                              position: "absolute",
+                              height: "100%",
+                              width: "100%",
+                              background: "rgba(0, 0, 0, 0)",
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              cursor: "pointer",
+                              left: 0,
+                              top: 0,
+                            }}
+                          >
+                            {isPlaying == false && (
+                              <button
+                                onClick={togglePlayPause}
+                                style={{
+                                  height: 60,
+                                  width: 60,
+                                  borderRadius: 30,
+                                  background: "rgba(0,0,0,0.5)",
+                                  border: "none",
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                  color: "#fff",
+                                }}
+                              >
+                                {isPlaying ? (
+                                  <FaPause size={20} />
+                                ) : (
+                                  <FaPlay size={20} />
+                                )}
+                              </button>
+                            )}
+                          </div>
                 </div>
               ) : (
                 <img
