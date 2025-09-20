@@ -7,6 +7,7 @@ import Footer from "../Footer/Footer";
 import CategorySwiper from "../layout/CategorySwiper/CategorySwiper";
 import Product from "../AllProduct/Product/Product";
 import BannerSlider from "../Banner/BannerSlider";
+import ContentWithSlider from "../ContentWithSlider/ContentWithSlider";
 const people = [
   {
     name: "Lily",
@@ -67,7 +68,9 @@ export default function Home() {
           </div> */}
       <br></br>
       <AllProduct />
+      <ContentWithSlider/>
       <CategorySwiper />
+
       <br />
       <Product />
       <br />
