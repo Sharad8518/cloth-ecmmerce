@@ -112,7 +112,7 @@ export default function Product() {
   }
 
   return (
-    <Container className="my-1" fluid>
+    <div className="my-1">
       <ProductGrid products={products} />
 
       <div className="d-flex justify-content-center mt-4">
@@ -128,6 +128,6 @@ export default function Product() {
           ))}
         </Pagination>
       </div>
-    </Container>
+    </div>
   );
 }

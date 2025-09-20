@@ -502,7 +502,7 @@ export default function ProductDetail() {
                         <ImageMagnifier
                           src={m.url}
                           alt={m.alt || `Product image ${index + 1}`}
-                          zoom={3} // 🔍 zoom factor (try 2, 3, 5)
+                          zoom={3.5} // 🔍 zoom factor (try 2, 3, 5)
                           lensSize={200} // 🔵 lens diameter in px
                         />
                       )}

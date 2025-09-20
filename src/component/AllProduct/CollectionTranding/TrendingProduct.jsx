@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import CardItem from "../layout/Card/CardItem";
-import { getCollection } from "../api/user/collectionApi";
+import CardItem from "../../layout/Card/CardItem";
+import { getCollection } from "../../api/user/collectionApi";
 import Lottie from "lottie-react";
-import loadingAnimation from "../../assets/Anim/loading.json";
-
+import loadingAnimation from "../../../assets/Anim/loading.json";
+import styles from "./TrendingProduct.module.css";
 
 const tshirtItems = [
   {
@@ -63,45 +63,40 @@ const tshirtItems = [
   },
 ];
 
-
-
-
 export default function TrendingProduct() {
+  const [collections, setCollectios] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  
-const[collections,setCollectios] =useState([])
-const[loading,setLoading] =useState(true)
+  // useEffect(()=>{
+  //  const res = getCollection()
+  //  console.log("collection",res)
+  //  setCollectios(res)
+  // },[])
 
-// useEffect(()=>{
-//  const res = getCollection()
-//  console.log("collection",res)
-//  setCollectios(res)
-// },[])
+  useEffect(() => {
+    const fetchCollection = async () => {
+      try {
+        const res = await getCollection();
+        console.log("collection", res);
+        setCollectios(res);
+      } catch (error) {
+        console.error("Error fetching product:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCollection();
+  }, []);
 
-
-useEffect(()=>{
-  const fetchCollection = async()=>{
-    try{
-     const res = await getCollection()
-     console.log("collection",res)
-     setCollectios(res)
-    }catch(error){
-      console.error("Error fetching product:", error);
-    }finally{
-     setLoading(false);
-    }
-  }
-  fetchCollection()
-},[])
-
-if (loading) {
-    return   <div
+  if (loading) {
+    return (
+      <div
         style={{
           height: "100vh",
           width: "100%",
           display: "flex",
           justifyContent: "center",
-          flexDirection:"column",
+          flexDirection: "column",
           alignItems: "center",
           background: "#fff", // optional
         }}
@@ -112,44 +107,17 @@ if (loading) {
           autoplay={true}
           style={{ width: 200, height: 200 }}
         />
-           <p style={{ marginTop: "1rem", fontSize: "18px", color: "#333" }}>
+        <p style={{ marginTop: "1rem", fontSize: "18px", color: "#333" }}>
           Please wait, loading...
         </p>
-      </div> // or a spinner component
+      </div>
+    ); // or a spinner component
   }
   return (
     <>
-      <h2
-        style={{
-          textAlign: "center",
-          fontWeight: "600",
-          fontSize: "35px",
-          marginBottom: "30px",
-          color: "#333",
-          textTransform: "uppercase",
-          letterSpacing: "1px",
-        }}
-      >
-        Our Collection
-      </h2>
-      <div
-        style={{
-          display: "flex",
-          width:"100%",
-          justifyContent: "center",
-          backgroundColor: "#f7f7f7",
-          padding: 40,
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "10px",
-            justifyContent: "center",
-            backgroundColor: "#f7f7f7",
-          }}
-        >
+      <h2 className={styles.title}>Our Collection</h2>
+      <div className={styles.container}>
+        <div className={styles.scrollRow}>
           {collections.map((item, index) => (
             <CardItem key={index} {...item} />
           ))}

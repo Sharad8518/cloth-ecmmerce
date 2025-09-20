@@ -104,7 +104,7 @@ export default function CategorySwiper() {
         modules={[Navigation, FreeMode]}
         spaceBetween={16}
         slidesPerView="auto"
-        navigation
+        // navigation
         freeMode
         grabCursor
         style={{width:"100%",height:"170px"}}

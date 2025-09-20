@@ -75,6 +75,7 @@ object-fit: cover;
   white-space: normal; /* allows wrapping */
 }
 
+
 .custom-card-desc {
   display: -webkit-box;
   -webkit-line-clamp: 2; /* limit to 3 lines */
@@ -85,4 +86,10 @@ object-fit: cover;
   color: #555;
 }
 
+.custom-card-price {
+  font-size: 13px;
+  color: #000000;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
 }
