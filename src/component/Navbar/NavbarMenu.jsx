@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FaShoppingCart, FaUser } from "react-icons/fa";
 import { HiOutlineShoppingBag } from "react-icons/hi2";
+import { FaRegHeart } from "react-icons/fa";
 import { FaRegUser } from "react-icons/fa";
 import "./NavbarMenu.css";
 import { RiMenu2Fill } from "react-icons/ri";
@@ -22,6 +23,7 @@ import { LuUser } from "react-icons/lu";
 import { LuCircleUser } from "react-icons/lu";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import { useFavorites } from "../hooks/useFavorites";
 const collectionMenu = [
   {
     title: "CO-ORDS SET",
@@ -168,6 +170,14 @@ const handleUserClick = () => {
     navigate("/profile");
   }
 };
+const handleOpenheart = () => {
+  const token = localStorage.getItem("token");
+  if (!token || isTokenExpired(token)) {
+    openModal();
+  } else {
+    navigate("/favourites");
+  }
+};
 
   useEffect(() => {
     const fetch = async () => {
@@ -182,6 +192,8 @@ const handleUserClick = () => {
     fetch();
   }, []);
   console.log('activeHeader',activeHeader)
+ const{favorites} =  useFavorites()
+ console.log('favorites',favorites)
 
   return (
     <>
@@ -300,6 +312,16 @@ const handleUserClick = () => {
 
           <div className="navbar-right">
             {/* ✅ Cart Icon with Badge */}
+             <div className="cart-icon">
+              <FaRegHeart
+                className="icon"
+                onClick={() => handleOpenheart()}
+              />
+              {cart?.items?.length > 0 && (
+                <span className="cart-badge">{favorites?.length || 0}</span>
+              )}
+            </div>
+            
             <div className="cart-icon">
               <HiOutlineShoppingBag
                 className="icon"
