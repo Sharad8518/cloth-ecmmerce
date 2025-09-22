@@ -477,6 +477,7 @@ export default function NavbarMenu() {
           overflowX: "hidden",
         }}
       >
+        <div style={{display:"flex",width:"60%",height:"100%",alignItems:"center"}}>
         <RiMenu2Fill
           size={25}
           style={{ marginLeft: "10px" }}
@@ -484,8 +485,16 @@ export default function NavbarMenu() {
         />
 
         <h2 className="logo-mobile">House of Ziba</h2>
-        <div style={{ marginRight: 10, display: "flex" }}>
+        </div>
+        <div style={{ marginRight: 10, display: "flex",width:"40%",justifyContent:"flex-end" }}>
           {/* ✅ Cart Icon with Badge */}
+           <div className="cart-icon" style={{marginRight:10}}>
+              <FaRegHeart className="icon" onClick={() => handleOpenheart()} />
+              {favorites?.length > 0 && (
+                <span className="cart-badge">{favorites?.length || 0}</span>
+              )}
+            </div>
+
           <div className="cart-icon">
             <HiOutlineShoppingBag
               className="icon"

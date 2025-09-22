@@ -26,7 +26,7 @@ const ProductGrid = ({ products }) => {
             key={index}
             xs={6}
             sm={6}
-            md={1}
+            md={4}
             lg={3}
             className="mb-2"
             style={{ cursor: "pointer", }}
