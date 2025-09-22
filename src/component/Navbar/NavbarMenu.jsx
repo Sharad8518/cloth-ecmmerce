@@ -24,6 +24,8 @@ import { LuCircleUser } from "react-icons/lu";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useFavorites } from "../hooks/useFavorites";
+import { LiaUserCircle } from "react-icons/lia";
+import { LuHeart } from "react-icons/lu";
 const collectionMenu = [
   {
     title: "CO-ORDS SET",
@@ -284,7 +286,7 @@ export default function NavbarMenu() {
           <div className="navbar-right">
             {/* ✅ Cart Icon with Badge */}
             <div className="cart-icon">
-              <FaRegHeart className="icon" onClick={() => handleOpenheart()} />
+              <LuHeart className="icon" onClick={() => handleOpenheart()} />
               {cart?.items?.length > 0 && (
                 <span className="cart-badge">{favorites?.length || 0}</span>
               )}
@@ -299,7 +301,7 @@ export default function NavbarMenu() {
                 <span className="cart-badge">{cart?.items?.length || 0}</span>
               )}
             </div>
-            <FaRegUser className="icon" onClick={() => handleUserClick()} />
+            <LiaUserCircle className="icon" onClick={() => handleUserClick()} />
           </div>
           <LoadingBar
             color="#460201"
@@ -473,7 +475,7 @@ export default function NavbarMenu() {
         >
           {/* ✅ Cart Icon with Badge */}
           <div className="cart-icon" style={{ marginRight: 10 }}>
-            <FaRegHeart className="icon" onClick={() => handleOpenheart()} />
+            <LuHeart className="icon" onClick={() => handleOpenheart()} />
             {favorites?.length > 0 && (
               <span className="cart-badge">{favorites?.length || 0}</span>
             )}
@@ -488,8 +490,9 @@ export default function NavbarMenu() {
               <span className="cart-badge">{cart?.items?.length || 0}</span>
             )}
           </div>
-          <FaRegUser
+          <LiaUserCircle
             className="icon"
+            size={25}
             onClick={() => handleUserClick()}
             style={{ marginLeft: 10 }}
           />
