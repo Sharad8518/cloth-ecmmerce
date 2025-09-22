@@ -23,6 +23,7 @@ import loadingAnimation from "../../assets/Anim/loading.json";
 import { useLocation } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { FiFilter } from "react-icons/fi";
+import BannerSlider from "../Banner/BannerSlider";
 
 export default function Potilis() {
   const { category, subName } = useParams();
@@ -250,10 +251,10 @@ export default function Potilis() {
   }
 
   return (
-    <div>
+    <div width="100%" style={{ backgroundColor: "#f1f2f6",overflowX:"hidden",display:"flex",flexDirection:"column",alignItems:"center" }}>
       <NavbarMenu />
-      <br />
-      <Carousel>
+    
+      {/* <Carousel>
         {banner.map((item, index) => (
           <Carousel.Item key={index}>
             <img
@@ -264,7 +265,10 @@ export default function Potilis() {
             />
           </Carousel.Item>
         ))}
-      </Carousel>
+          
+      </Carousel> */}
+      <BannerSlider/>
+   
       <br />
        <div className={styles.mainProductContainer}>
       <div className={styles.categoryProductContainer}>

@@ -22,7 +22,7 @@ const BackToTop = () => {
       onClick={scrollToTop}
       style={{
         position: "fixed",
-        bottom: "40px",
+        bottom: "70px",
         right: "40px",
         display: show ? "block" : "none",
         borderRadius: "50%",

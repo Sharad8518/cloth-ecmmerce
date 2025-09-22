@@ -1137,10 +1137,14 @@ export default function ProductDetail() {
         </div>
       )}
       <br />
-      <div style={{ backgroundColor: "#f9f9f9", padding: 10, paddingTop: 20 }}>
-        <div className={styles.customerHeading}>Customer Review</div>
-        <CustomerReviews reviews={product?.reviews} />
-      </div>
+      {product?.reviews.length > 0 && (
+        <div
+          style={{ backgroundColor: "#f9f9f9", padding: 10, paddingTop: 20 }}
+        >
+          <div className={styles.customerHeading}>Customer Review</div>
+          <CustomerReviews reviews={product?.reviews} />
+        </div>
+      )}
       <br />
       <Footer />
       {isPaddingModalOpen && (
@@ -1336,15 +1340,14 @@ export default function ProductDetail() {
               ))}
             </div>
             <div className={styles.rightImageFullSection}>
-            
               {selectedImage.kind === "video" ? (
                 <div className="relative w-full h-full">
                   <video
-                      ref={videoRef}
+                    ref={videoRef}
                     src={selectedImage.url}
-                     onCanPlay={handleCanPlay}
-                            onWaiting={handleWaiting}
-                            onEnded={() => setIsPlaying(false)}
+                    onCanPlay={handleCanPlay}
+                    onWaiting={handleWaiting}
+                    onEnded={() => setIsPlaying(false)}
                     className={styles.fullSizeImage}
                     style={{
                       width: "100%",
@@ -1353,42 +1356,42 @@ export default function ProductDetail() {
                     }}
                   />
                   <div
-                            style={{
-                              position: "absolute",
-                              height: "100%",
-                              width: "100%",
-                              background: "rgba(0, 0, 0, 0)",
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                              cursor: "pointer",
-                              left: 0,
-                              top: 0,
-                            }}
-                          >
-                            {isPlaying == false && (
-                              <button
-                                onClick={togglePlayPause}
-                                style={{
-                                  height: 60,
-                                  width: 60,
-                                  borderRadius: 30,
-                                  background: "rgba(0,0,0,0.5)",
-                                  border: "none",
-                                  display: "flex",
-                                  justifyContent: "center",
-                                  alignItems: "center",
-                                  color: "#fff",
-                                }}
-                              >
-                                {isPlaying ? (
-                                  <FaPause size={20} />
-                                ) : (
-                                  <FaPlay size={20} />
-                                )}
-                              </button>
-                            )}
-                          </div>
+                    style={{
+                      position: "absolute",
+                      height: "100%",
+                      width: "100%",
+                      background: "rgba(0, 0, 0, 0)",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      cursor: "pointer",
+                      left: 0,
+                      top: 0,
+                    }}
+                  >
+                    {isPlaying == false && (
+                      <button
+                        onClick={togglePlayPause}
+                        style={{
+                          height: 60,
+                          width: 60,
+                          borderRadius: 30,
+                          background: "rgba(0,0,0,0.5)",
+                          border: "none",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          color: "#fff",
+                        }}
+                      >
+                        {isPlaying ? (
+                          <FaPause size={20} />
+                        ) : (
+                          <FaPlay size={20} />
+                        )}
+                      </button>
+                    )}
+                  </div>
                 </div>
               ) : (
                 <img

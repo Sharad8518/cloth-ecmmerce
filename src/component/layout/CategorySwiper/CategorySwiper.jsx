@@ -118,7 +118,7 @@ export default function CategorySwiper() {
           </SwiperSlide>
         ))}
       </Swiper>
-      <button className={`${styles.ViewAllBtn} mx-auto d-block`}>View All</button>
+      <button className={`${styles.ViewAllBtn} mx-auto d-block`} onClick={()=>navigate("/categoryProduct")}>View All</button>
     </div>
   )
 }

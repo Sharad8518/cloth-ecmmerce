@@ -113,7 +113,9 @@ export default function Product() {
 
   return (
     <div className="my-1">
+      <div style={{display:"flex",alignItems:"center",justifyContent:"center"}}>
       <ProductGrid products={products} />
+      </div>
 
       <div className="d-flex justify-content-center mt-4">
         <Pagination>

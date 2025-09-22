@@ -107,22 +107,22 @@ export default function NavbarMenu() {
   const loadingRef = useRef(null);
   const location = useLocation();
 
-
-  
-function isTokenExpired(token) {
-  if (!token) return true;
-  try {
-    const decoded = jwtDecode(token);
-    return decoded.exp * 1000 < Date.now(); // exp is in seconds
-  } catch (e) {
-    return true; // invalid or corrupted token
+  function isTokenExpired(token) {
+    if (!token) return true;
+    try {
+      const decoded = jwtDecode(token);
+      return decoded.exp * 1000 < Date.now(); // exp is in seconds
+    } catch (e) {
+      return true; // invalid or corrupted token
+    }
   }
-}
 
   useEffect(() => {
     const fetchNavbar = async () => {
       try {
-        const res = await axios.get("https://house-of-ziba-new-v2.onrender.com/api/user/navbar");
+        const res = await axios.get(
+          "https://house-of-ziba-new-v2.onrender.com/api/user/navbar"
+        );
         const menu = res.data.map((header) => ({
           ...header,
           categories: header?.categories?.map((cat) => ({
@@ -131,7 +131,7 @@ function isTokenExpired(token) {
           })),
         }));
         setCollectionMenu(menu);
-        console.log('menu',menu)
+        console.log("menu", menu);
       } catch (err) {
         console.error("Failed to fetch navbar data:", err);
       }
@@ -160,24 +160,24 @@ function isTokenExpired(token) {
 
   console.log("Cart items:", cart.items || []);
 
-const handleUserClick = () => {
-  const token = localStorage.getItem("token"); // assuming accessToken key
-  if (!token || isTokenExpired(token)) {
-    // 🚪 No token or expired → open login modal
-    openModal();
-  } else {
-    // ✅ Valid token → go to profile page
-    navigate("/profile");
-  }
-};
-const handleOpenheart = () => {
-  const token = localStorage.getItem("token");
-  if (!token || isTokenExpired(token)) {
-    openModal();
-  } else {
-    navigate("/favourites");
-  }
-};
+  const handleUserClick = () => {
+    const token = localStorage.getItem("token"); // assuming accessToken key
+    if (!token || isTokenExpired(token)) {
+      // 🚪 No token or expired → open login modal
+      openModal();
+    } else {
+      // ✅ Valid token → go to profile page
+      navigate("/profile");
+    }
+  };
+  const handleOpenheart = () => {
+    const token = localStorage.getItem("token");
+    if (!token || isTokenExpired(token)) {
+      openModal();
+    } else {
+      navigate("/favourites");
+    }
+  };
 
   useEffect(() => {
     const fetch = async () => {
@@ -191,9 +191,9 @@ const handleOpenheart = () => {
     };
     fetch();
   }, []);
-  console.log('activeHeader',activeHeader)
- const{favorites} =  useFavorites()
- console.log('favorites',favorites)
+  console.log("activeHeader", activeHeader);
+  const { favorites } = useFavorites();
+  console.log("favorites", favorites);
 
   return (
     <>
@@ -217,7 +217,7 @@ const handleOpenheart = () => {
                 boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
                 position: "sticky",
                 top: 0,
-                zIndex: 999,  
+                zIndex: 999,
               }}
             >
               {promo.topBannerText}{" "}
@@ -241,12 +241,21 @@ const handleOpenheart = () => {
         >
           <div className="navbar-left">
             {/* <h2 className="logo">ShopMate</h2> */}
-            <Link to={`/`} style={{ color: "#460201",textDecoration:"none",fontSize:22,fontWeight:"600" }} >HOUSE Of ZIBA</Link>
+            <Link
+              to={`/`}
+              style={{
+                color: "#460201",
+                textDecoration: "none",
+                fontSize: 22,
+                fontWeight: "600",
+              }}
+            >
+              HOUSE Of ZIBA
+            </Link>
           </div>
 
           <div className="navbar-center">
             <ul className="nav-links" style={{ marginTop: 10 }}>
-             
               {collectionMenu.map((header) => (
                 <li
                   key={header._id}
@@ -260,14 +269,15 @@ const handleOpenheart = () => {
                   // }}
                   style={{ position: "relative" }}
                 >
-                  {
-                    header?.title==="Home" ? (
-                      <Link to={`/`}>{header?.title}</Link>
-                    ) :(
-                       <Link>{header?.title}</Link>
-                    )
-                  }
-                 
+                  {header?.title === "Home" ? (
+                    <Link to={`/`}>{header?.title}</Link>
+                  ) : header?.title === "New-in" ?(
+                    <Link to={`/newIn`}>{header?.title}</Link>
+                  ):(
+                    <Link>{header?.title}</Link>
+                  )}
+
+                  
 
                   {/* Submenu for categories & subcategories */}
                   {/* {activeHeader === header && header.categories.length > 0 && (
@@ -312,16 +322,13 @@ const handleOpenheart = () => {
 
           <div className="navbar-right">
             {/* ✅ Cart Icon with Badge */}
-             <div className="cart-icon">
-              <FaRegHeart
-                className="icon"
-                onClick={() => handleOpenheart()}
-              />
+            <div className="cart-icon">
+              <FaRegHeart className="icon" onClick={() => handleOpenheart()} />
               {cart?.items?.length > 0 && (
                 <span className="cart-badge">{favorites?.length || 0}</span>
               )}
             </div>
-            
+
             <div className="cart-icon">
               <HiOutlineShoppingBag
                 className="icon"
@@ -338,7 +345,7 @@ const handleOpenheart = () => {
             height={2}
             ref={loadingRef}
             shadow={false}
-            style={{ position: "absolute",top:115}}
+            style={{ position: "absolute", top: 115 }}
           />
         </nav>
 
@@ -397,64 +404,63 @@ const handleOpenheart = () => {
                 <Row style={{ flexWrap: "nowrap", overflowX: "auto" }}>
                   {activeHeader.categories.map((category, idx) => (
                     <>
-                    <Col
-                      key={category._id}
-                      style={{
-                        minWidth: "200px",
-                        marginRight: "20px",
-                        background: idx % 2 === 0 ? "#fff" : "#f5f6fa",
-                        padding: "10px",
-                        borderRadius: "4px",
-                      }}
-                    >
-                      <h6 className="submenu-item-header">{category.name}</h6>
-                      <ul
+                      <Col
+                        key={category._id}
                         style={{
-                          listStyle: "none",
-                          paddingLeft: 0,
-                          marginTop: "10px",
+                          minWidth: "200px",
+                          marginRight: "20px",
+                          background: idx % 2 === 0 ? "#fff" : "#f5f6fa",
+                          padding: "10px",
+                          borderRadius: "4px",
                         }}
                       >
-                        {category.subCategories.map((sub) => (
-                          <li key={sub._id}>
-                            <Link to={`${activeHeader.slug}/${category.name}/${sub.name}`}>{sub.name}</Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </Col>
-                     <Col
-                    style={{
-                      minWidth: "200px",
-                      marginRight: "20px",
-                      padding: 10,
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                  {
-                    category.image && (
-                    <img
-                      src={category.image} // replace with your image URL
-                      onClick={() => {
-                        navigate(`${activeHeader.slug}/${category.name}`);
-                        
-                      }}
-                      alt="Promo"
-                      style={{
-                        maxWidth: "100%",
-                        height: "300px",
-                        objectFit:"contain",
-                        borderRadius: "4px",
-                      }}
-                    />
-                    )
-                  }
-                   
-                  </Col>
-                  </>
+                        <h6 className="submenu-item-header">{category.name}</h6>
+                        <ul
+                          style={{
+                            listStyle: "none",
+                            paddingLeft: 0,
+                            marginTop: "10px",
+                          }}
+                        >
+                          {category.subCategories.map((sub) => (
+                            <li key={sub._id}>
+                              <Link
+                                to={`${activeHeader.slug}/${category.name}/${sub.name}`}
+                              >
+                                {sub.name}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </Col>
+                      <Col
+                        style={{
+                          minWidth: "200px",
+                          marginRight: "20px",
+                          padding: 10,
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        {category.image && (
+                          <img
+                            src={category.image} // replace with your image URL
+                            onClick={() => {
+                              navigate(`${activeHeader.slug}/${category.name}`);
+                            }}
+                            alt="Promo"
+                            style={{
+                              maxWidth: "100%",
+                              height: "300px",
+                              objectFit: "contain",
+                              borderRadius: "4px",
+                            }}
+                          />
+                        )}
+                      </Col>
+                    </>
                   ))}
-                 
                 </Row>
               </Container>
             </div>
@@ -464,7 +470,12 @@ const handleOpenheart = () => {
 
       <nav
         className="navbar-mobile"
-        style={{ backgroundColor: "#fff", zIndex: 9 }}
+        style={{
+          zIndex: 9,
+          backgroundColor: "#fff",
+          width: "100%",
+          overflowX: "hidden",
+        }}
       >
         <RiMenu2Fill
           size={25}

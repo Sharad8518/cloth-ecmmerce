@@ -40,6 +40,7 @@ import AboutUs from "../AboutUs/AboutUs";
 import TermCondition from "../TermCondition/TermCondition";
 import ReturnExchange from "../Return&Exchange/ReturnExchange";
 import CookiesPolicy from "../CookiesPolicy/CookiesPolicy";
+import NewIn from "../New-In/NewIn";
 import NotFound from "../NotFound/NotFound";
 import NoInternet from "../NoInternet/NoInternet";
 export default function RouteManager() {
@@ -61,6 +62,7 @@ export default function RouteManager() {
       <Route path="/termCondition" element={<TermCondition />} />
       <Route path="/returnExchange" element={<ReturnExchange />} />
       <Route path="/cookiesPolicy" element={<CookiesPolicy />} />
+      <Route path="/newIn" element={<NewIn />} />
       <Route path="/indoWestern/:category/:subName?" element={<IndoWestern />} />
       <Route path="/jewellery/:category/:subName?" element={<Jewellery />} />
       <Route path="/kurtaSet/:category/:subName?" element={<KurtaSet />} />

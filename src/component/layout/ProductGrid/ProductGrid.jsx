@@ -19,16 +19,17 @@ const ProductGrid = ({ products }) => {
   };
 
   return (
-    <Container className="my-1">
-      <Row>
+    <div className="productgird-container" >
+      <Row className="g-1 g-sm-3">
         {products.map((product, index) => (
           <Col
             key={index}
             xs={6}
             sm={6}
-            md={4}
+            md={1}
             lg={3}
-            className="mb-4"
+            className="mb-2"
+            style={{ cursor: "pointer", }}
             onClick={() => navigate(`/detail/${product?._id}`)}
           >
             <div className="custom-card">
@@ -119,7 +120,7 @@ const ProductGrid = ({ products }) => {
           </Col>
         ))}
       </Row>
-    </Container>
+    </div>
   );
 };
 

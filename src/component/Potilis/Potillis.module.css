@@ -24,7 +24,7 @@ display: none;
 /* MobileBottomBar.module.css */
 
 .mobileBottomBar {
-  position: sticky;
+  position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
@@ -32,7 +32,7 @@ display: none;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 10px;
+  padding: 5px;
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
   z-index: 1000;
 }
@@ -129,6 +129,19 @@ display: none;
 @media (max-width: 768px) {
 .filterBox{
     display: none;
+}
+.mobileBottomBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 5px;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
 }
 .mobileBottomfilter{
 display: flex;

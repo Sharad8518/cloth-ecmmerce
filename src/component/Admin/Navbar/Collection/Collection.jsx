@@ -205,11 +205,11 @@ export default function Collection() {
     );
   };
   const [showProductModal, setShowProductModal] = useState(false);
- const [selectedProducts, setSelectedProducts] = useState([]);
+  const [selectedProducts, setSelectedProducts] = useState([]);
   const [collectionProducts, setCollectionProducts] = useState([]);
   const [selectedCollectionName, setSelectedCollectionName] = useState("");
-const [showModal, setShowModal] = useState(false);
-    const handleOpenModal = () => setShowModal(true);
+  const [showModal, setShowModal] = useState(false);
+  const handleOpenModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
   const fetchProductsByCollection = async (collectionName) => {
     try {
@@ -220,7 +220,7 @@ const [showModal, setShowModal] = useState(false);
       });
       setCollectionProducts(response.products || []);
       setSelectedCollectionName(collectionName);
-      setShowProductModal(true);
+      
     } catch (error) {
       console.error("Failed to fetch collection products:", error);
     } finally {
@@ -231,30 +231,27 @@ const [showModal, setShowModal] = useState(false);
   const removeProduct = (id) =>
     setSelectedProducts(selectedProducts.filter((pid) => pid !== id));
   const handleViewFullImage = (url) => window.open(url, "_blank");
-   const toggleSelectProduct = (id) => {
+  const toggleSelectProduct = (id) => {
     setSelectedProducts((prev) =>
       prev.includes(id) ? prev.filter((pid) => pid !== id) : [...prev, id]
     );
   };
-    const handleSubmitSimilar = async () => {
-      try {
-        // await addSimilarToProduct(productId, selectedProducts );
-        await addCollectionToProducts(selectCollection,selectedProducts)
-        alert("Collections products added successfully ✅");
-        setSelectedProducts([]);
-        handleCloseModal();
-      } catch (err) {
-        console.error("Error:", err);
-        alert("Failed to add similar products ❌");
-      }
-    };
-
-
+  const handleSubmitSimilar = async () => {
+    try {
+      // await addSimilarToProduct(productId, selectedProducts );
+      await addCollectionToProducts(selectCollection, selectedProducts);
+      alert("Collections products added successfully ✅");
+      setSelectedProducts([]);
+      handleCloseModal();
+    } catch (err) {
+      console.error("Error:", err);
+      alert("Failed to add similar products ❌");
+    }
+  };
 
   if (isloading) {
     return <div>Loading</div>;
   }
-  
 
   return (
     <Container fluid className="p-4">
@@ -275,14 +272,23 @@ const [showModal, setShowModal] = useState(false);
                 <th>Active/Inactive</th>
                 <th>Show in Navbar</th>
                 <th>Delete</th>
-                <th>
+                {/* <th>
                   <center>Collection Product</center>
-                </th>
+                </th> */}
               </tr>
             </thead>
             <tbody>
               {collections?.map((h) => (
-                <tr key={h._id} onClick={() => setSelectionCollection(h.name)}  style={{backgroundColor:selectCollection === h.name ?"green":"transaparent"}}>
+                <tr
+                  key={h._id}
+                  onClick={() =>{ setSelectionCollection(h.name);
+                    fetchProductsByCollection(h.name);
+                  }}
+                  style={{
+                    backgroundColor:
+                      selectCollection === h.name ? "green" : "transaparent",
+                  }}
+                >
                   {/* Image Column */}
                   <td>
                     {h.image ? (
@@ -371,7 +377,7 @@ const [showModal, setShowModal] = useState(false);
                     </Button>
                   </td>
 
-                  <td>
+                  {/* <td>
                     <center>
                       <Button
                         size="sm"
@@ -384,7 +390,7 @@ const [showModal, setShowModal] = useState(false);
                         Show
                       </Button>
                     </center>
-                  </td>
+                  </td> */}
                 </tr>
               ))}
             </tbody>
@@ -398,20 +404,71 @@ const [showModal, setShowModal] = useState(false);
         </Card.Body>
       </Card>
 
+      <h4>{selectCollection}</h4>
+      {collectionProducts.length > 0 ? (
+        <Row className="g-2">
+          {collectionProducts.map((product) => {
+            //  const isSelected = selectedProducts?.includes(product._id);
+            return (
+              <Col key={product._id} xs={6} sm={3} md={2} lg={2}>
+                <Card
+                  className={`h-100 text-center`}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => toggleSelectProduct(product._id)}
+                >
+                  <Card.Img
+                    variant="top"
+                    src={product.media?.[0]?.url}
+                    alt={product.title}
+                    className={styles.smallProductImage}
+                  />
+                  <Card.Body className="p-2 d-flex flex-column">
+                    <Card.Title
+                      className=" mb-1 text-truncate"
+                      style={{ maxWidth: "200px", fontSize: 14 }}
+                    >
+                      {product.title}
+                    </Card.Title>
+                    <Card.Text
+                      className="text-muted small mb-2 text-truncate"
+                      style={{ flexGrow: 1, maxWidth: "200px" }}
+                    >
+                      {product.description}
+                    </Card.Text>
+                    {/* <Form.Check
+                    type="checkbox"
+                    label="Select"
+                    checked={isSelected}
+                    onChange={(e) =>
+                      e.stopPropagation() || toggleSelectProduct(product._id)
+                    }
+                    className="small"
+                  /> */}
+                  </Card.Body>
+                </Card>
+              </Col>
+            );
+          })}
+        </Row>
+      ) : (
+        <p>No products found in this collection.</p>
+      )}
+      
+      <br/>
+
       <div
         style={{
           display: "flex",
-          justifyContent: "space-between",
+          justifyContent: "flex-end",
           marginBottom: 10,
-        }}
+        }}          
       >
-        <h4>{selectCollection}</h4>
         <div style={{ display: "flex", gap: "10px" }}>
           {selectedProducts?.length > 0 && (
-                    <Button variant="primary" onClick={handleOpenModal}>
-                      Show Selected ({selectedProducts.length})
-                    </Button>
-                  )}
+            <Button variant="primary" onClick={handleOpenModal}>
+              Show Selected ({selectedProducts.length})
+            </Button>
+          )}
           {/* Search Input */}
           <Form.Control
             type="text"
@@ -442,7 +499,7 @@ const [showModal, setShowModal] = useState(false);
 
       <Row className="g-2">
         {allProducts?.map((product) => {
-             const isSelected = selectedProducts?.includes(product._id);
+          const isSelected = selectedProducts?.includes(product._id);
           return (
             <Col key={product._id} xs={6} sm={3} md={2} lg={2}>
               <Card
@@ -687,9 +744,18 @@ const [showModal, setShowModal] = useState(false);
       <Modal show={showModal} onHide={handleCloseModal} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Selected Products</Modal.Title>
-          
         </Modal.Header>
-        <h5 style={{marginTop:0,background:"#dfe6e9",padding:10,textAlign:"center",fontSize:15}}>{selectCollection}</h5>
+        <h5
+          style={{
+            marginTop: 0,
+            background: "#dfe6e9",
+            padding: 10,
+            textAlign: "center",
+            fontSize: 15,
+          }}
+        >
+          {selectCollection}
+        </h5>
         <Modal.Body>
           {selectedProducts.length === 0 ? (
             <p>No products selected.</p>
@@ -783,7 +849,11 @@ const [showModal, setShowModal] = useState(false);
           <Button variant="secondary" onClick={handleCloseModal}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleSubmitSimilar} disabled={!selectCollection} >
+          <Button
+            variant="primary"
+            onClick={handleSubmitSimilar}
+            disabled={!selectCollection}
+          >
             Submit
           </Button>
         </Modal.Footer>

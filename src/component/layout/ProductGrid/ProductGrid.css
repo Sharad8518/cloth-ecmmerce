@@ -1,5 +1,14 @@
+
+.productgird-container{
+  width: 70%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .custom-card {
   border-radius: 12px;
+  width: 100%;
+  padding: 0px;
   overflow: hidden;
   transition: transform 0.3s ease;
   height: 100%;
@@ -62,7 +71,16 @@ object-fit: cover;
   justify-content: space-between;
 }
 
+
+
 @media (max-width: 767px) {
+
+  .productgird-container{
+  width: 97%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
   .custom-card-title {
   font-size: 14px;
   font-weight: 600;

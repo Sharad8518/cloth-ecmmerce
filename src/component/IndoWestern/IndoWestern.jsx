@@ -22,6 +22,7 @@ import Lottie from "lottie-react";
 import loadingAnimation from "../../assets/Anim/loading.json";
 import { useParams } from "react-router-dom";
 import { FiFilter } from "react-icons/fi";
+import BannerSlider from "../Banner/BannerSlider";
 export default function IndoWestern() {
   const { subName } = useParams();
   const [showFilters, setShowFilters] = useState(false);
@@ -248,14 +249,11 @@ export default function IndoWestern() {
   }
 
   return (
-    <div>
+    <div width="100%" style={{ backgroundColor: "#f1f2f6",overflowX:"hidden",display:"flex",flexDirection:"column",alignItems:"center" }}>
       <NavbarMenu />
-      <br />
-       <div
-        style={{ width: "100%", boxSizing: "border-box" }}
-        className={styles.CategoryProductBanner}
-      >
-        <Carousel>
+    
+      
+        {/* <Carousel>
           {banner.map((item, index) => (
             <Carousel.Item key={index}>
               <img
@@ -266,8 +264,9 @@ export default function IndoWestern() {
               />
             </Carousel.Item>
           ))}
-        </Carousel>
-      </div>
+        </Carousel> */}
+        <BannerSlider/>
+    
       <br />
       <div className={styles.mainProductContainer}>
       <div className={styles.categoryProductContainer}>

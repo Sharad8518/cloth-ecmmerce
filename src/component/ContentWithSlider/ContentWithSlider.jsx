@@ -24,7 +24,8 @@ return (
       className="d-flex flex-column justify-content-center align-items-center text-center text-black"
      
     >
-      <h2 className="fw-bold mb-3">Discover Women’s Fashion</h2>
+      <br/>
+      <h2 className="fw-bold mb-3 ">Discover Women’s Fashion</h2>
       <p className="mb-4">
         Explore our latest collection of stylish and comfortable women’s clothing.
         From casual wear to elegant outfits, our designs bring together modern

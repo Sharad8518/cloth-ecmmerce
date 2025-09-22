@@ -22,12 +22,18 @@ export const filterProduct = async (params = {}) => {
   return response.data;
 };
 
-
-
-export const getProductsNewIn = async (queryParams = {}) => {
-  const response = await axios.get("/user//products/current-month", { params: queryParams });
+export const productNewIn = async (params = {}) => {
+  console.log('params',params)
+  const response = await axios.get(`/user/newIn`,{ params });
   return response.data;
 };
+
+
+
+// export const getProductsNewIn = async (queryParams = {}) => {
+//   const response = await axios.get("/user//products/current-month", { params: queryParams });
+//   return response.data;
+// };
 
 export const addOrUpdateReview = async (productId, { rating, title, comment, userName,file }) => {
   try {

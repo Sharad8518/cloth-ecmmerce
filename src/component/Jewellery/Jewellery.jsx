@@ -23,6 +23,7 @@ import loadingAnimation from "../../assets/Anim/loading.json";
 import { useLocation } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { FiFilter } from "react-icons/fi";
+import BannerSlider from "../Banner/BannerSlider";
 
 export default function Jewellery() {
   const { category, subName } = useParams();
@@ -259,10 +260,10 @@ export default function Jewellery() {
   }
 
   return (
-    <div>
+    <div width="100%" style={{ backgroundColor: "#f1f2f6",overflowX:"hidden" ,display:"flex",flexDirection:"column",alignItems:"center" }}>
       <NavbarMenu />
-      <br />
-      <div
+     
+      {/* <div
         style={{ width: "100%", boxSizing: "border-box" }}
         className={styles.CategoryProductBanner}
       >
@@ -278,7 +279,8 @@ export default function Jewellery() {
             </Carousel.Item>
           ))}
         </Carousel>
-      </div>
+      </div> */}
+      <BannerSlider/>
       <br />
       <div className={styles.mainProductContainer}>
         <div className={styles.categoryProductContainer}>

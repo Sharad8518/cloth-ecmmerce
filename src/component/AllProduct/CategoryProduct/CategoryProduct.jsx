@@ -8,6 +8,7 @@ import {
   Badge,
   Button,
   Spinner,
+  Offcanvas,
 } from "react-bootstrap";
 import NavbarMenu from "../../Navbar/NavbarMenu";
 import ProductList from "../../ProductList/ProductList";
@@ -18,13 +19,14 @@ import { filterProduct } from "../../api/user/Productapi";
 import { getBanner } from "../../api/user/bannerApi";
 import Lottie from "lottie-react";
 import { useLocation } from "react-router-dom";
+import BannerSlider from "../../Banner/BannerSlider";
 import loadingAnimation from "../../../assets/Anim/loading.json";
 
 export default function CategoryProduct() {
-   const location = useLocation();
+  const location = useLocation();
   const category = location.state?.category; // safely access passed category
   // State to track filters
-  console.log('category',category)
+  console.log("category", category);
   const [filters, setFilters] = useState({
     price: [],
     collection: Array.isArray(category) ? category : category ? [category] : [],
@@ -100,17 +102,16 @@ export default function CategoryProduct() {
     }
 
     // 🧣 Dupatta (⚠️ not in backend code — you may need to add)
-     if (filters.dupatta.length) {
+    if (filters.dupatta.length) {
       if (filters.dupatta.includes("Yes")) {
         params.dupatta = true;
       } else if (filters.dupatta.includes("No")) {
         params.dupatta = false;
       }
-     
     }
 
     // 💰 Price buckets → map labels to minPrice / maxPrice
-   if (filters.price.length) {
+    if (filters.price.length) {
       filters.price.forEach((range) => {
         if (range === "Under ₹3000") {
           params.minPrice = 0;
@@ -126,7 +127,6 @@ export default function CategoryProduct() {
         }
       });
     }
-
 
     // 🔖 Discount
     if (filters.discount.length) {
@@ -145,7 +145,7 @@ export default function CategoryProduct() {
         }
       });
     }
-  
+
     return params;
   };
   // 🔹 Fetch products from API
@@ -205,6 +205,11 @@ export default function CategoryProduct() {
 
   console.log("selectedFilters", selectedFilters);
   console.log("products", products);
+  const [showFilters, setShowFilters] = useState(false);
+  const [showSort, setShowSort] = useState(false);
+
+  const handleCloseFilters = () => setShowFilters(false);
+  const handleShowFilters = () => setShowFilters(true);
 
   if (loading) {
     return (
@@ -233,10 +238,19 @@ export default function CategoryProduct() {
   }
 
   return (
-    <div>
+    <div
+      width="100%"
+      style={{
+        backgroundColor: "#f1f2f6",
+        overflowX: "hidden",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
       <NavbarMenu />
-      <br />
-      <div
+
+      {/* <div
         style={{ width: "100%", boxSizing: "border-box" }}
         className={styles.CategoryProductBanner}
       >
@@ -245,14 +259,16 @@ export default function CategoryProduct() {
           style={{ width: "100%", height: "100%" }}
           alt="Banner"
         />
-      </div>
+      </div> */}
+      <BannerSlider />
       <br />
-      <Container fluid className={styles.categoryProductContainer}>
+      <div className={styles.mainProductContainer}>
+        <div className={styles.categoryProductContainer}>
         <BreadcrumbSinglePage />
-        <Row >
+        <Row>
           {/* Left Filters */}
-         <Col
-            md={2}
+          <Col
+            md={3}
             style={{ background: "#f8f9fa", padding: "20px" }}
             className={styles.filterBox}
           >
@@ -409,7 +425,7 @@ export default function CategoryProduct() {
                 </Accordion.Body>
               </Accordion.Item>
 
-               <Accordion.Item eventKey="7">
+              <Accordion.Item eventKey="7">
                 <Accordion.Header>Include Dupatta</Accordion.Header>
                 <Accordion.Body>
                   {["Yes", "No"].map((val) => (
@@ -445,28 +461,223 @@ export default function CategoryProduct() {
               <Accordion.Item eventKey="2">
                 <Accordion.Header>Size</Accordion.Header>
                 <Accordion.Body>
-                  {["XS", "S", "M", "L", "XL","XXL","3XL","4XL"].map((val) => (
-                    <Form.Check
-                      key={val}
-                      type="checkbox"
-                      label={val}
-                      checked={filters.size.includes(val)}
-                      onChange={() => handleFilterChange("size", val)}
-                    />
-                  ))}
+                  {["XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL"].map(
+                    (val) => (
+                      <Form.Check
+                        key={val}
+                        type="checkbox"
+                        label={val}
+                        checked={filters.size.includes(val)}
+                        onChange={() => handleFilterChange("size", val)}
+                      />
+                    )
+                  )}
                 </Accordion.Body>
               </Accordion.Item>
 
               {/* Occasion */}
 
               {/* Include Dupatta */}
-             
             </Accordion>
           </Col>
+          <Offcanvas
+            show={showFilters}
+            onHide={handleCloseFilters}
+            placement="start"
+            style={{ width: "70%" }}
+          >
+            <Offcanvas.Header closeButton>
+              <Offcanvas.Title>Filters</Offcanvas.Title>
+            </Offcanvas.Header>
+            <Offcanvas.Body>
+              <Accordion defaultActiveKey="0" alwaysOpen>
+                {/* Copy same Accordion.Items as desktop filters */}
+                {/* Price */}
+                <Accordion.Item eventKey="0">
+                  <Accordion.Header>Shop by Price</Accordion.Header>
+                  <Accordion.Body>
+                    {[
+                      "Under ₹3000",
+                      "₹3000 - ₹6000",
+                      "₹6000 - ₹10000",
+                      "Above ₹10000",
+                    ].map((val) => (
+                      <Form.Check
+                        key={val}
+                        type="checkbox"
+                        label={val}
+                        checked={filters.price.includes(val)}
+                        onChange={() => handleFilterChange("price", val)}
+                      />
+                    ))}
+                  </Accordion.Body>
+                </Accordion.Item>
 
+                <Accordion.Item eventKey="8">
+                  <Accordion.Header>Discount</Accordion.Header>
+                  <Accordion.Body>
+                    {["Upto - 10%", "10% - 25%", "25% - 50%", "Above 50%"].map(
+                      (val, idx) => (
+                        <Form.Check
+                          key={idx}
+                          type="checkbox"
+                          label={val}
+                          checked={filters.discount.includes(val)}
+                          onChange={() => handleFilterChange("discount", val)}
+                        />
+                      )
+                    )}
+                  </Accordion.Body>
+                </Accordion.Item>
+
+                <Accordion.Item eventKey="6">
+                  <Accordion.Header>Occasion</Accordion.Header>
+                  <Accordion.Body>
+                    {[
+                      "Casual",
+                      "Workwear",
+                      "Everyday",
+                      "Party",
+                      "Wedding",
+                      "Festive",
+                      "Gifting",
+                    ].map((val) => (
+                      <Form.Check
+                        key={val}
+                        type="checkbox"
+                        label={val}
+                        checked={filters.occasion.includes(val)}
+                        onChange={() => handleFilterChange("occasion", val)}
+                      />
+                    ))}
+                  </Accordion.Body>
+                </Accordion.Item>
+
+                <Accordion.Item eventKey="3">
+                  <Accordion.Header>Color Shades</Accordion.Header>
+                  <Accordion.Body>
+                    {[
+                      "White",
+                      "Pink",
+                      "Red",
+                      "Black",
+                      "Green",
+                      "Blue",
+                      "Yellow",
+                      "Purple",
+                      "Multicolour",
+                    ].map((val) => (
+                      <Form.Check
+                        key={val}
+                        type="checkbox"
+                        label={val}
+                        checked={filters.color.includes(val)}
+                        onChange={() => handleFilterChange("color", val)}
+                      />
+                    ))}
+                  </Accordion.Body>
+                </Accordion.Item>
+
+                <Accordion.Item eventKey="4">
+                  <Accordion.Header>Fabric</Accordion.Header>
+                  <Accordion.Body>
+                    {[
+                      "Silk",
+                      "Modal Silk",
+                      "Glass Silk",
+                      "Shimmer Silk",
+                      "Organza Silk",
+                      "Viscose Silk",
+                      "Cotton Silk",
+                      ,
+                      "Tissue",
+                      "Geogett",
+                      "Crepe",
+                      "Shaneel(Chenille)",
+                      "Velvet",
+                      "Chanderi",
+                      "Linen",
+                      "Cotton",
+                    ].map((val) => (
+                      <Form.Check
+                        key={val}
+                        type="checkbox"
+                        label={val}
+                        checked={filters.fabric.includes(val)}
+                        onChange={() => handleFilterChange("fabric", val)}
+                      />
+                    ))}
+                  </Accordion.Body>
+                </Accordion.Item>
+
+                <Accordion.Item eventKey="5">
+                  <Accordion.Header>Craft</Accordion.Header>
+                  <Accordion.Body>
+                    {[
+                      "Dabka Work",
+                      "Mirror Work",
+                      "Resham Work",
+                      "Sequins Work",
+                      "Bead Work",
+                      "Pearl Work",
+                      "Sarahi Work",
+                      "Kahmiri Tilla",
+                      "Pitta Work",
+                      "Zardosi",
+                      "Anchor Threads",
+                      "Machine Threads",
+                      "Hand Painting",
+                      "Block Painting",
+                    ].map((val) => (
+                      <Form.Check
+                        key={val}
+                        type="checkbox"
+                        label={val}
+                        checked={filters.craft.includes(val)}
+                        onChange={() => handleFilterChange("craft", val)}
+                      />
+                    ))}
+                  </Accordion.Body>
+                </Accordion.Item>
+
+                <Accordion.Item eventKey="7">
+                  <Accordion.Header>Include Dupatta</Accordion.Header>
+                  <Accordion.Body>
+                    {["Yes", "No"].map((val) => (
+                      <Form.Check
+                        key={val}
+                        type="checkbox"
+                        label={val}
+                        checked={filters.dupatta.includes(val)}
+                        onChange={() => handleFilterChange("dupatta", val)}
+                      />
+                    ))}
+                  </Accordion.Body>
+                </Accordion.Item>
+
+                <Accordion.Item eventKey="2">
+                  <Accordion.Header>Size</Accordion.Header>
+                  <Accordion.Body>
+                    {["XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL"].map(
+                      (val) => (
+                        <Form.Check
+                          key={val}
+                          type="checkbox"
+                          label={val}
+                          checked={filters.size.includes(val)}
+                          onChange={() => handleFilterChange("size", val)}
+                        />
+                      )
+                    )}
+                  </Accordion.Body>
+                </Accordion.Item>
+
+                {/* Add other filters here same as desktop */}
+              </Accordion>
+            </Offcanvas.Body>
+          </Offcanvas>
           {/* Right Product Section */}
-          <Col md={10}>
-           
+          <Col md={9}>
             <div
               style={{
                 display: "flex",
@@ -501,6 +712,7 @@ export default function CategoryProduct() {
               <div>
                 <select
                   id="sortBy"
+                  className={styles.sortByContainer}
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
                   style={{ padding: 10, paddingRight: 5, outline: "none" }}
@@ -517,9 +729,48 @@ export default function CategoryProduct() {
             <ProductList products={products} />
           </Col>
         </Row>
-      </Container>
+       </div>
+      </div>
       <br />
       <Footer />
+      {showSort && (
+        <div
+          className={styles.sortDropdownOverlay}
+          onClick={() => setShowSort(false)} // click outside closes
+        >
+          <div
+            className={styles.sortDropdownContainer}
+            onClick={(e) => e.stopPropagation()} // prevent closing when clicking inside
+          >
+            <select
+              id="sortBy"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className={styles.sortDropdownSelect}
+            >
+              <option value="bestseller">Best Seller</option>
+              <option value="newest">New Arrival</option>
+              <option value="popularity">Popularity</option>
+              <option value="highmrp">Price: High to Low</option>
+              <option value="lowmrp">Price: Low to High</option>
+            </select>
+          </div>
+        </div>
+      )}
+      <div className={styles.mobileBottomBar}>
+        <button
+          className={styles.mobileBottomBarButton}
+          onClick={handleCloseFilters}
+        >
+          Filter
+        </button>
+        <button
+          className={styles.mobileBottomBarButton}
+          onClick={() => setShowSort(true)}
+        >
+          Sort By
+        </button>
+      </div>
     </div>
   );
 }

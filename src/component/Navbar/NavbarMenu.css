@@ -248,6 +248,7 @@ font-size: 14px;
    width: 100%;
     height: 50px;
   display: flex;
+  background-color: red;
   justify-content: space-between;
   align-items: center;
   position: fixed;
@@ -272,6 +273,7 @@ font-size: 14px;
    font-family: "Inter", sans-serif;
    font-weight: 700;
    margin-top: 10px;
-   font-size: 25px;
+   font-size: 22px;
+   
 }
 }
