@@ -271,52 +271,13 @@ export default function NavbarMenu() {
                 >
                   {header?.title === "Home" ? (
                     <Link to={`/`}>{header?.title}</Link>
-                  ) : header?.title === "New-in" ?(
+                  ) : header?.title === "New-in" ? (
                     <Link to={`/newIn`}>{header?.title}</Link>
-                  ):(
+                  ) : (
                     <Link>{header?.title}</Link>
                   )}
-
-                  
-
-                  {/* Submenu for categories & subcategories */}
-                  {/* {activeHeader === header && header.categories.length > 0 && (
-                  <div className="submenu" style={{
-                    position: "absolute",
-                    top: "100%",
-                    left: 0,
-                    background: "#fff",
-                    padding: "10px",
-                    boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
-                    zIndex: 1000,
-                  }}>
-                    <Row>
-                      {header.categories.map((cat) => (
-                        <Col key={cat._id} style={{ minWidth: "200px", marginRight: "20px" }}>
-                          <strong>{cat.name}</strong>
-                          {cat.subCategories.length > 0 && (
-                            <ul style={{ paddingLeft: 0, listStyle: "none" }}>
-                              {cat.subCategories.map((sub) => (
-                                <li key={sub._id}>
-                                  <Link to={`/${sub.slug}`}>{sub.name} f</Link>
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                        </Col>
-                      ))}
-                    </Row>
-                  </div>
-                )} */}
                 </li>
               ))}
-              {/* 
-              <li>
-                <a href="/about">About Us</a>
-              </li>
-              <li>
-                <a href="/contact">Contact</a>
-              </li> */}
             </ul>
           </div>
 
@@ -477,23 +438,46 @@ export default function NavbarMenu() {
           overflowX: "hidden",
         }}
       >
-        <div style={{display:"flex",width:"60%",height:"100%",alignItems:"center"}}>
-        <RiMenu2Fill
-          size={25}
-          style={{ marginLeft: "10px" }}
-          onClick={handleShow}
-        />
+        <div
+          style={{
+            display: "flex",
+            width: "60%",
+            height: "100%",
+            alignItems: "center",
+          }}
+        >
+          <RiMenu2Fill
+            size={25}
+            style={{ marginLeft: "10px" }}
+            onClick={handleShow}
+          />
 
-        <h2 className="logo-mobile">House of Ziba</h2>
+            <Link
+              to={`/`}
+              style={{
+                color: "#460201",
+                textDecoration: "none",
+                fontSize: 22,
+                fontWeight: "600",
+                marginLeft:10
+              }}
+           >House of Ziba</Link>
         </div>
-        <div style={{ marginRight: 10, display: "flex",width:"40%",justifyContent:"flex-end" }}>
+        <div
+          style={{
+            marginRight: 10,
+            display: "flex",
+            width: "40%",
+            justifyContent: "flex-end",
+          }}
+        >
           {/* ✅ Cart Icon with Badge */}
-           <div className="cart-icon" style={{marginRight:10}}>
-              <FaRegHeart className="icon" onClick={() => handleOpenheart()} />
-              {favorites?.length > 0 && (
-                <span className="cart-badge">{favorites?.length || 0}</span>
-              )}
-            </div>
+          <div className="cart-icon" style={{ marginRight: 10 }}>
+            <FaRegHeart className="icon" onClick={() => handleOpenheart()} />
+            {favorites?.length > 0 && (
+              <span className="cart-badge">{favorites?.length || 0}</span>
+            )}
+          </div>
 
           <div className="cart-icon">
             <HiOutlineShoppingBag
@@ -537,45 +521,89 @@ export default function NavbarMenu() {
               );
 
               return (
-                <Accordion.Item eventKey={header._id} key={header._id}>
-                  <Accordion.Header>
-                    <span className="font-medium text-gray-700">
-                      {header.title}
-                    </span>
-                  </Accordion.Header>
+                <>
+                  {header.title === "Home" ? (
+                    <div
+                      style={{
+                        height: 50,
+                        display: "flex",
+                        alignItems: "center",
+                        borderBottom: "1px solid rgba(181, 181, 181, 0.5)",
+                      }}
+                    >
+                      <Link
+                        to={`/`}
+                        style={{
+                          textDecoration: "none",
+                          marginLeft: 20,
+                          color: "black",
+                        }}
+                      >
+                        Home
+                      </Link>
+                    </div>
+                  ) : header.title === "New-in" ? (
+                    <div
+                      style={{
+                        height: 50,
+                        display: "flex",
+                        alignItems: "center",
+                        borderBottom: "1px solid rgba(181, 181, 181, 0.5)",
+                      }}
+                    >
+                      <Link
+                        to={`/newIn`}
+                        style={{
+                          textDecoration: "none",
+                          marginLeft: 20,
+                          color: "black",
+                        }}
+                      >
+                        New-In
+                      </Link>
+                    </div>
+                  ) : (
+                    <Accordion.Item eventKey={header._id} key={header._id}>
+                      <Accordion.Header>
+                        <span className="font-medium text-gray-700">
+                          {header.title}
+                        </span>
+                      </Accordion.Header>
 
-                  {/* Only show body if categories exist */}
-                  {availableCategories.length > 0 && (
-                    <Accordion.Body className="bg-gray-50">
-                      {availableCategories.map((cat) => (
-                        <div key={cat._id} className="mb-4">
-                          <p className="text-sm font-semibold text-orange-500 mb-2">
-                            {cat.name}
-                          </p>
-                          <ul
-                            className="space-y-1"
-                            style={{ listStyle: "none" }}
-                          >
-                            {cat.subCategories.map((sub) => (
-                              <li key={sub._id}>
-                                <Link
-                                  to={`/categoryProduct`}
-                                  className="block text-gray-700 hover:text-orange-500 text-sm transition-colors duration-200"
-                                  style={{
-                                    textDecoration: "none",
-                                    color: "#000",
-                                  }}
-                                >
-                                  {sub.name}
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ))}
-                    </Accordion.Body>
+                      {/* Only show body if categories exist */}
+                      {availableCategories.length > 0 && (
+                        <Accordion.Body className="bg-gray-50">
+                          {availableCategories.map((cat) => (
+                            <div key={cat._id} className="mb-4">
+                              <p className="text-sm font-semibold text-orange-500 mb-2">
+                                {cat.name}
+                              </p>
+                              <ul
+                                className="space-y-1"
+                                style={{ listStyle: "none" }}
+                              >
+                                {cat.subCategories.map((sub) => (
+                                  <li key={sub._id}>
+                                    <Link
+                                      to={`${header.slug}/${cat.name}/${sub.name}`}
+                                      className="block text-gray-700 hover:text-orange-500 text-sm transition-colors duration-200"
+                                      style={{
+                                        textDecoration: "none",
+                                        color: "#000",
+                                      }}
+                                    >
+                                      {sub.name}
+                                    </Link>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ))}
+                        </Accordion.Body>
+                      )}
+                    </Accordion.Item>
                   )}
-                </Accordion.Item>
+                </>
               );
             })}
           </Accordion>
