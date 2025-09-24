@@ -56,3 +56,12 @@ export const addOrUpdateReview = async (productId, { rating, title, comment, use
     throw new Error(err.response?.data?.message || "Failed to submit review");
   }
 };
+
+export const getAllLuxe = async () => {
+  try {
+    const response = await axios.get("/user/luxeObel");
+    return response.data;
+  } catch (err) {
+    throw new Error(err.response?.data?.message || "Failed to  Luxe items");;
+  }
+};

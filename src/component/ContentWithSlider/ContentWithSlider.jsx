@@ -1,74 +1,156 @@
-import React from 'react'
+import React, { useState, useEffect } from "react";
 import Slider from "react-slick";
-import { Container, Row, Col, Button } from "react-bootstrap"
-import "./ContentWithSlider.css"
+import { Container, Row, Col, Button } from "react-bootstrap";
+import { getAllLuxe } from "../api/user/Productapi";
+import "./ContentWithSlider.css";
+import { useNavigate } from "react-router-dom";
 export default function ContentWithSlider() {
- const settings = {
-dots: true,
-infinite: true,
-speed: 500,
-slidesToShow: 1,
-slidesToScroll: 1,
-autoplay: true,
-autoplaySpeed: 3000,
-arrows: false,
-};
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
+    arrows: false,
+    afterChange: (index) => setCurrentSlide(index),
+  };
 
+  const [items, setItems] = useState([]);
+  useEffect(() => {
+    fetchItems();
+  }, []);
 
-return (
-<Container className="py-5">
-  <Row className="align-items-center" style={{backgroundColor: "#dfe6e9",  height: "80vh",   minHeight: "60vh",borderRadius: "15px", overflow: "hidden"}}>
-    {/* Left Content */}
-    <Col
-      md={6}
-      className="d-flex flex-column justify-content-center align-items-center text-center text-black"
-     
-    >
-      <br/>
-      <h2 className="fw-bold mb-3 ">Discover Women’s Fashion</h2>
-      <p className="mb-4">
-        Explore our latest collection of stylish and comfortable women’s clothing.
-        From casual wear to elegant outfits, our designs bring together modern
-        trends with timeless classics.
-      </p>
-      <Button
-        variant="light"
-        size="lg"
-        className="rounded-pill shadow"
-        style={{ fontSize: 13 }}
-      >
-        Shop the Collection
-      </Button>
-    </Col>
+  const fetchItems = async () => {
+    const data = await getAllLuxe();
+    setItems(data);
+  };
 
-    {/* Right Image Slider */}
-    <Col md={6} className="mt-4 mt-md-0" style={{padding:"0px"}}>
-      <Slider {...settings} style={{ borderRadius: "15px", overflow: "hidden",height: "80vh", minHeight: "60vh",width:"100%" }}>
-        <div>
-          <img
-            src="https://media.istockphoto.com/id/1266816335/photo/beautiful-indian-woman-in-sari.jpg?s=612x612&w=0&k=20&c=_sqQ1VViaSM7q9Un3r36MinMwlhsw0uokC8pJftBSos="
-            alt="Slide 1"
-            className="img-fluid rounded shadow"
-          />
-        </div>
-        <div>
-          <img
-            src="https://media.istockphoto.com/id/1279930099/photo/indian-woman-measuring-dress-size-on-mannequin.jpg?s=612x612&w=0&k=20&c=sZlmMfdUXuk3TkDMhrMUW382x_pzN73r7P-ja53MWEc="
-            alt="Slide 2"
-            className="img-fluid rounded shadow"
-          />
-        </div>
-        <div>
-          <img
-            src="https://media.istockphoto.com/id/1312051741/photo/shot-of-a-young-women-as-a-fashion-designer-stock-photo.jpg?s=612x612&w=0&k=20&c=CwNvWSSfLim0yYIBhCchWLHiOMDZ6qB7t9oIpebzKS0="
-            alt="Slide 3"
-            className="img-fluid rounded shadow"
-          />
-        </div>
-      </Slider>
-    </Col>
-  </Row>
-</Container>
+  const navigate = useNavigate()
 
-);
+   const handleClick=(product)=>{
+    navigate("/collectionObleLuxe",{state:{product:product}})
+   }
+
+  
+
+  return (
+    <Container className="py-5">
+      {items.length > 0 && (
+        <>
+          <div className="luxe-container">
+            <Row
+              style={{
+                backgroundColor: "#dfe6e9",
+                height: "80vh",
+                minHeight: "60vh",
+                overflow: "hidden",
+              }}
+            >
+              <Col
+                md={6}
+                className="d-flex flex-column justify-content-center align-items-center text-center text-black"
+              >
+                <br />
+                <h2 className="fw-bold mb-3 ">{items[0].title}</h2>
+                <div
+                  style={{
+                    width: "20%",
+                    height: 1,
+                    backgroundColor: "#000",
+                    marginTop: -10,
+                  }}
+                />
+                <p className="mb-4" style={{ marginTop: 10 }}>
+                  {items[0].description}
+                </p>
+
+                <Button
+                  variant="light"
+                  size="lg"
+                  style={{
+                    fontSize: 13,
+                    borderRadius: 0,
+                    border: "1px solid #000",
+                    background: "transparent",
+                  }}
+                  onClick={()=>handleClick(items[0].product)}
+                >
+                  SHOP NOW
+                </Button>
+              </Col>
+              <Col md={6} className="mt-4 mt-md-0" style={{ padding: "0px" }}>
+                <Slider
+                  {...settings}
+                  style={{ height: "80vh", minHeight: "60vh", width: "100%" }}
+                >
+                  {items[0].images.map((src, index) => (
+                    <div key={index}>
+                      <img
+                        src={src.url}
+                        alt={`Slide ${index + 1}`}
+                        className="img-fluid shadow"
+                      />
+                    </div>
+                  ))}
+                </Slider>
+              </Col>
+            </Row>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: 15,
+              }}
+            >
+              {items[0].images.map((_, index) => (
+                <span
+                  key={index}
+                  onClick={() => setCurrentSlide(index)}
+                  style={{
+                    width: 12,
+                    height: 12,
+                    borderRadius: "50%",
+                    backgroundColor:
+                      currentSlide === index ? "#ff6347" : "#000",
+                    margin: "0 5px",
+                    cursor: "pointer",
+                    display: "inline-block",
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="hero-container">
+            <div className="hero-left">
+              <h2 className="hero-title fw-bold mb-3">{items[0].title}</h2>
+              <div className="hero-divider" />
+              <p className="hero-subtitle mb-4">{items[0].description}</p>
+              <Button variant="light" size="lg" className="hero-button" onClick={()=>handleClick(items[0].product)}>
+                Shop Now
+              </Button>
+            </div>
+
+            <div className="hero-right">
+              <Slider {...settings} className="hero-slider">
+                {items[0]?.images.map((src, index) => (
+                  <div>
+                    <img
+                      src={src.url}
+                      alt={`Slide ${index + 1}`}
+                      className="hero-image"
+                      style={{ height: "35vh" }}
+                    />
+                  </div>
+                ))}
+              </Slider>
+            </div>
+          </div>
+        </>
+      )}
+    </Container>
+  );
 }

@@ -62,6 +62,28 @@ const Sidebar = () => {
             View Products
           </Link>
         </div>
+       <div className={styles.link} onClick={() => toggleDropdown("collection")}>
+          <FaPills /> <span className={styles.label}>Collections</span>
+          <FaChevronRight
+            className={`${styles.arrow} ${
+              openDropdown === "collection" ? styles.arrowOpen : ""
+            }`}
+          />
+        </div>
+        <div
+          className={`${styles.dropdown} ${
+            openDropdown === "collection" ? styles.showDropdown : ""
+          }`}
+        >
+          <Link to="/dashboard/ZibaLuxe" className={styles.dropdownLink}>
+            The Ziba Luxe
+          </Link>
+          <Link to="/dashboard/AllProduct" className={styles.dropdownLink}>
+            Top Collection
+          </Link>
+        </div>
+
+        
 
         {/* Manage Navbar Dropdown */}
         <div className={styles.link} onClick={() => toggleDropdown("navbar")}>

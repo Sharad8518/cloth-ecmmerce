@@ -275,3 +275,120 @@ export const verifyReview = async (productId, reviewId) => {
     throw new Error(err.response?.data?.message || "Failed to verify review");
   }
 };
+
+export const addOrUpdateLuxeobel = async (luxeData) => {
+  try {
+    const formData = new FormData();
+    formData.append("title", luxeData.title);
+    formData.append("description", luxeData.description);
+
+    // Add products (array of IDs)
+    if (Array.isArray(luxeData.products)) {
+      luxeData.products.forEach((p) => formData.append("product", p));
+    }
+
+    // Add files (images/videos)
+    if (Array.isArray(luxeData.files)) {
+      luxeData.files.forEach((file) => {
+        if (file instanceof File) {
+          formData.append("images", file);
+        }
+      });
+    }
+
+    const res = await axios.post(`/admin/luxeobel/add`, formData, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("hfz-a_tkn_238x")}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response?.data?.message || "Failed to add Luxeobel");
+  }
+};
+
+// export const getLuxeobel = async () => {
+//   try {
+//     const res = await axios.get("/admin/luxeobel", {
+//       headers: {
+//         Authorization: `Bearer ${localStorage.getItem("hfz-a_tkn_238x")}`,
+//       },
+//     });
+//     return res.data; // returns the list of luxeobels
+//   } catch (err) {
+//     throw new Error(err.response?.data?.message || "Failed to fetch Luxeobel");
+//   }
+// };
+
+export const getAllLuxe = async () => {
+  try {
+    const response = await axios.get("/admin/luxeobel",{
+        headers: {
+        Authorization: `Bearer ${localStorage.getItem("hfz-a_tkn_238x")}`,
+      },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("Error fetching Luxe items:", err);
+    throw err;
+  }
+};
+
+// Get single Luxe item by ID
+export const getLuxeById = async (id) => {
+  try {
+    const response = await axios.get(`/admin/luxeobel/${id}`,{
+       headers: {
+        Authorization: `Bearer ${localStorage.getItem("hfz-a_tkn_238x")}`,
+      },
+    });
+    return response.data;
+  } catch (err) {
+    console.error(`Error fetching Luxe item ${id}:`, err);
+    throw err;
+  }
+};
+
+// Update Luxe item by ID
+export const updateLuxeItem = async (id, data) => {
+  try {
+    const response = await axios.put(`/admin/luxeObel/${id}`, data,{
+       headers: {
+        Authorization: `Bearer ${localStorage.getItem("hfz-a_tkn_238x")}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (err) {
+    console.error(`Error updating Luxe item ${id}:`, err);
+    throw err;
+  }
+};
+
+// Delete Luxe item by ID
+export const deleteLuxeItem = async (id) => {
+  try {
+    const response = await axios.delete(`/admin/luxeObel/${id}`,{
+          headers: {
+        Authorization: `Bearer ${localStorage.getItem("hfz-a_tkn_238x")}`,
+      },
+    });
+    return response.data;
+  } catch (err) {
+    console.error(`Error deleting Luxe item ${id}:`, err);
+    throw err;
+  }
+};
+
+// Add or remove products from Luxe
+export const updateLuxeProducts = async (id, { addProducts = [], removeProducts = [] }) => {
+  try {
+    const response = await axios.put(`/admin/luxeObel/${id}/products`, { addProducts, removeProducts });
+    return response.data;
+  } catch (err) {
+    console.error(`Error updating products for Luxe item ${id}:`, err);
+    throw err;
+  }
+};

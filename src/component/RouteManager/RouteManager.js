@@ -43,6 +43,9 @@ import CookiesPolicy from "../CookiesPolicy/CookiesPolicy";
 import NewIn from "../New-In/NewIn";
 import NotFound from "../NotFound/NotFound";
 import NoInternet from "../NoInternet/NoInternet";
+import ZibaLuxe from "../Admin/Navbar/Collection/ZibaLuxe/ZibaLuxe";
+import CollectionObleLuxe from "../Luxe/CollectionObleLuxe";
+
 export default function RouteManager() {
   return (
     <Routes>
@@ -63,6 +66,7 @@ export default function RouteManager() {
       <Route path="/returnExchange" element={<ReturnExchange />} />
       <Route path="/cookiesPolicy" element={<CookiesPolicy />} />
       <Route path="/newIn" element={<NewIn />} />
+       <Route path="/collectionObleLuxe" element={<CollectionObleLuxe />} />
       <Route path="/indoWestern/:category/:subName?" element={<IndoWestern />} />
       <Route path="/jewellery/:category/:subName?" element={<Jewellery />} />
       <Route path="/kurtaSet/:category/:subName?" element={<KurtaSet />} />
@@ -88,6 +92,7 @@ export default function RouteManager() {
           <Route path="Customer" element={<Customer />} />
           <Route path="Policy" element={<PolicyPage />} />
           <Route path="EditProduct" element={<EditProduct />} />
+          <Route path="ZibaLuxe" element={<ZibaLuxe />} />
         </Route>
            <Route path="*" element={<NotFound />} />
            <Route path="/no-internet" element={<NoInternet />} />
