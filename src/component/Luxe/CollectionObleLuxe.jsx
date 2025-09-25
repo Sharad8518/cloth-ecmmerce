@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect} from "react";
 import styles from "./CollectionObleLuxw.module.css";
 import NavbarMenu from "../Navbar/NavbarMenu";
 import { useLocation } from "react-router-dom";
@@ -9,6 +9,9 @@ import Footer from "../Footer/Footer";
 export default function CollectionObleLuxe() {
   const location = useLocation();
   const product = location.state?.product;
+   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   return (
     <>

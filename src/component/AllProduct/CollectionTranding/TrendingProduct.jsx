@@ -115,7 +115,7 @@ export default function TrendingProduct() {
   }
   return (
     <>
-      <h2 className={styles.title}>Our Collection</h2>
+      <h2 className={styles.title}>Top Collection</h2>
       <div className={styles.container}>
         <div className={styles.scrollRow}>
           {collections.map((item, index) => (

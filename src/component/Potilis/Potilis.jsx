@@ -55,19 +55,20 @@ export default function Potilis() {
   const [sortBy, setSortBy] = useState("popularity");
   const [loading, setLoading] = useState(true);
   const [showSort, setShowSort] = useState(false);
-  useEffect(() => {
-    const fetchBanner = async () => {
-      try {
-        const res = await getBanner();
-        console.log("banner", res);
-        setBanner(res);
-      } catch (err) {
-        console.error("Error fetching banner:", err);
-      }
-    };
 
-    fetchBanner();
-  }, []);
+  useEffect(() => {
+       const fetchBanner = async () => {
+         try {
+           const res = await getBanner({ showOn: "potilis", active: true });
+           console.log("banner", res);
+           setBanner(res);
+         } catch (err) {
+           console.error("Error fetching banner:", err);
+         }
+       };
+   
+       fetchBanner();
+     }, [])
   // 🔹 Convert filter state into params object for API
   // 🛠 Convert filters state into query params
   const buildParams = (filters, currentPage = 1, sortBy = "newest") => {
@@ -254,7 +255,7 @@ export default function Potilis() {
     <div width="100%" style={{ backgroundColor: "#f1f2f6",overflowX:"hidden",display:"flex",flexDirection:"column",alignItems:"center" }}>
       <NavbarMenu />
     
-      {/* <Carousel>
+      <Carousel>
         {banner.map((item, index) => (
           <Carousel.Item key={index}>
             <img
@@ -266,8 +267,8 @@ export default function Potilis() {
           </Carousel.Item>
         ))}
           
-      </Carousel> */}
-      <BannerSlider/>
+      </Carousel>
+      {/* <BannerSlider/> */}
    
       <br />
        <div className={styles.mainProductContainer}>

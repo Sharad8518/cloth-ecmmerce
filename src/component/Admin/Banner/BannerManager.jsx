@@ -21,6 +21,7 @@ const BannerManager = () => {
     title: "",
     message: "",
     startDate: "",
+    showOn: "",
     endDate: "",
     image: null,
     active: true,
@@ -56,6 +57,7 @@ const BannerManager = () => {
     // append simple fields
     fd.append("title", formData.title);
     fd.append("message", formData.message);
+    fd.append("showOn", formData.showOn);
     fd.append("startDate", formData.startDate);
     fd.append("endDate", formData.endDate);
     fd.append("active", formData.active);
@@ -76,6 +78,7 @@ const BannerManager = () => {
     setFormData({
       title: "",
       message: "",
+      showOn: "",
       startDate: "",
       endDate: "",
       image: null,
@@ -89,6 +92,7 @@ const BannerManager = () => {
     setFormData({
       title: banner.title,
       message: banner.message,
+      showOn:banner.showOn,
       startDate: banner.startDate ? banner.startDate.split("T")[0] : "",
       endDate: banner.endDate ? banner.endDate.split("T")[0] : "",
       image: null,
@@ -114,6 +118,7 @@ const BannerManager = () => {
             setFormData({
               title: "",
               message: "",
+              showOn: "",
               startDate: "",
               endDate: "",
               image: null,
@@ -223,6 +228,25 @@ const BannerManager = () => {
                 value={formData.endDate}
                 onChange={handleChange}
               />
+            </Form.Group>
+
+            {/* Show On Dropdown */}
+            <Form.Group className="mb-2">
+              <Form.Label>Show On</Form.Label>
+              <Form.Select
+                name="showOn"
+                value={formData.showOn || ""}
+                onChange={handleChange}
+              >
+                <option value="">Select Category</option>
+                <option value="new-in">New-In</option>
+                <option value="designerSuit">Designer Suit</option>
+                <option value="kurtaSet">Kurta Set</option>
+                <option value="indoWestern">Indo-Western</option>
+                <option value="Jwellery">Jewellery</option>
+                <option value="potilis">Potlis</option>
+                <option value="Mens">Mens</option>
+              </Form.Select>
             </Form.Group>
 
             {/* Image Upload */}

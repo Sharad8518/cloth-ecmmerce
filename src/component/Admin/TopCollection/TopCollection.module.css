@@ -1,0 +1,92 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+.textHeading {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;           /* bigger text */
+  font-weight: 600;          /* semi-bold */
+  color: #2c3e50;            /* deep gray-blue for visibility */
+  letter-spacing: 0.5px;     /* slight spacing for clarity */
+  /* first letter capitalized */
+  /* Optional extras for modern look */
+}
+
+.listGroupItemActiveCustom {
+  background-color: #f0f0f0 !important; /* your preferred background */
+  color: #000000 !important;               /* text color */
+  font-weight: 600;
+}
+
+.addButton {
+  background: linear-gradient(90deg, #000000 0%, #000000 100%);
+  color: #fff;
+  font-weight: 600;
+  border-radius: 0px;
+  border: none;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.addButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+  color: #fff;
+}
+
+.actionButton {
+  border: none;
+  border-radius: 6px;
+  height: 30px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.editButton {
+  background-color: #4caf50; /* green */
+  color: white;
+  border: none;
+   border-radius: 0px
+}
+
+.editButton:hover {
+  background-color: #45a049;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.deleteButton {
+  background-color: #f44336; /* red */
+  color: white;
+  border: none;
+  border-radius: 0px;
+}
+
+.deleteButton:hover {
+  background-color: #e53935;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+.smallProductImage {
+  object-fit: cover;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.customCheckbox .form-check-input {
+  border-color: red;
+}
+
+/* checked background */
+.customCheckbox .form-check-input:checked {
+  background-color: red !important;
+  border-color: red !important;
+}

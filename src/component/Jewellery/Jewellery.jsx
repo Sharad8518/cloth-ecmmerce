@@ -59,18 +59,18 @@ export default function Jewellery() {
   
 
   useEffect(() => {
-    const fetchBanner = async () => {
-      try {
-        const res = await getBanner();
-        console.log("banner", res);
-        setBanner(res);
-      } catch (err) {
-        console.error("Error fetching banner:", err);
-      }
-    };
-
-    fetchBanner();
-  }, []);
+     const fetchBanner = async () => {
+       try {
+         const res = await getBanner({ showOn: "Jwellery", active: true });
+         console.log("banner", res);
+         setBanner(res);
+       } catch (err) {
+         console.error("Error fetching banner:", err);
+       }
+     };
+ 
+     fetchBanner();
+   }, []);
   // 🔹 Convert filter state into params object for API
   // 🛠 Convert filters state into query params
   const buildParams = (filters, currentPage = 1, sortBy = "newest") => {
@@ -263,7 +263,7 @@ export default function Jewellery() {
     <div width="100%" style={{ backgroundColor: "#f1f2f6",overflowX:"hidden" ,display:"flex",flexDirection:"column",alignItems:"center" }}>
       <NavbarMenu />
      
-      {/* <div
+      <div
         style={{ width: "100%", boxSizing: "border-box" }}
         className={styles.CategoryProductBanner}
       >
@@ -279,8 +279,8 @@ export default function Jewellery() {
             </Carousel.Item>
           ))}
         </Carousel>
-      </div> */}
-      <BannerSlider/>
+      </div>
+      {/* <BannerSlider/> */}
       <br />
       <div className={styles.mainProductContainer}>
         <div className={styles.categoryProductContainer}>

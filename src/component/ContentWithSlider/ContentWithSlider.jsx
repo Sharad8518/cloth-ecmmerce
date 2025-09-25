@@ -31,7 +31,7 @@ export default function ContentWithSlider() {
   const navigate = useNavigate()
 
    const handleClick=(product)=>{
-    navigate("/collectionObleLuxe",{state:{product:product}})
+    navigate("/collectionObleLuxe",{state:{product}})
    }
 
   
@@ -91,6 +91,7 @@ export default function ContentWithSlider() {
                       <img
                         src={src.url}
                         alt={`Slide ${index + 1}`}
+                        style={{objectFit:"fill",width:"100%"}}
                         className="img-fluid shadow"
                       />
                     </div>
@@ -142,7 +143,7 @@ export default function ContentWithSlider() {
                       src={src.url}
                       alt={`Slide ${index + 1}`}
                       className="hero-image"
-                      style={{ height: "35vh" }}
+                      style={{ height: "35vh",objectFit:"fill",width:"100%" }}
                     />
                   </div>
                 ))}

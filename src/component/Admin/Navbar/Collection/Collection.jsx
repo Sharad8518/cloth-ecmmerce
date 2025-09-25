@@ -220,7 +220,6 @@ export default function Collection() {
       });
       setCollectionProducts(response.products || []);
       setSelectedCollectionName(collectionName);
-      
     } catch (error) {
       console.error("Failed to fetch collection products:", error);
     } finally {
@@ -281,7 +280,8 @@ export default function Collection() {
               {collections?.map((h) => (
                 <tr
                   key={h._id}
-                  onClick={() =>{ setSelectionCollection(h.name);
+                  onClick={() => {
+                    setSelectionCollection(h.name);
                     fetchProductsByCollection(h.name);
                   }}
                   style={{
@@ -453,15 +453,15 @@ export default function Collection() {
       ) : (
         <p>No products found in this collection.</p>
       )}
-      
-      <br/>
+
+      <br />
 
       <div
         style={{
           display: "flex",
           justifyContent: "flex-end",
           marginBottom: 10,
-        }}          
+        }}
       >
         <div style={{ display: "flex", gap: "10px" }}>
           {selectedProducts?.length > 0 && (

@@ -45,6 +45,7 @@ import NotFound from "../NotFound/NotFound";
 import NoInternet from "../NoInternet/NoInternet";
 import ZibaLuxe from "../Admin/Navbar/Collection/ZibaLuxe/ZibaLuxe";
 import CollectionObleLuxe from "../Luxe/CollectionObleLuxe";
+import TopCollection from "../Admin/TopCollection/TopCollection";
 
 export default function RouteManager() {
   return (
@@ -93,6 +94,7 @@ export default function RouteManager() {
           <Route path="Policy" element={<PolicyPage />} />
           <Route path="EditProduct" element={<EditProduct />} />
           <Route path="ZibaLuxe" element={<ZibaLuxe />} />
+          <Route path="TopCollection" element={<TopCollection />} />
         </Route>
            <Route path="*" element={<NotFound />} />
            <Route path="/no-internet" element={<NoInternet />} />

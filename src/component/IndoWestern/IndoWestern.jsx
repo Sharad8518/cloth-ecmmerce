@@ -54,18 +54,18 @@ export default function IndoWestern() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchBanner = async () => {
-      try {
-        const res = await getBanner();
-        console.log("banner", res);
-        setBanner(res);
-      } catch (err) {
-        console.error("Error fetching banner:", err);
-      }
-    };
-
-    fetchBanner();
-  }, []);
+       const fetchBanner = async () => {
+         try {
+           const res = await getBanner({ showOn: "indoWestern", active: true });
+           console.log("banner", res);
+           setBanner(res);
+         } catch (err) {
+           console.error("Error fetching banner:", err);
+         }
+       };
+   
+       fetchBanner();
+     }, []);
   // 🔹 Convert filter state into params object for API
   // 🛠 Convert filters state into query params
   const buildParams = (filters, currentPage = 1, sortBy = "newest") => {
@@ -253,7 +253,7 @@ export default function IndoWestern() {
       <NavbarMenu />
     
       
-        {/* <Carousel>
+        <Carousel>
           {banner.map((item, index) => (
             <Carousel.Item key={index}>
               <img
@@ -264,8 +264,8 @@ export default function IndoWestern() {
               />
             </Carousel.Item>
           ))}
-        </Carousel> */}
-        <BannerSlider/>
+        </Carousel>
+        {/* <BannerSlider/> */}
     
       <br />
       <div className={styles.mainProductContainer}>

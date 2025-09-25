@@ -1,6 +1,9 @@
-import React from "react";
+import React,{useEffect,useState} from "react";
 import { Carousel } from "react-bootstrap";
 import styles from "./BannerSlider.module.css"; // 👈 CSS Module import
+import { getAllTopCollection } from "../api/user/topCollectionApi";
+import Lottie from "lottie-react";
+import loadingAnimation from "../../assets/Anim/loading.json";
 
 const slides = [
   {
@@ -25,20 +28,69 @@ const slides = [
   },
 ];
 
+
+
+
 export default function BannerSlider() {
+
+  const [collections, setCollections] = useState([]);
+  const [loading,setLoading]  =useState(true)
+const fetchCollections = async () => {
+    try {
+      const res = await getAllTopCollection();
+      console.log("res",res)
+      setCollections(res);
+    } catch (err) {
+      console.error(err);
+    }finally{
+      setLoading(false)
+    }
+  };
+
+  useEffect(() => {
+    fetchCollections();
+  }, []);
+
+  console.log('collections',collections)
+  if (loading) {
+      return (
+        <div
+          style={{
+            height: "100vh",
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            flexDirection: "column",
+            alignItems: "center",
+            background: "#fff", // optional
+          }}
+        >
+          <Lottie
+            animationData={loadingAnimation}
+            loop={true}
+            autoplay={true}
+            style={{ width: 200, height: 200 }}
+          />
+          <p style={{ marginTop: "1rem", fontSize: "18px", color: "#333" }}>
+            Please wait, loading...
+          </p>
+        </div>
+      ); // or a spinner component
+    }
+
   return (
     <Carousel fade interval={4000} className={styles.bannerSlider}>
-      {slides.map((slide) => (
-        <Carousel.Item key={slide.id}>
+      {collections?.map((slide) => (
+        <Carousel.Item key={slide._id}>
           <img
             className={`d-block w-100 ${styles.bannerImg}`}
             src={slide.image}
             alt={slide.title}
           />
-          <Carousel.Caption className={styles.caption}>
+        {/* <Carousel.Caption className={styles.caption}>
             <h3>{slide.title}</h3>
             <p>{slide.description}</p>
-          </Carousel.Caption>
+          </Carousel.Caption>  */}
         </Carousel.Item>
       ))}
     </Carousel>

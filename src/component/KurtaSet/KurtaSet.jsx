@@ -57,7 +57,7 @@ export default function KurtaSet() {
   useEffect(() => {
     const fetchBanner = async () => {
       try {
-        const res = await getBanner();
+        const res = await getBanner({ showOn: "kurtaSet", active: true });
         console.log("banner", res);
         setBanner(res);
       } catch (err) {
