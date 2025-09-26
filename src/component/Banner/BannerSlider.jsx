@@ -4,6 +4,7 @@ import styles from "./BannerSlider.module.css"; // 👈 CSS Module import
 import { getAllTopCollection } from "../api/user/topCollectionApi";
 import Lottie from "lottie-react";
 import loadingAnimation from "../../assets/Anim/loading.json";
+import { useNavigate } from "react-router-dom";
 
 const slides = [
   {
@@ -35,6 +36,7 @@ export default function BannerSlider() {
 
   const [collections, setCollections] = useState([]);
   const [loading,setLoading]  =useState(true)
+  const navigate=  useNavigate()
 const fetchCollections = async () => {
     try {
       const res = await getAllTopCollection();
@@ -79,6 +81,7 @@ const fetchCollections = async () => {
     }
 
   return (
+    <>
     <Carousel fade interval={4000} className={styles.bannerSlider}>
       {collections?.map((slide) => (
         <Carousel.Item key={slide._id}>
@@ -86,6 +89,7 @@ const fetchCollections = async () => {
             className={`d-block w-100 ${styles.bannerImg}`}
             src={slide.image}
             alt={slide.title}
+            onClick={()=>navigate("/topCollectionUser",{state:{product:slide.product}})}
           />
         {/* <Carousel.Caption className={styles.caption}>
             <h3>{slide.title}</h3>
@@ -94,5 +98,11 @@ const fetchCollections = async () => {
         </Carousel.Item>
       ))}
     </Carousel>
+  <div className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-black text-center py-2 fixed top- left-0 z-50 shadow-md">
+  <h6 className="text-sm font-medium tracking-wide">
+     Website under development — stay tuned for updates
+  </h6>
+</div>
+</>
   );
 }

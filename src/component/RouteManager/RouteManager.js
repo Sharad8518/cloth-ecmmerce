@@ -46,6 +46,7 @@ import NoInternet from "../NoInternet/NoInternet";
 import ZibaLuxe from "../Admin/Navbar/Collection/ZibaLuxe/ZibaLuxe";
 import CollectionObleLuxe from "../Luxe/CollectionObleLuxe";
 import TopCollection from "../Admin/TopCollection/TopCollection";
+import TopCollectionUser from "../TopCollectionUser/TopCollectionUser";
 
 export default function RouteManager() {
   return (
@@ -67,7 +68,8 @@ export default function RouteManager() {
       <Route path="/returnExchange" element={<ReturnExchange />} />
       <Route path="/cookiesPolicy" element={<CookiesPolicy />} />
       <Route path="/newIn" element={<NewIn />} />
-       <Route path="/collectionObleLuxe" element={<CollectionObleLuxe />} />
+      <Route path="/topCollectionUser" element={<TopCollectionUser />} />
+      <Route path="/collectionObleLuxe" element={<CollectionObleLuxe />} />
       <Route path="/indoWestern/:category/:subName?" element={<IndoWestern />} />
       <Route path="/jewellery/:category/:subName?" element={<Jewellery />} />
       <Route path="/kurtaSet/:category/:subName?" element={<KurtaSet />} />

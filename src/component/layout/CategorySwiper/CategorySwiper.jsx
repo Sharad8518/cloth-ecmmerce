@@ -8,11 +8,7 @@ import styles from "./CategorySwiper.module.css";
 import { useNavigate } from "react-router-dom";
 
 const categories = [
-  {
-    title: "New In",
-    image:
-      "https://i.pinimg.com/originals/13/f8/81/13f881aa584f5d2cb1408a42e1576dfe.jpg",
-  },
+  
   {
     title: "Kurta Set",
     image:
@@ -66,7 +62,7 @@ export default function CategorySwiper() {
         style={{
           display: "flex",
           justifyContent: "center",
-          maxWidth: "1000px",
+          maxWidth: "900px",
           margin: "0 auto",
         }}
       >
@@ -115,7 +111,7 @@ export default function CategorySwiper() {
         className={`${styles.ViewAllBtn} mx-auto d-block`}
         onClick={() => navigate("/categoryProduct")}
       >
-        View All
+      New Arrival
       </button>
     </div>
   );

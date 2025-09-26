@@ -28,13 +28,14 @@ export default function CategoryProduct() {
   // State to track filters
   console.log("category", category);
   const [filters, setFilters] = useState({
+    categories: Array.isArray(category) ? category : category ? [category] : [],
     price: [],
-    collection: Array.isArray(category) ? category : category ? [category] : [],
+    collection:[],
     size: [],
     color: [],
     fabric: [],
     craft: [],
-    occasion: Array.isArray(category) ? category : category ? [category] : [],
+    occasion: [],
     dupatta: [],
     discount: [], // example: [10, 50] → between 10% and 50%
   });
