@@ -26,9 +26,9 @@ export default function CategoryProduct() {
   const location = useLocation();
   const category = location.state?.category; // safely access passed category
   // State to track filters
-  console.log("category", category);
+
   const [filters, setFilters] = useState({
-    categories: Array.isArray(category) ? category : category ? [category] : [],
+    header: Array.isArray(category) ? category : category ? [category] : [],
     price: [],
     collection:[],
     size: [],
@@ -47,7 +47,7 @@ export default function CategoryProduct() {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState("popularity");
   const [loading, setLoading] = useState(true);
-
+  console.log("category", category);
   useEffect(() => {
     const fetchBanner = async () => {
       try {
@@ -76,7 +76,9 @@ export default function CategoryProduct() {
     if (filters.color.length) {
       params.colour = normalize(filters.color); // Express will handle ?colour=Red&colour=Blue
     }
-
+ if (filters.header) {
+      params.header = normalize(filters.header); // pass directly
+    }
     // 📏 Size
     if (filters.size.length) {
       params.size = normalize(filters.size); // backend supports ?size=M&size=XL
@@ -169,7 +171,7 @@ export default function CategoryProduct() {
   // Run whenever filters, page, or sort change
   useEffect(() => {
     fetchProducts();
-  }, [filters, currentPage, sortBy]);
+  }, [filters, currentPage, sortBy,category]);
 
   // Handle filter change
   const handleFilterChange = (type, value) => {
