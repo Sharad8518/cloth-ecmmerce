@@ -24,6 +24,7 @@
   width: 100%;
   height: clamp(200px, 30vw, 380px);
 object-fit: cover;
+object-position: top;
  display: block;
  
 }

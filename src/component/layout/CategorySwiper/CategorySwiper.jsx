@@ -12,27 +12,27 @@ const categories = [
   {
     title: "Kurta Set",
     image:
-      "https://myfashionroad.com/wp-content/uploads/2024/04/varsha-fashion-maya-new-designs-muslin-ladies-dress-catalog-suppliers-0-2024-04-18_12_12_48-scaled.jpg",
+      "https://www.bullionknot.com/cdn/shop/files/Poonam_4_a3edcb27-e733-45cb-acf0-7ed47628c6eb.jpg?v=1746264104",
   },
   {
     title: "Designer Suit",
     image:
-      "https://www.yellowbrick.co/wp-content/uploads/2023/08/fashion_blog_styling_blog_two-models-min.jpg",
+      "https://suvidhafashion.com/cdn/shop/files/RAFEEQAH-1.jpg?v=1741087647&width=600",
   },
   {
     title: "Indo Western",
     image:
-      "https://i.pinimg.com/236x/60/cb/7c/60cb7c667c9d47f2c0afac0386a03591.jpg",
+      "https://www.shauryasanadhya.com/cdn/shop/products/DSC4946_1080x.jpg?v=1745482463",
   },
   {
     title: "Jwellery",
     image:
-      "https://images.bewakoof.com/web/latest-fashion-trends-bewakoof-blog-8-1621402705.jpg",
+      "https://rubans.in/cdn/shop/files/rubans-24k-gold-plated-goddess-lakshmi-motif-handcrafted-traditional-temple-jewellery-set-necklaces-necklace-sets-chains-mangalsutra-1151539141.jpg?v=1755710564",
   },
   {
     title: "Potilis",
     image:
-      "https://i.pinimg.com/736x/d1/ee/e0/d1eee010d20959ad6f0fc0aa7334c6d6.jpg",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSh3rMzNm5aPLblelJvQZxz9F3zq83riccGUiWGp4J7B57wcySi-2jre1fTH-5JicUTSrI&usqp=CAU",
   },
 ];
 

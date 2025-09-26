@@ -301,7 +301,7 @@ export default function NavbarMenu() {
                 <span className="cart-badge">{cart?.items?.length || 0}</span>
               )}
             </div>
-            <LiaUserCircle className="icon" onClick={() => handleUserClick()} />
+            <LiaUserCircle size={25} className="icon" onClick={() => handleUserClick()} />
           </div>
           <LoadingBar
             color="#460201"
