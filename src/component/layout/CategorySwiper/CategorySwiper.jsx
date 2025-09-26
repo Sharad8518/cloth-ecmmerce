@@ -49,7 +49,7 @@ export default function CategorySwiper() {
   }, []);
   return (
     <div className={styles.swiperContainer}>
-      <h2 className={styles.shopbycategory}>Shop By Category</h2>
+      <h2 className={styles.title}>SHOP BY CATEGORY</h2>
       {/* <div className={styles.customNav}>
         <button ref={prevRef} className={styles.customPrev}>
           ◀

@@ -30,6 +30,17 @@
   color: #333;
 }
 
+.title {
+  text-align: center;
+  font-weight: 600;
+  font-size: 35px;
+  margin-bottom: 30px;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
 .customNav {
   position: absolute;
   top: 50%;
