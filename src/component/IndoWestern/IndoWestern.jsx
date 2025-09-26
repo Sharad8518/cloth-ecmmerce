@@ -252,7 +252,10 @@ export default function IndoWestern() {
     <div width="100%" style={{ backgroundColor: "#f1f2f6",overflowX:"hidden",display:"flex",flexDirection:"column",alignItems:"center" }}>
       <NavbarMenu />
     
-      
+       <div
+        style={{ width: "100%", boxSizing: "border-box" }}
+        className={styles.CategoryProductBanner}
+      >
         <Carousel>
           {banner.map((item, index) => (
             <Carousel.Item key={index}>
@@ -265,6 +268,7 @@ export default function IndoWestern() {
             </Carousel.Item>
           ))}
         </Carousel>
+      </div>
         {/* <BannerSlider/> */}
     
       <br />

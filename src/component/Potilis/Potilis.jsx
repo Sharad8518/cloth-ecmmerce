@@ -255,19 +255,23 @@ export default function Potilis() {
     <div width="100%" style={{ backgroundColor: "#f1f2f6",overflowX:"hidden",display:"flex",flexDirection:"column",alignItems:"center" }}>
       <NavbarMenu />
     
-      <Carousel>
-        {banner.map((item, index) => (
-          <Carousel.Item key={index}>
-            <img
-              className="d-block w-100"
-              src={item.imageUrl}
-              alt={`Banner ${index + 1}`}
-              style={{ height: "100%", objectFit: "cover" }}
-            />
-          </Carousel.Item>
-        ))}
-          
-      </Carousel>
+      <div
+        style={{ width: "100%", boxSizing: "border-box" }}
+        className={styles.CategoryProductBanner}
+      >
+        <Carousel>
+          {banner.map((item, index) => (
+            <Carousel.Item key={index}>
+              <img
+                className="d-block w-100"
+                src={item.imageUrl}
+                alt={`Banner ${index + 1}`}
+                style={{ height: "100%", objectFit: "cover" }}
+              />
+            </Carousel.Item>
+          ))}
+        </Carousel>
+      </div>
       {/* <BannerSlider/> */}
    
       <br />
