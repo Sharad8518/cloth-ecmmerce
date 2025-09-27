@@ -8,6 +8,7 @@ import CategorySwiper from "../layout/CategorySwiper/CategorySwiper";
 import Product from "../AllProduct/Product/Product";
 import BannerSlider from "../Banner/BannerSlider";
 import ContentWithSlider from "../ContentWithSlider/ContentWithSlider";
+import SuspensionPage from "./SuspensionPage";
 const people = [
   {
     name: "Lily",
@@ -57,17 +58,18 @@ export default function Home() {
         flexDirection: "column",
       }}
     >
-      <Navbar />
-      <BannerSlider />
+      {/* <Navbar />
+      <BannerSlider /> */}
+      <SuspensionPage/>
       <br></br>
-      <AllProduct />
+      {/* <AllProduct />
       <ContentWithSlider />
-      <CategorySwiper />
+      <CategorySwiper /> */}
 
       <br />
-      <Product />
+      {/* <Product />
       <br />
-      <Footer />
+      <Footer /> */}
     </div>
   );
 }
