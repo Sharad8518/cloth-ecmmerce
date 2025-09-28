@@ -147,9 +147,7 @@ export default function Checkout() {
 
     try {
       setPlaceLoading(true);
-
       const hasBuyNowItems = location.state?.buyNowItems?.length > 0;
-
       const orderPayload = {
         buyNow: hasBuyNowItems ? "BUY_NOW" : null,
         ...(hasBuyNowItems && {
@@ -170,12 +168,10 @@ export default function Checkout() {
         paymentMethod,
       };
       const res = await placeOrder(orderPayload);
-
       if (!res.success) {
         alert("Failed to place order");
         return;
       }
-
       if (paymentMethod === "ONLINE" && res.razorpayOrder) {
         const isLoaded = await loadRazorpayScript();
         if (!isLoaded) {
@@ -213,7 +209,7 @@ export default function Checkout() {
         rzp.open();
       } else {
         alert("✅ Order placed successfully (COD)");
-        // navigator("/");
+        navigator("/");
       }
     } catch (err) {
       console.error(err);
@@ -223,7 +219,7 @@ export default function Checkout() {
     }
   };
 
-  console.log("itemsToCheckout", itemsToCheckout);
+  // console.log("itemsToCheckout", itemsToCheckout);
 
   return (
     <>

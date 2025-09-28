@@ -64,10 +64,10 @@ export default function Home() {
       <br></br>
       {/* <AllProduct />
       <ContentWithSlider />
-      <CategorySwiper /> */}
+      <CategorySwiper />
 
       <br />
-      {/* <Product />
+      <Product />
       <br />
       <Footer /> */}
     </div>
