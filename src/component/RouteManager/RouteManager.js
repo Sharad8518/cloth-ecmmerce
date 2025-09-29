@@ -103,7 +103,7 @@ export default function RouteManager() {
           <Route path="TopCollection" element={<TopCollection />} />
         </Route>
            <Route path="*" element={<NotFound />} />
-           <Route path="/no-internet" element={<NoInternet />} />
+           {/* <Route path="/no-internet" element={<NoInternet />} /> */}
       </Route>
     </Routes>
   );

@@ -609,7 +609,9 @@ export default function NavbarMenu() {
             })}
           </Accordion>
         </Offcanvas.Body>
-        <div
+      {
+        !token ||  isTokenExpired(token) &&(
+            <div
           style={{
             position: "absolute",
             height: 50,
@@ -626,6 +628,9 @@ export default function NavbarMenu() {
             <LuCircleUser /> Sign In
           </h6>
         </div>
+        )
+      }
+        
       </Offcanvas>
 
       <CartOffcanvas
