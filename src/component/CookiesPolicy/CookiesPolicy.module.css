@@ -1,0 +1,9 @@
+.CookiesContainer{
+     margin-top: 70px;
+}
+
+@media (max-width: 768px) {
+  .CookiesContainer{
+    margin-top: 40px;
+}  
+}

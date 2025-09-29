@@ -1,0 +1,9 @@
+.checkContainer{
+    margin-top: 70px;
+}
+
+@media (max-width: 768px) {
+  .checkContainer{
+    margin-top: 70px;
+}  
+}

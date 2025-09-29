@@ -5,7 +5,14 @@ import { FaRegHeart } from "react-icons/fa";
 import { FaRegUser } from "react-icons/fa";
 import "./NavbarMenu.css";
 import { RiMenu2Fill } from "react-icons/ri";
-import { Container, Row, Col, Offcanvas, Accordion,Carousel } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Offcanvas,
+  Accordion,
+  Carousel,
+} from "react-bootstrap";
 import logo from "../../assets/logo.jpeg";
 import LoadingBar from "react-top-loading-bar";
 import {
@@ -57,7 +64,7 @@ export default function NavbarMenu() {
     }
   }
   const [collections, setCollections] = useState([]);
-  const [loading,setLoading]  =useState(true)
+  const [loading, setLoading] = useState(true);
   const fetchCollections = async () => {
     try {
       const res = await getAllTopCollection();
@@ -269,52 +276,16 @@ export default function NavbarMenu() {
             height={2}
             ref={loadingRef}
             shadow={false}
-            style={{ position: "absolute", top: 115 }}
+            style={{
+              position: "absolute",
+              top: promotions.length > 0 ? 115 : 77,
+            }}
           />
         </nav>
 
-        {/* {showModal && (
-          <div
-            className="submenu-model"
-            onMouseEnter={() => setShowModal(true)}
-          >
-            <div
-              className="submenu-container-modal mx-auto d-block"
-              onMouseEnter={() => setShowModal(true)}
-              onMouseLeave={() => setShowModal(false)}
-            >
-              <Container>
-                <Row>
-                  {showModal && activeHeader && (
-                    <div className="submenu-model">
-                      <div className="submenu-container-modal">
-                        <Container>
-                          <Row>
-                            <Col>
-                              <h6>{activeHeader.title}</h6>
-                              <ul>
-                                {activeHeader.subcategories.map((sub, idx) => (
-                                  <li key={idx}>
-                                    <Link to={`/categoryProduct/${sub}`}>
-                                      {sub}
-                                    </Link>
-                                  </li>
-                                ))}
-                              </ul>
-                            </Col>
-                          </Row>
-                        </Container>
-                      </div>
-                    </div>
-                  )}
-                </Row>
-              </Container>
-            </div>
-          </div>
-        )} */}
-
         {showModal && activeHeader && (
           <div
+            style={{ top: promotions.length > 0 ? 100 : 70 }}
             className="submenu-model"
             onMouseEnter={() => setShowModal(true)}
             onMouseLeave={() => setShowModal(false)}
@@ -324,7 +295,7 @@ export default function NavbarMenu() {
               onMouseEnter={() => setShowModal(true)}
               onMouseLeave={() => setShowModal(false)}
             >
-              <Container style={{ width: "70%" }}>
+              <Container style={{ width: "95%" }}>
                 <Row style={{ flexWrap: "nowrap", overflowX: "auto" }}>
                   {activeHeader.categories.map((category, idx) => (
                     <>
@@ -336,6 +307,9 @@ export default function NavbarMenu() {
                           background: idx % 2 === 0 ? "#fff" : "#f5f6fa",
                           padding: "10px",
                           borderRadius: "4px",
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "center",
                         }}
                       >
                         <h6 className="submenu-item-header">{category.name}</h6>
@@ -470,27 +444,38 @@ export default function NavbarMenu() {
         className="custom-offcanvas shadow-lg"
       >
         <Offcanvas.Header closeButton>
-          <Offcanvas.Title className="text-lg font-semibold text-gray-800" style={{fontFamily: "'Playfair', serif",fontSize:25, color: "#460201",}}>
+          <Offcanvas.Title
+            className="text-lg font-semibold text-gray-800"
+            style={{
+              fontFamily: "'Playfair', serif",
+              fontSize: 25,
+              color: "#460201",
+            }}
+          >
             House of Ziba
           </Offcanvas.Title>
         </Offcanvas.Header>
-      <Carousel fade interval={4000} >
-      {collections?.map((slide) => (
-        <Carousel.Item key={slide._id}>
-          <img
-            className={`d-block w-100`}
-            src={slide.image}
-            alt={slide.title}
-            style={{height:150}}
-            onClick={()=>navigate("/collection1",{state:{product:slide.product}})}
-          />
-        {/* <Carousel.Caption className={styles.caption}>
+        <Carousel fade interval={4000}>
+          {collections?.map((slide) => (
+            <Carousel.Item key={slide._id}>
+              <img
+                className={`d-block w-100`}
+                src={slide.image}
+                alt={slide.title}
+                style={{ height: 150 }}
+                onClick={() =>
+                  navigate("/collection1", {
+                    state: { product: slide.product },
+                  })
+                }
+              />
+              {/* <Carousel.Caption className={styles.caption}>
             <h3>{slide.title}</h3>
             <p>{slide.description}</p>
           </Carousel.Caption>  */}
-        </Carousel.Item>
-      ))}
-    </Carousel>
+            </Carousel.Item>
+          ))}
+        </Carousel>
 
         <Offcanvas.Body className="p-0">
           <Accordion flush alwaysOpen>
@@ -542,8 +527,7 @@ export default function NavbarMenu() {
                         New In
                       </Link>
                     </div>
-                  ) : 
-                   header?.slug === "/sale" ? (
+                  ) : header?.slug === "/sale" ? (
                     <div
                       style={{
                         height: 50,
@@ -560,10 +544,10 @@ export default function NavbarMenu() {
                           color: "black",
                         }}
                       >
-                      {header.title}
+                        {header.title}
                       </Link>
                     </div>
-                  ):(
+                  ) : (
                     <Accordion.Item eventKey={header._id} key={header._id}>
                       <Accordion.Header>
                         <span className="font-medium text-gray-700">
@@ -584,7 +568,14 @@ export default function NavbarMenu() {
                                 style={{ listStyle: "none" }}
                               >
                                 {cat.subCategories.map((sub) => (
-                                  <li key={sub._id} style={{marginTop:10,borderBottom:"0.5px solid #000",padding:5}}>
+                                  <li
+                                    key={sub._id}
+                                    style={{
+                                      marginTop: 10,
+                                      borderBottom: "0.5px solid #000",
+                                      padding: 5,
+                                    }}
+                                  >
                                     <Link
                                       to={`${header.slug}/${cat.name}/${sub.name}`}
                                       className="block text-gray-700 hover:text-orange-500 text-sm transition-colors duration-200"
@@ -609,28 +600,29 @@ export default function NavbarMenu() {
             })}
           </Accordion>
         </Offcanvas.Body>
-      {
-        !token ||  isTokenExpired(token) &&(
+        {!token ||
+          (isTokenExpired(token) && (
             <div
-          style={{
-            position: "absolute",
-            height: 50,
-            backgroundColor: "#eaeaeaff",
-            bottom: 0,
-            width: "100%",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-           onClick={() =>{ handleUserClick();handleClose()}}
-        >
-          <h6 style={{ marginTop: 5 }}>
-            <LuCircleUser /> Sign In
-          </h6>
-        </div>
-        )
-      }
-        
+              style={{
+                position: "absolute",
+                height: 50,
+                backgroundColor: "#eaeaeaff",
+                bottom: 0,
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              onClick={() => {
+                handleUserClick();
+                handleClose();
+              }}
+            >
+              <h6 style={{ marginTop: 5 }}>
+                <LuCircleUser /> Sign In
+              </h6>
+            </div>
+          ))}
       </Offcanvas>
 
       <CartOffcanvas

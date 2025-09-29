@@ -1,18 +1,18 @@
-import React from "react";
+import React ,{useEffect}from "react";
 import NavbarMenu from "../Navbar/NavbarMenu";
 import { Container } from "react-bootstrap";
 import Footer from "../Footer/Footer";
+import styles from "./TermCondition.module.css"
 
 export default function TermCondition() {
+     useEffect(() => {
+        window.scrollTo(0, 0);
+      }, []);
   return (
     <div>
       <NavbarMenu />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br /> <br />
-      <Container>
+      <br/>
+      <Container className={styles.termContainer}>
         <h2>Terms & Conditions </h2>
         <hr />
         <div>

@@ -1,18 +1,18 @@
-import React from "react";
+import React,{useEffect} from "react";
 import NavbarMenu from "../Navbar/NavbarMenu";
 import { Container } from "react-bootstrap";
 import Footer from "../Footer/Footer";
+import styles from "./PrivacyPolicy.module.css"
 
 export default function PrivacyPolicy() {
+   useEffect(() => {
+      window.scrollTo(0, 0);
+    }, []);
   return (
     <div>
       <NavbarMenu />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br /> <br />
-      <Container>
+      <br/>
+      <Container  className={styles.privacyContainer} >
         <h2>Privacy Policy </h2>
         <hr />
         <div>

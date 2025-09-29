@@ -1,0 +1,9 @@
+.termContainer{
+  margin-top: 70px;
+}
+
+@media (max-width: 768px) {
+  .termContainer{
+    margin-top: 40px;
+}  
+}

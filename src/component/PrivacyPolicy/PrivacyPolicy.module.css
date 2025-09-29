@@ -1,0 +1,9 @@
+.privacyContainer{
+    margin-top: 70px;
+}
+
+@media (max-width: 768px) {
+  .privacyContainer{
+    margin-top: 40px;
+}  
+}

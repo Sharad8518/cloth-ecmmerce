@@ -157,7 +157,7 @@
 .submenu-model{
   display: flex;
   align-items: center;
-  top:100px;
+
   width: 100%;
   position: absolute;
  
@@ -165,8 +165,8 @@
   
 }
 .submenu-container-modal {
-  top: 100px; 
-  background-color: #fff;
+  
+  background-color: #ffffff;
   width: 70%;
   box-shadow: 0 8px 16px rgba(0,0,0,0.15);
   border-radius: 10px;

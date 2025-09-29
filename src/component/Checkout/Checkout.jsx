@@ -5,6 +5,8 @@ import NavbarMenu from "../Navbar/NavbarMenu";
 import { getProfile, updateProfile } from "../api/user/authApi";
 import { placeOrder, verifyPayment } from "../api/user/orderApi";
 import { useRazorpay, RazorpayOrderOptions } from "react-razorpay";
+import styles from "./Checkout.module.css"
+import MobileLoginOTP from "../User/Auth/MobileLoginOTP";
 
 export default function Checkout() {
   const Razorpay = useRazorpay();
@@ -21,6 +23,9 @@ export default function Checkout() {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [editingPhone, setEditingPhone] = useState(false);
   const [placeloading, setPlaceLoading] = useState(false);
+   const [isOpen, setIsOpen] = useState(false);
+    const openModal = () => setIsOpen(true);
+  const closeModal = () => setIsOpen(false);
 
   console.log("itemsToCheckout Address:", itemsToCheckout);
 
@@ -130,6 +135,11 @@ export default function Checkout() {
   };
 
   const handlePlaceOrder = async () => {
+    const token = localStorage.getItem("token")
+     if (!token) {
+      openModal()
+      return;
+    }
     if (!selectedAddress) {
       alert("Please select a delivery address");
       return;
@@ -145,6 +155,7 @@ export default function Checkout() {
       return;
     }
 
+    
     try {
       setPlaceLoading(true);
       const hasBuyNowItems = location.state?.buyNowItems?.length > 0;
@@ -225,10 +236,7 @@ export default function Checkout() {
     <>
       <NavbarMenu />
       <br />
-      <br />
-      <br />
-      <br />
-      <br />
+      
       <div
         style={{
           maxWidth: 900,
@@ -236,6 +244,7 @@ export default function Checkout() {
           padding: 20,
           paddingBottom: 100,
         }}
+        className={styles.checkContainer}
       >
         <h2
           style={{
@@ -552,6 +561,8 @@ export default function Checkout() {
           </button>
         </div>
       </div>
+
+      <MobileLoginOTP isOpen={isOpen} closeModal={closeModal}/>
     </>
   );
 }
