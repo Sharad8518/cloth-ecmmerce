@@ -226,7 +226,7 @@ export default function MobileLoginOTP({ isOpen, closeModal }) {
               ×
             </button>
 
-            <h2 style={{ marginBottom: 10 }}>House of Ziba</h2>
+            <h2 style={{ marginBottom: 10,fontFamily:"'Playfair', serif" }}>House of Ziba</h2>
 
             {!isOTPSent ? (
               <>

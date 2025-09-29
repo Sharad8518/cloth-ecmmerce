@@ -91,7 +91,7 @@ export default function CategorySwiper() {
               <div
                 className={styles.categorySlide}
                 onClick={() =>
-                  navigate("/categoryProduct", {
+                  navigate("/product-category", {
                     state: { category: cat.title },
                   })
                 }
@@ -109,7 +109,7 @@ export default function CategorySwiper() {
       </div>
       <button
         className={`${styles.ViewAllBtn} mx-auto d-block`}
-        onClick={() => navigate("/categoryProduct")}
+        onClick={() => navigate("/newIn")}
       >
       New Arrival
       </button>

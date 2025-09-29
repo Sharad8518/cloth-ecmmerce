@@ -47,6 +47,8 @@ import ZibaLuxe from "../Admin/Navbar/Collection/ZibaLuxe/ZibaLuxe";
 import CollectionObleLuxe from "../Luxe/CollectionObleLuxe";
 import TopCollection from "../Admin/TopCollection/TopCollection";
 import TopCollectionUser from "../TopCollectionUser/TopCollectionUser";
+import Sale from "../Sale/Sale"
+import Menswear from "../Mens/Menswear";
 
 export default function RouteManager() {
   return (
@@ -54,27 +56,29 @@ export default function RouteManager() {
       {/* Public Routes */}
       <Route path="/" element={<Home />} />
       <Route path="/detail/:id" element={<ProductDetail />} />
-      <Route path="/categoryProduct" element={<CategoryProduct />} />
+      <Route path="/product-category" element={<CategoryProduct />} />
       <Route path="/cart" element={<ProductCart />} />
       <Route path="/checkout" element={<Checkout />} />
       <Route path="/AdminLogin" element={<AdminLogin />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/orders" element={<Orders />} />
       <Route path="/favourites" element={<Favourites />} />
-      <Route path="/collections" element={<Collections />} />
+      <Route path="/topcollections" element={<Collections />} />
       <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
       <Route path="/aboutUs" element={<AboutUs />} />
       <Route path="/termCondition" element={<TermCondition />} />
       <Route path="/returnExchange" element={<ReturnExchange />} />
       <Route path="/cookiesPolicy" element={<CookiesPolicy />} />
       <Route path="/newIn" element={<NewIn />} />
-      <Route path="/topCollectionUser" element={<TopCollectionUser />} />
-      <Route path="/collectionObleLuxe" element={<CollectionObleLuxe />} />
-      <Route path="/indoWestern/:category/:subName?" element={<IndoWestern />} />
+      <Route path="/collection1" element={<TopCollectionUser />} />
+      <Route path="/ziba-luxe" element={<CollectionObleLuxe />} />
+      <Route path="/indo-western/:category/:subName?" element={<IndoWestern />} />
       <Route path="/jewellery/:category/:subName?" element={<Jewellery />} />
-      <Route path="/kurtaSet/:category/:subName?" element={<KurtaSet />} />
-      <Route path="/potilis/:category/:subName?" element={<Potilis />} />
-      <Route path="/designerSuit/:category/:subName?" element={<DesignerSuit />} />
+      <Route path="/everyday-elegance/:category/:subName?" element={<KurtaSet />} />
+      <Route path="/potlis/:category/:subName?" element={<Potilis />} />
+      <Route path="/embroidery-luxe/:category/:subName?" element={<DesignerSuit />} />
+      <Route path="/menswear/:category/:subName?" element={<Menswear />} />
+      <Route path="/sale/:header?/:category?/:subName?" element={<Sale />} />
       {/* Protected Admin Routes */}
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<AdminDashboard />}>

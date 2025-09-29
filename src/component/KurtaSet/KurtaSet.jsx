@@ -31,7 +31,7 @@ export default function KurtaSet() {
   const handleShowFilters = () => setShowFilters(true);
   // State to track filters
   const [filters, setFilters] = useState({
-    header: ["Kurta-Set"],
+    header: ["Everyday Elegance"],
     subCategories: Array.isArray(subName) ? subName : subName ? [subName] : [],
     categories: Array.isArray(category) ? category : category ? [category] : [],
     collections: [],
@@ -57,7 +57,7 @@ export default function KurtaSet() {
   useEffect(() => {
     const fetchBanner = async () => {
       try {
-        const res = await getBanner({ showOn: "kurtaSet", active: true });
+        const res = await getBanner({ showOn: "Everyday-Elegance", active: true });
         console.log("banner", res);
         setBanner(res);
       } catch (err) {

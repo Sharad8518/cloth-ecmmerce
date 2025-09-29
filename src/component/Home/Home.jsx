@@ -58,18 +58,18 @@ export default function Home() {
         flexDirection: "column",
       }}
     >
-      {/* <Navbar />
-      <BannerSlider /> */}
-      <SuspensionPage/>
+      <Navbar />
+      <BannerSlider />
+      {/* <SuspensionPage/> */}
       <br></br>
-      {/* <AllProduct />
+      <AllProduct />
       <ContentWithSlider />
       <CategorySwiper />
 
       <br />
       <Product />
       <br />
-      <Footer /> */}
+      <Footer />
     </div>
   );
 }

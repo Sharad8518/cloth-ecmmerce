@@ -248,8 +248,9 @@ export default function NavbarMenu() {
               style={{
                 color: "#460201",
                 textDecoration: "none",
-                fontSize: 22,
+                fontSize: 28,
                 fontWeight: "600",
+                fontFamily:"'Playfair', serif"
               }}
             >
               HOUSE Of ZIBA
@@ -273,9 +274,14 @@ export default function NavbarMenu() {
                 >
                   {header?.title === "Home" ? (
                     <Link to={`/`}>{header?.title}</Link>
-                  ) : header?.title === "New-in" ? (
+                  ) : header?.slug === "/new-in" ? (
                     <Link to={`/newIn`}>{header?.title}</Link>
-                  ) : (
+                  ) :
+                   header?.slug === "/sale" ? (
+                    <Link to={`/sale/${header.title}`}>{header?.title}</Link>
+                  ) :
+                  
+                   (
                     <Link>{header?.title}</Link>
                   )}
                 </li>
@@ -461,7 +467,8 @@ export default function NavbarMenu() {
                 textDecoration: "none",
                 fontSize: 22,
                 fontWeight: "600",
-                marginLeft:10
+                marginLeft:10,
+                fontFamily:"'Playfair', serif"
               }}
            >House of Ziba</Link>
         </div>

@@ -89,7 +89,7 @@ const fetchCollections = async () => {
             className={`d-block w-100 ${styles.bannerImg}`}
             src={slide.image}
             alt={slide.title}
-            onClick={()=>navigate("/topCollectionUser",{state:{product:slide.product}})}
+            onClick={()=>navigate("/collection1",{state:{product:slide.product}})}
           />
         {/* <Carousel.Caption className={styles.caption}>
             <h3>{slide.title}</h3>
@@ -98,11 +98,11 @@ const fetchCollections = async () => {
         </Carousel.Item>
       ))}
     </Carousel>
-  <div className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-black text-center py-2 fixed top- left-0 z-50 shadow-md">
+  {/* <div className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-black text-center py-2 fixed top- left-0 z-50 shadow-md">
   <h6 className="text-sm font-medium tracking-wide">
      Website under development — stay tuned for updates
   </h6>
-</div>
+</div> */}
 </>
   );
 }

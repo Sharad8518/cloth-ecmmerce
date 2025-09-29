@@ -12,7 +12,7 @@ export default function CardItem({ image, name, description, price }) {
     <div
       className="tshirt-card"
       onClick={() =>
-        navigate("/collections", {
+        navigate("/topcollections", {
           state: { filter: [name] },
         })
       }

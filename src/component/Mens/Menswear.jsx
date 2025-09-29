@@ -7,36 +7,33 @@ import {
   Form,
   Badge,
   Button,
+  Spinner,
   Carousel,
   Offcanvas,
-  Spinner,
 } from "react-bootstrap";
 import NavbarMenu from "../Navbar/NavbarMenu";
 import ProductList from "../ProductList/ProductList";
 import BreadcrumbSinglePage from "../layout/BreadcrumbSinglePage";
 import Footer from "../Footer/Footer";
-import styles from "./DesignerSuit.module.css";
+import styles from "./Menswear.module.css";
 import { filterProduct } from "../api/user/Productapi";
 import { getBanner } from "../api/user/bannerApi";
 import Lottie from "lottie-react";
 import loadingAnimation from "../../assets/Anim/loading.json";
-import { useLocation } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { FiFilter } from "react-icons/fi";
 import BannerSlider from "../Banner/BannerSlider";
 
-export default function DesignerSuit() {
+export default function Menswear() {
   const { category, subName } = useParams();
-  console.log("subName", subName);
   const [showFilters, setShowFilters] = useState(false);
-
   const handleCloseFilters = () => setShowFilters(false);
   const handleShowFilters = () => setShowFilters(true);
   const [showSort, setShowSort] = useState(false);
 
   // State to track filters
   const [filters, setFilters] = useState({
-    header: ["Embroidery Luxe"],
+    header: ["Menswear"],
     subCategories: Array.isArray(subName) ? subName : subName ? [subName] : [],
     categories: Array.isArray(category) ? category : category ? [category] : [],
     collections: [],
@@ -61,7 +58,7 @@ export default function DesignerSuit() {
   useEffect(() => {
     const fetchBanner = async () => {
       try {
-        const res = await getBanner({ showOn: "Embroidery-Luxe", active: true });
+        const res = await getBanner({ showOn: "Mens", active: true });
         console.log("banner", res);
         setBanner(res);
       } catch (err) {

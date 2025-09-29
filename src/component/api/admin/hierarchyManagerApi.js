@@ -26,19 +26,17 @@ export const getHeader = async (id) => {
 };
 
 /* Add Header */
+
 export const createHeader = async (data) => {
-  const formData = new FormData();
+  const payload = {
+    title: data.title,
+    slug: data.slug,
+    status: data.status ?? "Active",
+    showNavbar: data.showNavbar ?? "No",
+    addCategory: data.addCategory ?? "No",
+  };
 
-  // Append text fields
-  if (data.title) formData.append("title", data.title);
-  if (data.slug) formData.append("slug", data.slug);
-  if (data.status) formData.append("status", data.status);
-  if (data.showNavbar) formData.append("showNavbar", data.showNavbar);
-  if (data.addCategory) formData.append("addCategory", data.addCategory);
-
-
-
-  const response = await axios.post("/admin/headers", formData);
+  const response = await axios.post("/admin/headers", payload);
   return response.data;
 };
 

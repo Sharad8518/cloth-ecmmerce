@@ -53,7 +53,6 @@ const BannerManager = () => {
 
   const handleSave = async () => {
     const fd = new FormData();
-
     // append simple fields
     fd.append("title", formData.title);
     fd.append("message", formData.message);
@@ -240,12 +239,13 @@ const BannerManager = () => {
               >
                 <option value="">Select Category</option>
                 <option value="new-in">New-In</option>
-                <option value="designerSuit">Designer Suit</option>
-                <option value="kurtaSet">Kurta Set</option>
+                <option value="Embroidery-Luxe">Embroidery Luxe</option>
+                <option value="Everyday-Elegance">Everyday Elegance</option>
                 <option value="indoWestern">Indo-Western</option>
                 <option value="Jwellery">Jewellery</option>
                 <option value="potilis">Potlis</option>
                 <option value="Mens">Mens</option>
+                 <option value="Sale">Sale</option>
               </Form.Select>
             </Form.Group>
 

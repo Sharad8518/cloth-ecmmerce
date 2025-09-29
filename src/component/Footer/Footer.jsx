@@ -9,7 +9,7 @@ const Footer = () => {
     <footer className="footer">
       <div className="footer-main">
         <div className="footer-brand">
-          <h2>House of Ziba</h2>
+          <h2 style={{fontFamily:"'Playfair' serif"}}>House of Ziba</h2>
           <p>Your trusted destination for fashion, lifestyle, and more. Quality, style, and service you can count on.</p>
           <img src={logo} style={{width:150,height:150}}/>
         </div>

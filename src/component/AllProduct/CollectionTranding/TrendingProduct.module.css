@@ -33,6 +33,7 @@
   margin-bottom: 30px;
   color: #333;
   text-transform: uppercase;
+   font-family: "Playfair", serif;
   letter-spacing: 1px;
 }
 
@@ -63,5 +64,6 @@
     color: #333;
     text-transform: uppercase;
     letter-spacing: 1px;
+     font-family: "Playfair", serif;
   }
 }

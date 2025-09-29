@@ -167,58 +167,78 @@ export default function Header() {
       </Card>
 
       {/* Modal for Add/Edit */}
-      <Modal
-        show={modal.show}
-        onHide={() => setModal({ show: false, data: {} })}
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>{modal.data._id ? "Edit" : "Add"} Header</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group className="mb-3">
-              <Form.Label>Title</Form.Label>
-              <Form.Control
-                type="text"
-                value={modal.data.title || ""}
-                onChange={(e) =>
-                  setModal({
-                    ...modal,
-                    data: { ...modal.data, title: e.target.value },
-                  })
-                }
-              />
-            </Form.Group>
+    <Modal
+  show={modal.show}
+  onHide={() => setModal({ show: false, data: {} })}
+>
+  <Modal.Header closeButton>
+    <Modal.Title>{modal.data._id ? "Edit" : "Add"} Header</Modal.Title>
+  </Modal.Header>
 
-            
+  <Modal.Body>
+    <Form>
+      {/* Title */}
+      <Form.Group className="mb-3">
+        <Form.Label>Title</Form.Label>
+        <Form.Control
+          type="text"
+          value={modal.data.title || ""}
+          onChange={(e) => {
+            const title = e.target.value;
+            setModal({
+              ...modal,
+              data: {
+                ...modal.data,
+                title,
+                // auto-generate slug if user hasn’t typed one manually
+                slug:
+                  modal.data.slug && modal.data.slug.length > 0
+                    ? modal.data.slug
+                    : title.toLowerCase().trim().replace(/\s+/g, "-"),
+              },
+            });
+          }}
+        />
+      </Form.Group>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Slug</Form.Label>
-              <Form.Control
-                type="text"
-                value={modal.data.slug || ""}
-                onChange={(e) =>
-                  setModal({
-                    ...modal,
-                    data: { ...modal.data, slug: e.target.value },
-                  })
-                }
-              />
-            </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            variant="secondary"
-            onClick={() => setModal({ show: false, data: {} })}
-          >
-            Cancel
-          </Button>
-          <Button variant="primary" onClick={saveEntity}>
-            Save
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      {/* Slug */}
+      <Form.Group className="mb-3">
+        <Form.Label>Slug</Form.Label>
+        <Form.Control
+          type="text"
+          value={modal.data.slug || ""}
+          onChange={(e) =>
+            setModal({
+              ...modal,
+              data: { ...modal.data, slug: e.target.value },
+            })
+          }
+        />
+      </Form.Group>
+    </Form>
+  </Modal.Body>
+
+  <Modal.Footer>
+    <Button
+      variant="secondary"
+      onClick={() => setModal({ show: false, data: {} })}
+    >
+      Cancel
+    </Button>
+    <Button
+      variant="primary"
+      onClick={() => {
+        if (!modal.data.title || !modal.data.slug) {
+          alert("Title and Slug are required");
+          return;
+        }
+        saveEntity();
+      }}
+    >
+      Save
+    </Button>
+  </Modal.Footer>
+</Modal>
     </Container>
   );
 }

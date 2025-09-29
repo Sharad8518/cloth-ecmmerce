@@ -288,7 +288,7 @@ export default function Jewellery() {
             <BreadcrumbSinglePage />
             <span style={{ marginTop: 10, marginLeft: 5 }}>
               {" "}
-              / Indo Western
+              / Jewellery
             </span>
             <span style={{ marginTop: 10, marginLeft: 5 }}> / {subName}</span>
           </div>

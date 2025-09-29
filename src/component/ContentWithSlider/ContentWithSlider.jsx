@@ -31,7 +31,7 @@ export default function ContentWithSlider() {
   const navigate = useNavigate()
 
    const handleClick=(product)=>{
-    navigate("/collectionObleLuxe",{state:{product}})
+    navigate("/ziba-luxe",{state:{product}})
    }
 
   
@@ -54,7 +54,7 @@ export default function ContentWithSlider() {
                 className="d-flex flex-column justify-content-center align-items-center text-center text-black"
               >
                 <br />
-                <h2 className="fw-bold mb-3 ">{items[0].title}</h2>
+                <h2 className="fw-bold mb-3 " style={{fontFamily:"'Playfair', serif"}}>{items[0].title}</h2>
                 <div
                   style={{
                     width: "20%",
@@ -127,7 +127,7 @@ export default function ContentWithSlider() {
 
           <div className="hero-container">
             <div className="hero-left">
-              <h2 className="hero-title fw-bold mb-3">{items[0].title}</h2>
+              <h2 className="hero-title fw-bold mb-3" style={{fontFamily:"'Playfair', serif"}}>{items[0].title}</h2>
               <div className="hero-divider" />
               <p className="hero-subtitle mb-4">{items[0].description}</p>
               <Button variant="light" size="lg" className="hero-button" onClick={()=>handleClick(items[0].product)}>

@@ -78,9 +78,13 @@ const Sidebar = () => {
           <Link to="/dashboard/ZibaLuxe" className={styles.dropdownLink}>
             The Ziba Luxe
           </Link>
-          <Link to="/dashboard/TopCollection" className={styles.dropdownLink}>
+            <Link to="/dashboard/Collection" className={styles.dropdownLink}>
             Top Collection
           </Link>
+          <Link to="/dashboard/TopCollection" className={styles.dropdownLink}>
+            Collection 1
+          </Link>
+          
         </div>
 
         
@@ -107,9 +111,7 @@ const Sidebar = () => {
             Catgory
           </Link>
 
-          <Link to="/dashboard/Collection" className={styles.dropdownLink}>
-            Collection
-          </Link>
+        
         </div>
 
         <Nav.Link

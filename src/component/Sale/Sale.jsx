@@ -7,28 +7,27 @@ import {
   Form,
   Badge,
   Button,
-  Carousel,
-  Offcanvas,
   Spinner,
+  Carousel,
+  Offcanvas
 } from "react-bootstrap";
 import NavbarMenu from "../Navbar/NavbarMenu";
 import ProductList from "../ProductList/ProductList";
 import BreadcrumbSinglePage from "../layout/BreadcrumbSinglePage";
 import Footer from "../Footer/Footer";
-import styles from "./DesignerSuit.module.css";
+import styles from "./Sale.module.css";
 import { filterProduct } from "../api/user/Productapi";
 import { getBanner } from "../api/user/bannerApi";
 import Lottie from "lottie-react";
 import loadingAnimation from "../../assets/Anim/loading.json";
-import { useLocation } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { FiFilter } from "react-icons/fi";
 import BannerSlider from "../Banner/BannerSlider";
 
-export default function DesignerSuit() {
-  const { category, subName } = useParams();
-  console.log("subName", subName);
-  const [showFilters, setShowFilters] = useState(false);
+
+export default function  Sale() {
+const {header, category, subName } = useParams();
+const [showFilters, setShowFilters] = useState(false);
 
   const handleCloseFilters = () => setShowFilters(false);
   const handleShowFilters = () => setShowFilters(true);
@@ -36,7 +35,7 @@ export default function DesignerSuit() {
 
   // State to track filters
   const [filters, setFilters] = useState({
-    header: ["Embroidery Luxe"],
+    header: Array.isArray(header) ? header : header ? [header] : [],
     subCategories: Array.isArray(subName) ? subName : subName ? [subName] : [],
     categories: Array.isArray(category) ? category : category ? [category] : [],
     collections: [],
@@ -61,14 +60,13 @@ export default function DesignerSuit() {
   useEffect(() => {
     const fetchBanner = async () => {
       try {
-        const res = await getBanner({ showOn: "Embroidery-Luxe", active: true });
+        const res = await getBanner({ showOn:"Sale", active: true });
         console.log("banner", res);
         setBanner(res);
       } catch (err) {
         console.error("Error fetching banner:", err);
       }
     };
-
     fetchBanner();
   }, []);
   // 🔹 Convert filter state into params object for API
@@ -293,7 +291,7 @@ export default function DesignerSuit() {
             <BreadcrumbSinglePage />
             <span style={{ marginTop: 10, marginLeft: 5 }}>
               {" "}
-              / Designer Suit
+              / Sale
             </span>
             <span style={{ marginTop: 10, marginLeft: 5 }}> / {subName}</span>
           </div>

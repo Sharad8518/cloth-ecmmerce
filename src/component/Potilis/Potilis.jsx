@@ -33,7 +33,7 @@ export default function Potilis() {
   const handleShowFilters = () => setShowFilters(true);
   // State to track filters
   const [filters, setFilters] = useState({
-    header: ["Potilis"],
+    header: ["Potlis"],
     subCategories: Array.isArray(subName) ? subName : subName ? [subName] : [],
     categories: Array.isArray(category) ? category : category ? [category] : [],
     collections: [],
