@@ -5,7 +5,7 @@ import { FaRegHeart } from "react-icons/fa";
 import { FaRegUser } from "react-icons/fa";
 import "./NavbarMenu.css";
 import { RiMenu2Fill } from "react-icons/ri";
-import { Container, Row, Col, Offcanvas, Accordion } from "react-bootstrap";
+import { Container, Row, Col, Offcanvas, Accordion,Carousel } from "react-bootstrap";
 import logo from "../../assets/logo.jpeg";
 import LoadingBar from "react-top-loading-bar";
 import {
@@ -26,70 +26,8 @@ import { jwtDecode } from "jwt-decode";
 import { useFavorites } from "../hooks/useFavorites";
 import { LiaUserCircle } from "react-icons/lia";
 import { LuHeart } from "react-icons/lu";
-const collectionMenu = [
-  {
-    title: "CO-ORDS SET",
-    subcategories: ["All Co-ords Set"],
-  },
-  {
-    title: "Sarees",
-    subcategories: [
-      "Silk Saree",
-      "Cotton Saree",
-      "Chiffon/Georgette Saree",
-      "Banarasi Saree",
-      "Kanjeevaram Saree",
-      "Bandhani Saree",
-      "Linen Saree",
-      "Embroidered Saree",
-      "Half & Half Saree",
-    ],
-  },
-  {
-    title: "Kurtis & Kurtas",
-    subcategories: [
-      "Anarkali",
-      "Straight Cut",
-      "High-low",
-      "Asymmetric",
-      "Short Kurti",
-      "Long Kurti",
-      "Angrakha Style",
-    ],
-  },
-  {
-    title: "Salwar Suits",
-    subcategories: [
-      "Patiala Suit",
-      "Churidar Suit",
-      "Palazzo Suit",
-      "Sharara Suit",
-      "Pakistani Suit",
-      "Straight Suit",
-      "Anarkali Suit",
-    ],
-  },
-  {
-    title: "Lehengas",
-    subcategories: [
-      "Bridal Lehenga",
-      "Party Wear Lehenga",
-      "Crop Top Lehenga",
-      "Jacket Lehenga",
-      "Circular / Flared Lehenga",
-      "A-Line Lehenga",
-    ],
-  },
-  {
-    title: "Fusion Wear",
-    subcategories: [
-      "Kurti with Jeans",
-      "Indo-Western Dresses",
-      "Dhoti Pants with Tops",
-      "Saree Gowns",
-    ],
-  },
-];
+import BannerSlider from "../Banner/BannerSlider";
+import { getAllTopCollection } from "../api/user/topCollectionApi";
 
 export default function NavbarMenu() {
   const cartItemCount = 3; // Replace with dynamic value from state/store
@@ -118,6 +56,22 @@ export default function NavbarMenu() {
       return true; // invalid or corrupted token
     }
   }
+  const [collections, setCollections] = useState([]);
+  const [loading,setLoading]  =useState(true)
+  const fetchCollections = async () => {
+    try {
+      const res = await getAllTopCollection();
+      setCollections(res);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCollections();
+  }, []);
 
   useEffect(() => {
     const fetchNavbar = async () => {
@@ -250,7 +204,7 @@ export default function NavbarMenu() {
                 textDecoration: "none",
                 fontSize: 28,
                 fontWeight: "600",
-                fontFamily:"'Playfair', serif"
+                fontFamily: "'Playfair', serif",
               }}
             >
               HOUSE Of ZIBA
@@ -276,12 +230,9 @@ export default function NavbarMenu() {
                     <Link to={`/`}>{header?.title}</Link>
                   ) : header?.slug === "/new-in" ? (
                     <Link to={`/newIn`}>{header?.title}</Link>
-                  ) :
-                   header?.slug === "/sale" ? (
+                  ) : header?.slug === "/sale" ? (
                     <Link to={`/sale/${header.title}`}>{header?.title}</Link>
-                  ) :
-                  
-                   (
+                  ) : (
                     <Link>{header?.title}</Link>
                   )}
                 </li>
@@ -307,7 +258,11 @@ export default function NavbarMenu() {
                 <span className="cart-badge">{cart?.items?.length || 0}</span>
               )}
             </div>
-            <LiaUserCircle size={25} className="icon" onClick={() => handleUserClick()} />
+            <LiaUserCircle
+              size={25}
+              className="icon"
+              onClick={() => handleUserClick()}
+            />
           </div>
           <LoadingBar
             color="#460201"
@@ -392,7 +347,7 @@ export default function NavbarMenu() {
                           }}
                         >
                           {category.subCategories.map((sub) => (
-                            <li key={sub._id}>
+                            <li key={sub._id} style={{ marginTop: 6 }}>
                               <Link
                                 to={`${activeHeader.slug}/${category.name}/${sub.name}`}
                               >
@@ -421,7 +376,7 @@ export default function NavbarMenu() {
                             alt="Promo"
                             style={{
                               maxWidth: "100%",
-                              height: "300px",
+                              height: "250px",
                               objectFit: "contain",
                               borderRadius: "4px",
                             }}
@@ -460,17 +415,19 @@ export default function NavbarMenu() {
             onClick={handleShow}
           />
 
-            <Link
-              to={`/`}
-              style={{
-                color: "#460201",
-                textDecoration: "none",
-                fontSize: 22,
-                fontWeight: "600",
-                marginLeft:10,
-                fontFamily:"'Playfair', serif"
-              }}
-           >House of Ziba</Link>
+          <Link
+            to={`/`}
+            style={{
+              color: "#460201",
+              textDecoration: "none",
+              fontSize: 22,
+              fontWeight: "600",
+              marginLeft: 10,
+              fontFamily: "'Playfair', serif",
+            }}
+          >
+            House of Ziba
+          </Link>
         </div>
         <div
           style={{
@@ -513,14 +470,27 @@ export default function NavbarMenu() {
         className="custom-offcanvas shadow-lg"
       >
         <Offcanvas.Header closeButton>
-          <Offcanvas.Title className="text-lg font-semibold text-gray-800">
+          <Offcanvas.Title className="text-lg font-semibold text-gray-800" style={{fontFamily: "'Playfair', serif",fontSize:25, color: "#460201",}}>
             House of Ziba
           </Offcanvas.Title>
         </Offcanvas.Header>
-        <img
-          src={"https://prisho.in/wp-content/uploads/2023/10/prisho-blog-3.png"}
-          style={{ width: "100%" }}
-        />
+      <Carousel fade interval={4000} >
+      {collections?.map((slide) => (
+        <Carousel.Item key={slide._id}>
+          <img
+            className={`d-block w-100`}
+            src={slide.image}
+            alt={slide.title}
+            style={{height:150}}
+            onClick={()=>navigate("/collection1",{state:{product:slide.product}})}
+          />
+        {/* <Carousel.Caption className={styles.caption}>
+            <h3>{slide.title}</h3>
+            <p>{slide.description}</p>
+          </Carousel.Caption>  */}
+        </Carousel.Item>
+      ))}
+    </Carousel>
 
         <Offcanvas.Body className="p-0">
           <Accordion flush alwaysOpen>
@@ -532,7 +502,7 @@ export default function NavbarMenu() {
 
               return (
                 <>
-                  {header.title === "Home" ? (
+                  {header?.title === "Home" ? (
                     <div
                       style={{
                         height: 50,
@@ -552,7 +522,7 @@ export default function NavbarMenu() {
                         Home
                       </Link>
                     </div>
-                  ) : header.title === "New-in" ? (
+                  ) : header?.slug === "/new-in" ? (
                     <div
                       style={{
                         height: 50,
@@ -569,10 +539,31 @@ export default function NavbarMenu() {
                           color: "black",
                         }}
                       >
-                        New-In
+                        New In
                       </Link>
                     </div>
-                  ) : (
+                  ) : 
+                   header?.slug === "/sale" ? (
+                    <div
+                      style={{
+                        height: 50,
+                        display: "flex",
+                        alignItems: "center",
+                        borderBottom: "1px solid rgba(181, 181, 181, 0.5)",
+                      }}
+                    >
+                      <Link
+                        to={`/sale/${header.title}`}
+                        style={{
+                          textDecoration: "none",
+                          marginLeft: 20,
+                          color: "black",
+                        }}
+                      >
+                      {header.title}
+                      </Link>
+                    </div>
+                  ):(
                     <Accordion.Item eventKey={header._id} key={header._id}>
                       <Accordion.Header>
                         <span className="font-medium text-gray-700">
@@ -585,15 +576,15 @@ export default function NavbarMenu() {
                         <Accordion.Body className="bg-gray-50">
                           {availableCategories.map((cat) => (
                             <div key={cat._id} className="mb-4">
-                              <p className="text-sm font-semibold text-orange-500 mb-2">
+                              {/* <p className="text-sm font-semibold text-orange-500 mb-2">
                                 {cat.name}
-                              </p>
+                              </p> */}
                               <ul
                                 className="space-y-1"
                                 style={{ listStyle: "none" }}
                               >
                                 {cat.subCategories.map((sub) => (
-                                  <li key={sub._id}>
+                                  <li key={sub._id} style={{marginTop:10,borderBottom:"0.5px solid #000",padding:5}}>
                                     <Link
                                       to={`${header.slug}/${cat.name}/${sub.name}`}
                                       className="block text-gray-700 hover:text-orange-500 text-sm transition-colors duration-200"
@@ -629,6 +620,7 @@ export default function NavbarMenu() {
             justifyContent: "center",
             alignItems: "center",
           }}
+           onClick={() =>{ handleUserClick();handleClose()}}
         >
           <h6 style={{ marginTop: 5 }}>
             <LuCircleUser /> Sign In

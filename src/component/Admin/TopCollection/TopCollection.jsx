@@ -236,7 +236,7 @@ const handleAddProducts = async () => {
   return (
     <div className="container mt-4">
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <h2>Top Collections</h2>
+        <h2>Home Collections</h2>
         <Button
           variant="primary"
           onClick={() => {

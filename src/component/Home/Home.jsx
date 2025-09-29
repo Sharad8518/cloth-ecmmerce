@@ -65,7 +65,6 @@ export default function Home() {
       <AllProduct />
       <ContentWithSlider />
       <CategorySwiper />
-
       <br />
       <Product />
       <br />
