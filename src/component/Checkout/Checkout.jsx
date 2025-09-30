@@ -188,7 +188,7 @@ export default function Checkout() {
           return;
         }
         const options = {
-          key: "rzp_live_RNpXHNyVGAt1pj",
+          key: process.env.REACT_APP_RAZORPAY_KEY,
           amount: res.razorpayOrder.amount,
           currency: res.razorpayOrder.currency,
           order_id: res.razorpayOrder.id,

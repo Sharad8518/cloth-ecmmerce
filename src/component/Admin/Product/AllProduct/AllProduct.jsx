@@ -25,6 +25,7 @@ import {
   addOrUpdateReview,
   verifyReview,
   onSaleProduct,
+  deleteProduct,
 } from "../../../api/admin/productApi";
 import { MdReviews } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
@@ -761,7 +762,24 @@ export default function AllProductAdmin() {
     fetchProducts();
   }, [fetchProducts]);
 
-  const handleDelete = (id) => console.log("Delete product:", id);
+ const handleDelete = async (id) => {
+  if (!window.confirm("Are you sure you want to delete this product?")) {
+    return; // user cancelled
+  }
+
+  try {
+    const res = await deleteProduct(id);
+    if (res.status === 200) {
+      alert("Product deleted successfully!");
+      // refresh product list or remove from UI
+    } else {
+      alert("Failed to delete product");
+    }
+  } catch (err) {
+    console.error("Delete error:", err);
+    alert("Something went wrong while deleting the product.");
+  }
+};
 
   const handleViewMore = (product) => {
     setSelectedProduct(product);
