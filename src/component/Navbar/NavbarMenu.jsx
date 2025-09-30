@@ -576,7 +576,7 @@ export default function NavbarMenu() {
                                       padding: 5,
                                     }}
                                   >
-                                    <Link
+                                    <Link onClick={handleClose}
                                       to={`${header.slug}/${cat.name}/${sub.name}`}
                                       className="block text-gray-700 hover:text-orange-500 text-sm transition-colors duration-200"
                                       style={{

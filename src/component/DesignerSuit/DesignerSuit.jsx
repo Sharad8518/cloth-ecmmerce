@@ -49,6 +49,14 @@ export default function DesignerSuit() {
     discount: [], // example: [10, 50] → between 10% and 50%
   });
 
+  useEffect(() => {
+  setFilters((prev) => ({
+    ...prev,
+    subCategories: Array.isArray(subName) ? subName : subName ? [subName] : [],
+  }));
+  setCurrentPage(1); // reset to first page when route param changes
+}, [subName]);
+
   // Data from API
   const [products, setProducts] = useState([]);
   const [banner, setBanner] = useState([]);
