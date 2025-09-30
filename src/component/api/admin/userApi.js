@@ -29,7 +29,6 @@ export const getAllUser = async ({
     return res.data;
   } catch (err) {
     if (err.response?.status === 401) {
-      console.log("err.response",err.response)
       throw new Error("Unauthorized. Please log in again.");
       
     }

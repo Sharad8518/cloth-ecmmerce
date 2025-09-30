@@ -310,7 +310,6 @@ const OrderList = ({ orders, totalPages = 1, onPageChange }) => {
                 setReview({ rating: 5, comment: "" });
                 setReviewItem(null);
               } catch (err) {
-                console.error("Review error:", err);
                 alert(err.message);
               }
             }}

@@ -9,13 +9,13 @@ import { useFavorites } from "../../hooks/useFavorites";
 const ProductGrid = ({ products }) => {
   const navigate = useNavigate();
   const { favorites, toggleFavorite } = useFavorites();
-  console.log("favorites", favorites);
+
   const handleAddToCart = (product) => {
-    console.log("Added to cart:", product.title);
+  
   };
 
   const handleBuyNow = (product) => {
-    console.log("Buying now:", product.title);
+ 
   };
 
   return (

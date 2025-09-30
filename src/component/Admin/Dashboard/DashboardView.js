@@ -74,7 +74,7 @@ export default function DashboardView() {
     })();
   }, []);
 
-  console.log('productTotal',productTotal)
+
 
   return (
     <Container className="mt-4">

@@ -6,7 +6,6 @@ if (token) {
 }
 
 export const placeOrder = async (orderData) => {
-  console.log('orderData',orderData)
   try {
     const res = await axios.post("/user/order/place", orderData, {
       headers: {

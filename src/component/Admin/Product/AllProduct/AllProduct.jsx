@@ -749,7 +749,6 @@ export default function AllProductAdmin() {
       });
       setProducts(data.products || []);
       setPages(data.pages || 1);
-      console.log("data", data);
     } catch (err) {
       console.error("Failed to fetch products:", err);
     } finally {
@@ -780,11 +779,10 @@ export default function AllProductAdmin() {
   };
 
   const handleAddReview = async (product) => {
-    console.log("product", product);
     setCurrentEditingProduct(product);
     setShowRevieModel(true);
   };
-  console.log("currentEditingProduct", currentEditingProduct);
+
 
   const [isSaving, setIsSaving] = useState(false);
   // save handler
@@ -1267,9 +1265,6 @@ export default function AllProductAdmin() {
                 alert("Please provide a rating or comment.");
                 return;
               }
-
-              console.log("review", review);
-
               try {
                 // Call backend API
                 const response = await addOrUpdateReview(

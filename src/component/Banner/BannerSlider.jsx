@@ -40,7 +40,6 @@ export default function BannerSlider() {
 const fetchCollections = async () => {
     try {
       const res = await getAllTopCollection();
-      console.log("res",res)
       setCollections(res);
     } catch (err) {
       console.error(err);
@@ -53,7 +52,7 @@ const fetchCollections = async () => {
     fetchCollections();
   }, []);
 
-  console.log('collections',collections)
+
   if (loading) {
       return (
         <div

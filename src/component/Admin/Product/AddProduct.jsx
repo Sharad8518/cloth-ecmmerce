@@ -327,10 +327,8 @@ export default function AddProduct() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true); // start loading
-    console.log("product", product);
     try {
       const result = await addProduct(product);
-      console.log("✅ Product created:", result);
       Swal.fire({
         icon: "success",
         title: "Product Created",
@@ -394,7 +392,6 @@ export default function AddProduct() {
     }
   };
 
-  console.log("product", product);
 
   return (
     <Container className="my-4">
@@ -504,7 +501,6 @@ export default function AddProduct() {
                                 categories: newCategories,
                               }));
                               if (c._id) {
-                                console.log("c._id", c._id);
                                 await loadSubCategories(c._id);
                               }
                             } else {

@@ -54,7 +54,7 @@ export default function MobileLoginOTP({ isOpen, closeModal }) {
     }
   };
 
-  console.log("OTP:", otp.join(""));
+
 
   const handleVerifyOTP = async () => {
     const otpValue = otp.join("");
@@ -62,7 +62,6 @@ export default function MobileLoginOTP({ isOpen, closeModal }) {
       try {
         setVerifyLoading(true);
         const res = await verifyOTP(mobile, otpValue); // call API
-        console.log("OTP verification response:", res);
         setMessage(res.message); // "Login successful"
 
         // Save token & user
@@ -333,13 +332,13 @@ export default function MobileLoginOTP({ isOpen, closeModal }) {
                           closeModal();
                         }
                       } catch (err) {
-                        console.error("Google login failed:", err.message);
+                       
                       } finally {
                         setGoogleAuthLoading(false);
                       }
                     }}
                     onError={() => {
-                      console.log("Login Failed");
+                     
                     }}
                   />
                 </div>

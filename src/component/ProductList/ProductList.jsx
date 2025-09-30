@@ -7,7 +7,7 @@ import { useNavigate, useNavigation } from "react-router-dom";
 export default function ProductList({ products }) {
   const navigate = useNavigate();
 
-  console.log("products", products);
+
   const { favorites, toggleFavorite } = useFavorites();
   return (
     <div className={styles.cardGrid}>

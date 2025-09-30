@@ -57,7 +57,6 @@ export default function IndoWestern() {
        const fetchBanner = async () => {
          try {
            const res = await getBanner({ showOn: "indoWestern", active: true });
-           console.log("banner", res);
            setBanner(res);
          } catch (err) {
            console.error("Error fetching banner:", err);
@@ -179,8 +178,7 @@ export default function IndoWestern() {
     }
   };
 
-  console.log("filters", filters);
-  console.log("Final Params 👉", buildParams(filters));
+
   // Run whenever filters, page, or sort change
   useEffect(() => {
     fetchProducts();
@@ -219,8 +217,7 @@ export default function IndoWestern() {
     values.map((v) => ({ type, value: v }))
   );
 
-  console.log("selectedFilters", selectedFilters);
-  console.log("products", products);
+
 
   if (loading) {
     return (

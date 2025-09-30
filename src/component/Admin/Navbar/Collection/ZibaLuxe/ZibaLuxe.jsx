@@ -76,7 +76,7 @@ export default function ZibaLuxe() {
     setItems(data);
   };
 
-  console.log("items", items);
+
 
   const fetchHeaders = async () => {
     const res = await getHeaders();
@@ -415,7 +415,7 @@ export default function ZibaLuxe() {
     fetchItems();
   };
 
-  console.log("selectedProducts",selectedProducts)
+
 
    const handleAddProducts = async () => {
     if (!selectedProducts.length) return;

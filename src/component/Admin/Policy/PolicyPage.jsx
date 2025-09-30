@@ -62,8 +62,6 @@ const [policies, setPolicies] = useState([]);
     }
   };
 
-  console.log('policies',policies)
-
   return (
     <Container className="mt-5">
       <Row className="mb-3">

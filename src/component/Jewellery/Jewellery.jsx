@@ -62,7 +62,6 @@ export default function Jewellery() {
      const fetchBanner = async () => {
        try {
          const res = await getBanner({ showOn: "Jwellery", active: true });
-         console.log("banner", res);
          setBanner(res);
        } catch (err) {
          console.error("Error fetching banner:", err);
@@ -189,8 +188,7 @@ export default function Jewellery() {
     }
   };
 
-  console.log("filters", filters);
-  console.log("Final Params 👉", buildParams(filters));
+
   // Run whenever filters, page, or sort change
   useEffect(() => {
     fetchProducts();
@@ -230,8 +228,7 @@ export default function Jewellery() {
     values.map((v) => ({ type, value: v }))
   );
 
-  console.log("selectedFilters", selectedFilters);
-  console.log("products", products);
+
 
   if (loading) {
     return (

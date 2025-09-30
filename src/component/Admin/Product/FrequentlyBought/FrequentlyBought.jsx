@@ -41,7 +41,7 @@ export default function FrequentlyBought() {
     fetchProducts();
   }, [productId, searchTerm, category]);
 
-  console.log("allProducts", allProducts);
+
 
   const toggleSelectProduct = (id) => {
     setSelectedProducts((prev) =>

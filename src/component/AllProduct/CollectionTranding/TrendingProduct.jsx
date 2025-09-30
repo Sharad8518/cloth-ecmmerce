@@ -77,7 +77,6 @@ export default function TrendingProduct() {
     const fetchCollection = async () => {
       try {
         const res = await getCollection();
-        console.log("collection", res);
         setCollectios(res);
       } catch (error) {
         console.error("Error fetching product:", error);

@@ -64,7 +64,7 @@ export default function ProductDetail() {
   const zoomIn = () => setZoom((prev) => prev + 0.2); // keep increasing, no max
   const zoomOut = () => setZoom((prev) => prev - 0.2, 1); // keep decreasing, no min
 
-  console.log("selectedFrequently", selectedFrequently);
+
   const {
     cart,
     handleAddToCart,
@@ -84,7 +84,7 @@ export default function ProductDetail() {
   const handleOpenCart = () => setCartOpen(true);
   const sliderRef = useRef(null);
   const handleSelectImage = (index) => {
-    console.log("index", index);
+ 
     setSelectedIndex(index);
     sliderRef.current?.slickGoTo(index); // ✅ correct usage
   };
@@ -127,7 +127,7 @@ export default function ProductDetail() {
     return options;
   };
 
-  console.log("selectedImage", selectedImage);
+
   const sizes = [
     "XS",
     "S",
@@ -306,7 +306,7 @@ export default function ProductDetail() {
     const fetchProduct = async () => {
       try {
         const response = await getProductById(id); // ✅ API call
-        console.log(response);
+       
         setProduct(response?.product); // depends on API structure
         setSelectedImage(response?.product?.media[0].url); // set first image
       } catch (error) {
@@ -325,7 +325,7 @@ export default function ProductDetail() {
     }));
   };
 
-  console.log("product", product);
+
 
   const handleSelect = (value) => {
     setAnswer(value);
@@ -346,8 +346,6 @@ export default function ProductDetail() {
   const videoRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const token = localStorage.getItem("token");
-  console.log("selectedSize", selectedSize);
-
   const [isLoading, setIsLoading] = useState(true);
   const togglePlayPause = () => {
     if (!videoRef.current) return;
@@ -673,36 +671,6 @@ export default function ProductDetail() {
                   </div>
                 </div>
               )}
-
-              {/* <button
-              className={styles.paddingButton}
-              onClick={() => setIsPaddingModalOpen(true)}
-            >
-              {savedPaddingDetails
-                ? "Edit better fit"
-                : "Additional info for better fit"}
-            </button> */}
-
-              {/* Show saved values */}
-              {/* {savedPaddingDetails && (
-              <div style={{ marginTop: 10 }}>
-                <strong>Better fit:</strong> Waist: {savedPaddingDetails.waist}{" "}
-                {savedPaddingDetails.unit}, Length: {savedPaddingDetails.length}{" "}
-                {savedPaddingDetails.unit}, Height: {savedPaddingDetails.height}{" "}
-                {savedPaddingDetails.unit}{" "}
-                <button
-                  style={{
-                    marginLeft: 10,
-                    color: "red",
-                    backgroundColor: "#fff",
-                    border: "none",
-                  }}
-                  onClick={() => setSavedPaddingDetails(null)}
-                >
-                  Delete
-                </button>
-              </div>
-            )} */}
               {savedPaddingDetails && (
                 <div style={{ width: 320, marginLeft: 10 }}>
                   <Row style={{ fontSize: 14, fontWeight: "600" }}>
@@ -776,7 +744,7 @@ export default function ProductDetail() {
                         alert("This size is not available");
                         return;
                       }
-                      console.log("selectedSize", selectedSize);
+                
                       const generatePaddingSku = (baseSku, padding) => {
                         if (!padding) return baseSku;
                         return `${baseSku}-W${padding.waist || "0"}-L${
@@ -1000,32 +968,7 @@ export default function ProductDetail() {
                     )}
                   </Accordion.Body>
                 </Accordion.Item>
-                {/* <Accordion.Item eventKey="2" style={{ border: "none" }}>
-                <Accordion.Header onClick={() => toggleKey("2")}>
-                  <div className={styles.productDetailHeading}>
-                    <FaRegUser
-                      size={20}
-                      style={{
-                        fontWeight: "bold",
-                        marginTop: -3,
-                        marginRight: 10,
-                      }}
-                    />
-                    Vendor details
-                  </div>
-                </Accordion.Header>
-                <Accordion.Body>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                  irure dolor in reprehenderit in voluptate velit esse cillum
-                  dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                  cupidatat non proident, sunt in culpa qui officia deserunt
-                  mollit anim id est laborum.
-                </Accordion.Body>
-              </Accordion.Item> */}
-
+                
                 <Accordion.Item
                   eventKey="3"
                   style={{ border: "none" }}

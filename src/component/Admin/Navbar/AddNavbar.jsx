@@ -43,7 +43,6 @@ export default function AddNavbar() {
     try {
       const res = await axios.post("/api/navbar", navbarItem);
       alert("Navbar item created successfully!");
-      console.log(res.data);
       setNavbarItem({
         label: "",
         url: "",

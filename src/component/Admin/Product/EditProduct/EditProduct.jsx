@@ -31,9 +31,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 export default function EditProduct() {
   const location = useLocation();
   const { getProduct } = location.state || {};
-
-  console.log("getProduct", getProduct);
-
   const [headers, setHeaders] = useState([]);
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
@@ -366,10 +363,8 @@ export default function EditProduct() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true); // start loading
-    console.log("product", product);
     try {
       const result = await editProduct(getProduct._id, product);
-      console.log("✅ Product created:", result);
       Swal.fire({
         icon: "success",
         title: "Product Created",
@@ -389,8 +384,6 @@ export default function EditProduct() {
       setLoading(false); // stop loading
     }
   };
-
-  console.log("product", product);
 
   return (
     <Container className="my-4">
@@ -481,7 +474,6 @@ export default function EditProduct() {
                                 categories: newCategories,
                               }));
                               if (c._id) {
-                                console.log("c._id", c._id);
                                 await loadSubCategories(c._id);
                               }
                             } else {

@@ -15,7 +15,6 @@ const BannerManager = () => {
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState(null);
 
-  console.log("banners", banners);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -49,7 +48,7 @@ const BannerManager = () => {
     }
   };
 
-  console.log("formData", formData);
+
 
   const handleSave = async () => {
     const fd = new FormData();

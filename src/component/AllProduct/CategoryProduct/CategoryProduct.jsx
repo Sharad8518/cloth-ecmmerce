@@ -47,12 +47,11 @@ export default function CategoryProduct() {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState("popularity");
   const [loading, setLoading] = useState(true);
-  console.log("category", category);
+
   useEffect(() => {
     const fetchBanner = async () => {
       try {
         const res = await getBanner();
-        console.log("banner", res);
         setBanner(res);
       } catch (err) {
         console.error("Error fetching banner:", err);
@@ -166,8 +165,7 @@ export default function CategoryProduct() {
     }
   };
 
-  console.log("filters", filters);
-  console.log("Final Params 👉", buildParams(filters));
+
   // Run whenever filters, page, or sort change
   useEffect(() => {
     fetchProducts();
@@ -206,8 +204,7 @@ export default function CategoryProduct() {
     values.map((v) => ({ type, value: v }))
   );
 
-  console.log("selectedFilters", selectedFilters);
-  console.log("products", products);
+
   const [showFilters, setShowFilters] = useState(false);
   const [showSort, setShowSort] = useState(false);
 

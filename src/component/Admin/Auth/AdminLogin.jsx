@@ -34,15 +34,12 @@ const AdminLogin = () => {
     // Save token to localStorage
     if (data.token) {
       localStorage.setItem("hfz-a_tkn_238x", data.token);
-      console.log("Token saved:", data.token);
       navigate("/dashboard");
     }else{
       setError("Login failed: Invalid credentials");
       
     }
-    console.log("Login response:", data);
   } catch (err) {
-    console.error("Login failed", err);
     setError("Login failed: " + (err.response?.data?.message || err.message));
   } finally {
     setLoading(false);

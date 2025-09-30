@@ -37,7 +37,6 @@ export default function TopCollection() {
   const fetchCollections = async () => {
     try {
       const res = await getAllTopCollection();
-      console.log("res",res)
       setCollections(res);
     } catch (err) {
       console.error(err);

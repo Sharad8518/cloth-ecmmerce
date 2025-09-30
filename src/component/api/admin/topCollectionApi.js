@@ -2,7 +2,6 @@ import axios from "../axios";
 
 
 export const addOrUpdateTopCollection = async (collectionData) => {
-  console.log("collection",collectionData)
   try {
     const formData = new FormData();
     formData.append("title", collectionData.title);

@@ -72,7 +72,7 @@ export default function HierarchyManager() {
     setSelectedHeader(headerId);
     const res = await getCategories();
     setCategories(res.filter((c) => c.header._id === headerId));
-    console.log("Categories loaded for header:", res);
+
     setSubCategories([]);
     setCollections([]);
   };

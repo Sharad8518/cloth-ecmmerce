@@ -38,7 +38,6 @@ const Profile = () => {
           alert(res.message || "Failed to load profile");
         }
       } catch (err) {
-        console.error("Error fetching profile:", err);
         alert("Unable to fetch profile");
       }
     };
@@ -65,7 +64,6 @@ const Profile = () => {
         alert(res.message || "Failed to update profile");
       }
     } catch (err) {
-      console.error(err);
       alert("Error updating profile");
     } finally {
       setSaving(false);

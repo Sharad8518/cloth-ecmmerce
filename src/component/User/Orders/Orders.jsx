@@ -18,14 +18,12 @@ export default function Orders() {
     try {
       setLoading(true);
       const response = await getUserOrder({ page: pageNumber, limit });
-      console.log("response", response);
       if (response.success) {
         setOrderList(response.orders);
         setTotalPages(response.totalPages || 1);
         setPage(pageNumber);
       }
     } catch (err) {
-      console.error("Failed to fetch orders:", err);
     } finally {
       setLoading(false);
     }

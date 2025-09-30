@@ -88,7 +88,6 @@ export const decreaseQty = async ({ productId, sku, attributes = [] }) => {
 
 // ✅ Remove item
 export const removeFromCart = async ({ productId, sku }) => {
-  console.log('productId',productId)
   try {
     const token = localStorage.getItem("token");
 

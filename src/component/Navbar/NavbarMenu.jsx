@@ -94,7 +94,7 @@ export default function NavbarMenu() {
           })),
         }));
         setCollectionMenu(menu);
-        console.log("menu", menu);
+    
       } catch (err) {
         console.error("Failed to fetch navbar data:", err);
       }
@@ -121,7 +121,7 @@ export default function NavbarMenu() {
     useCart();
   const token = localStorage.getItem("token");
 
-  console.log("Cart items:", cart.items || []);
+
 
   const handleUserClick = () => {
     const token = localStorage.getItem("token"); // assuming accessToken key
@@ -146,17 +146,17 @@ export default function NavbarMenu() {
     const fetch = async () => {
       try {
         const res = await getPromotion();
-        console.log(res);
+  
         setPromotions(res.data);
       } catch (error) {
-        console.log(error);
+      
       }
     };
     fetch();
   }, []);
-  console.log("activeHeader", activeHeader);
+
   const { favorites } = useFavorites();
-  console.log("favorites", favorites);
+
 
   return (
     <>

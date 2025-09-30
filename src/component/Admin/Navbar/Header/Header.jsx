@@ -26,7 +26,6 @@ export default function Header() {
   // Save or update header
   const saveEntity = async () => {
     const { data } = modal;
-    console.log('data',data)
     if (data._id) {
       await updateHeader(data._id, data);
     } else {

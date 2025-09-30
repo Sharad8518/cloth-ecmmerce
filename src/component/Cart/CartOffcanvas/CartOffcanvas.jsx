@@ -14,7 +14,7 @@ export default function CartOffcanvas({
 
   // Get items array safely
   const items = cart?.items || [];
-  console.log("Cart items in Offcanvas:", items);
+
 
   // // Calculate total using variant price, fallback to product MRP
   // const total = items.reduce(

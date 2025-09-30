@@ -18,16 +18,15 @@ const [favorites, setFavorites] = useState([]); // store only products
       const data = await getFavorites();
       // Extract only the product from each favorite
       const products = data.favorites?.map(fav => fav.product) || [];
-      console.log('products',products)
       setFavorites(products);
     } catch (err) {
-      console.error("Failed to fetch favorites", err);
+   
     } finally {
       setLoading(false);
     }
   };
 
-  console.log("favorites",favorites)
+
 
   useEffect(() => {
     fetchFavorites();

@@ -13,7 +13,6 @@ export default function Checkout() {
   const { cart } = useCart();
   const location = useLocation();
 
-  console.log("Location state:", location.state);
 
   const navigator = useNavigate();
 
@@ -27,7 +26,6 @@ export default function Checkout() {
     const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
 
-  console.log("itemsToCheckout Address:", itemsToCheckout);
 
   const [paymentMethod, setPaymentMethod] = useState("COD");
   // New Address State

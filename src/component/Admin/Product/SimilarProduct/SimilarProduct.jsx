@@ -49,7 +49,7 @@ export default function SimilarProduct() {
     fetchProducts();
   }, [productId, searchTerm, category]);
 
-  console.log("allProducts", allProducts);
+
 
   const toggleSelectProduct = (id) => {
     setSelectedProducts((prev) =>

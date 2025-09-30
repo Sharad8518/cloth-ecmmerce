@@ -60,7 +60,7 @@ export default function Potilis() {
        const fetchBanner = async () => {
          try {
            const res = await getBanner({ showOn: "potilis", active: true });
-           console.log("banner", res);
+        
            setBanner(res);
          } catch (err) {
            console.error("Error fetching banner:", err);
@@ -182,8 +182,7 @@ export default function Potilis() {
     }
   };
 
-  console.log("filters", filters);
-  console.log("Final Params 👉", buildParams(filters));
+
   // Run whenever filters, page, or sort change
   useEffect(() => {
     fetchProducts();
@@ -222,8 +221,7 @@ export default function Potilis() {
     values.map((v) => ({ type, value: v }))
   );
 
-  console.log("selectedFilters", selectedFilters);
-  console.log("products", products);
+
 
   if (loading) {
     return (
