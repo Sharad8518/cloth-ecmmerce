@@ -188,7 +188,7 @@ export default function Checkout() {
           return;
         }
         const options = {
-          key: "rzp_test_RBrvv86oXQyKgx",
+          key: "rzp_live_RNpXHNyVGAt1pj",
           amount: res.razorpayOrder.amount,
           currency: res.razorpayOrder.currency,
           order_id: res.razorpayOrder.id,
