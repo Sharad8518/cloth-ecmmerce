@@ -43,6 +43,8 @@ import { IoClose } from "react-icons/io5";
 import { GrSubtract, GrAdd } from "react-icons/gr";
 import { FaPause } from "react-icons/fa6";
 import { FaPlay } from "react-icons/fa6";
+import Swal from "sweetalert2";
+
 const images = [
   "https://img.theloom.in/pwa/catalog/product/cache/e442fb943037550e0d70cca304324ade/v/j/vj304fs25-01kpfuchsiavj30_7_.jpg?tr=c-at_max,w-800,h-1066",
   "https://img.theloom.in/pwa/catalog/product/cache/e442fb943037550e0d70cca304324ade/v/j/vj304fs25-01kpfuchsiavj30_2_.jpg?tr=c-at_max,w-800,h-1066",
@@ -64,7 +66,6 @@ export default function ProductDetail() {
   const zoomIn = () => setZoom((prev) => prev + 0.2); // keep increasing, no max
   const zoomOut = () => setZoom((prev) => prev - 0.2, 1); // keep decreasing, no min
 
-
   const {
     cart,
     handleAddToCart,
@@ -84,7 +85,6 @@ export default function ProductDetail() {
   const handleOpenCart = () => setCartOpen(true);
   const sliderRef = useRef(null);
   const handleSelectImage = (index) => {
- 
     setSelectedIndex(index);
     sliderRef.current?.slickGoTo(index); // ✅ correct usage
   };
@@ -126,7 +126,6 @@ export default function ProductDetail() {
     }
     return options;
   };
-
 
   const sizes = [
     "XS",
@@ -306,7 +305,7 @@ export default function ProductDetail() {
     const fetchProduct = async () => {
       try {
         const response = await getProductById(id); // ✅ API call
-       
+
         setProduct(response?.product); // depends on API structure
         setSelectedImage(response?.product?.media[0].url); // set first image
       } catch (error) {
@@ -324,8 +323,6 @@ export default function ProductDetail() {
       [field]: value,
     }));
   };
-
-
 
   const handleSelect = (value) => {
     setAnswer(value);
@@ -731,7 +728,11 @@ export default function ProductDetail() {
                         product.productType !== "Jewellery" &&
                         !selectedSize
                       ) {
-                        alert("Please select a size");
+                        Swal.fire({
+                          icon: "warning",
+                          title: "Size Required",
+                          text: "Please select a size before adding to cart!",
+                        });
                         return;
                       }
 
@@ -741,10 +742,14 @@ export default function ProductDetail() {
                       );
 
                       if (product.productType !== "Jewellery" && !variant) {
-                        alert("This size is not available");
+                        Swal.fire({
+                          icon: "error",
+                          title: "Not Available",
+                          text: "This size is not available right now!",
+                        });
                         return;
                       }
-                
+
                       const generatePaddingSku = (baseSku, padding) => {
                         if (!padding) return baseSku;
                         return `${baseSku}-W${padding.waist || "0"}-L${
@@ -783,7 +788,11 @@ export default function ProductDetail() {
                     }
 
                     if (product.productType !== "Jewellery" && !selectedSize) {
-                      alert("Please select a size");
+                      Swal.fire({
+                        icon: "warning",
+                        title: "Size Required",
+                        text: "Please select a size before Buy!",
+                      });
                       return;
                     }
 
@@ -792,7 +801,11 @@ export default function ProductDetail() {
                     );
 
                     if (product.productType !== "Jewellery" && !variant) {
-                      alert("This size is not available");
+                      Swal.fire({
+                        icon: "error",
+                        title: "Not Available",
+                        text: "This size is not available right now!",
+                      });
                       return;
                     }
                     const sku =
@@ -968,7 +981,7 @@ export default function ProductDetail() {
                     )}
                   </Accordion.Body>
                 </Accordion.Item>
-                
+
                 <Accordion.Item
                   eventKey="3"
                   style={{ border: "none" }}

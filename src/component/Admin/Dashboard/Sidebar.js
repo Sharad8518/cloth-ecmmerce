@@ -18,6 +18,7 @@ import { PiFlagBannerFold } from "react-icons/pi";
 import styles from "./css/Sidebar.module.css";
 import { MdOutlinePolicy } from "react-icons/md";
 import { AiOutlineSound } from "react-icons/ai";
+import { RiCouponLine } from "react-icons/ri";
 
 const Sidebar = () => {
   const location = useLocation();
@@ -123,6 +124,17 @@ const Sidebar = () => {
         >
           <FaCashRegister />{" "}
           <span className={styles.label}>Sales & Billing</span>
+        </Nav.Link>
+
+          <Nav.Link
+          as={Link}
+          to="/dashboard/Coupon"
+          className={`${styles.link} ${
+            location.pathname === "/dashboard/Coupon" ? styles.active : ""
+          }`}
+        >
+          <RiCouponLine />{" "}
+          <span className={styles.label}>Coupon</span>
         </Nav.Link>
 
         <Nav.Link

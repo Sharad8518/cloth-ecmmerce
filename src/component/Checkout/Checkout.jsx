@@ -7,6 +7,8 @@ import { placeOrder, verifyPayment } from "../api/user/orderApi";
 import { useRazorpay, RazorpayOrderOptions } from "react-razorpay";
 import styles from "./Checkout.module.css"
 import MobileLoginOTP from "../User/Auth/MobileLoginOTP";
+import Swal from "sweetalert2";
+import { ConfettiBoom } from "react-confetti-boom";
 
 export default function Checkout() {
   const Razorpay = useRazorpay();
@@ -25,7 +27,7 @@ export default function Checkout() {
    const [isOpen, setIsOpen] = useState(false);
     const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
-
+const [showConfetti, setShowConfetti] = useState(false);
 
   const [paymentMethod, setPaymentMethod] = useState("COD");
   // New Address State
@@ -39,6 +41,10 @@ export default function Checkout() {
     country: "India",
     isDefault: false,
   });
+  const handleCelebrate = () => {
+  setShowConfetti(true);
+  setTimeout(() => setShowConfetti(false), 3000); // show for 3 seconds
+};
 
   const fetchProfile = async () => {
     try {
@@ -139,17 +145,29 @@ export default function Checkout() {
       return;
     }
     if (!selectedAddress) {
-      alert("Please select a delivery address");
+        Swal.fire({
+      icon: "warning",
+      title: "No Address Selected",
+      text: "Please select a delivery address before placing the order.",
+    });
       return;
     }
 
     if (!userDetails?.phone) {
-      alert("Please add a phone number before placing the order");
+         Swal.fire({
+      icon: "info",
+      title: "Phone Number Required",
+      text: "Please add a phone number before placing the order.",
+    });
       return; // Stop execution
     }
 
     if (!paymentMethod) {
-      alert("Please select a payment method");
+     Swal.fire({
+      icon: "warning",
+      title: "Payment Method Required",
+      text: "Please select a payment method.",
+    });
       return;
     }
 
@@ -178,13 +196,21 @@ export default function Checkout() {
       };
       const res = await placeOrder(orderPayload);
       if (!res.success) {
-        alert("Failed to place order");
+         Swal.fire({
+        icon: "error",
+        title: "Order Failed",
+        text: "Unable to place the order. Please try again later.",
+      });
         return;
       }
       if (paymentMethod === "ONLINE" && res.razorpayOrder) {
         const isLoaded = await loadRazorpayScript();
         if (!isLoaded) {
-          alert("Failed to load Razorpay SDK");
+         Swal.fire({
+          icon: "error",
+          title: "Payment Error",
+          text: "Failed to load Razorpay SDK. Please try again.",
+        });
           return;
         }
         const options = {
@@ -206,23 +232,41 @@ export default function Checkout() {
                 razorpayPaymentId: response.razorpay_payment_id,
                 razorpaySignature: response.razorpay_signature,
               });
-              alert("✅ Payment successful!");
-              navigator("/");
+                Swal.fire({
+              icon: "success",
+              title: "Payment Successful 🎉",
+              text: "Your order has been placed successfully!",
+              confirmButtonText: "Go to Home",
+            }).then(() => navigator("/"));
             } catch (err) {
-              alert("❌ Payment verification failed: " + err.message);
+                Swal.fire({
+              icon: "error",
+              title: "Payment Verification Failed",
+              text: err.message || "Something went wrong during payment verification.",
+            });
             }
           },
         };
 
         const rzp = new window.Razorpay(options);
         rzp.open();
+        handleCelebrate();
       } else {
-        alert("✅ Order placed successfully (COD)");
-        navigator("/");
+        Swal.fire({
+        icon: "success",
+        title: "Order Placed 🎉",
+        text: "Your order has been placed successfully with Cash on Delivery!",
+        confirmButtonText: "Go to Home",
+      }).then(() => navigator("/"));
+      handleCelebrate();
       }
     } catch (err) {
       console.error(err);
-      alert(err.message || "Something went wrong");
+      Swal.fire({
+      icon: "error",
+      title: "Unexpected Error",
+      text: err.message || "Something went wrong. Please try again.",
+    });
     } finally {
       setPlaceLoading(false);
     }

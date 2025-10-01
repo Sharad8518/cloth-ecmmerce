@@ -119,7 +119,6 @@ export default function Collection() {
       // Close modal
       setModal({ show: false, entity: "", data: {} });
     } catch (err) {
-      console.error("Error saving collection:", err);
       alert(err.response?.data?.error || "Failed to save collection");
     }
   };

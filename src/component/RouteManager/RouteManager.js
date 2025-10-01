@@ -49,6 +49,7 @@ import TopCollection from "../Admin/TopCollection/TopCollection";
 import TopCollectionUser from "../TopCollectionUser/TopCollectionUser";
 import Sale from "../Sale/Sale"
 import Menswear from "../Mens/Menswear";
+import Coupon from "../Admin/Coupon/Coupon";
 
 export default function RouteManager() {
   return (
@@ -101,6 +102,7 @@ export default function RouteManager() {
           <Route path="EditProduct" element={<EditProduct />} />
           <Route path="ZibaLuxe" element={<ZibaLuxe />} />
           <Route path="TopCollection" element={<TopCollection />} />
+           <Route path="Coupon" element={<Coupon />} />
         </Route>
            <Route path="*" element={<NotFound />} />
            {/* <Route path="/no-internet" element={<NoInternet />} /> */}
